@@ -1,0 +1,16 @@
+{
+  "name": "medicare-plus",
+  "version": "1.0.0",
+  "description": "Medication & Appointment Reminder Web App",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo 'Static site - no build needed'",
+    "start": "echo 'Deploy to Netlify to run'"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.4"
+  },
+  "keywords": ["healthcare", "medication", "appointments", "reminders", "supabase"],
+  "author": "Your Name",
+  "license": "MIT"
+} 

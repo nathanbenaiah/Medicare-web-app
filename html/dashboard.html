@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | MediCare+</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../public/css/modern.css">
+    <link rel="stylesheet" href="../public/css/buttons.css">
+    <link rel="stylesheet" href="../public/css/dashboard.css">
+    <link rel="stylesheet" href="../public/css/forms.css">
+    <link rel="stylesheet" href="../public/css/style.css">
+</head>
+<body class="dashboard-page">
+    <!-- Include Clean Navigation -->
+
+
+    <!-- Main Content -->
+    <main class="dashboard-content" style="padding-top: 100px;">
+        <div class="dashboard-header">
+            <h1>Welcome back, <span id="welcomeName">there</span>!</h1>
+            <p class="date-display" id="currentDate"></p>
+        </div>
+
+        <!-- Quick Actions -->
+        <section class="quick-actions">
+            <button class="action-card add-reminder" onclick="showAddReminderModal()">
+                <i class="bx bx-plus-medical"></i>
+                <span>Add Medication</span>
+            </button>
+            <button class="action-card book-appointment" onclick="showAddAppointmentModal()">
+                <i class="bx bx-calendar-plus"></i>
+                <span>Book Appointment</span>
+            </button>
+            <button class="action-card add-family" onclick="showAddFamilyModal()">
+                <i class="bx bx-user-plus"></i>
+                <span>Add Family Member</span>
+            </button>
+            <button class="action-card view-all" onclick="location.href='/calendar'">
+                <i class="bx bx-calendar-week"></i>
+                <span>View Calendar</span>
+            </button>
+        </section>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Today's Reminders -->
+            <section class="dashboard-card today-reminders">
+                <div class="card-header">
+                    <h2>Today's Reminders</h2>
+                    <button class="btn-icon" onclick="refreshReminders()">
+                        <i class="bx bx-refresh"></i>
+                    </button>
+                </div>
+                <div class="reminders-list" id="todayReminders">
+                    <!-- Reminders will be populated dynamically -->
+                    <div class="loading-placeholder">Loading reminders...</div>
+                </div>
+            </section>
+
+            <!-- Upcoming Appointments -->
+            <section class="dashboard-card upcoming-appointments">
+                <div class="card-header">
+                    <h2>Upcoming Appointments</h2>
+                    <button class="btn-icon" onclick="refreshAppointments()">
+                        <i class="bx bx-refresh"></i>
+                    </button>
+                </div>
+                <div class="appointments-list" id="upcomingAppointments">
+                    <!-- Appointments will be populated dynamically -->
+                    <div class="loading-placeholder">Loading appointments...</div>
+                </div>
+            </section>
+
+            <!-- Family Activity -->
+            <section class="dashboard-card family-activity">
+                <div class="card-header">
+                    <h2>Family Activity</h2>
+                    <button class="btn-icon" onclick="refreshFamilyActivity()">
+                        <i class="bx bx-refresh"></i>
+                    </button>
+                </div>
+                <div class="family-list" id="familyActivity">
+                    <!-- Family activity will be populated dynamically -->
+                    <div class="loading-placeholder">Loading family activity...</div>
+                </div>
+            </section>
+
+            <!-- Quick Stats -->
+            <section class="dashboard-card quick-stats">
+                <div class="card-header">
+                    <h2>Quick Stats</h2>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="bx bx-capsule"></i>
+                        <span class="stat-number" id="activeMedications">0</span>
+                        <span class="stat-label">Active Medications</span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="bx bx-calendar-check"></i>
+                        <span class="stat-number" id="upcomingAppointmentsCount">0</span>
+                        <span class="stat-label">Upcoming Appointments</span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="bx bx-group"></i>
+                        <span class="stat-number" id="familyMembersCount">0</span>
+                        <span class="stat-label">Family Members</span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="bx bx-bell"></i>
+                        <span class="stat-number" id="activeRemindersCount">0</span>
+                        <span class="stat-label">Active Reminders</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Include Clean Footer -->
+
+
+    <!-- Add Reminder Modal -->
+    <div class="modal" id="addReminderModal">
+        <!-- Modal content will be injected dynamically -->
+    </div>
+
+    <!-- Add Appointment Modal -->
+    <div class="modal" id="addAppointmentModal">
+        <!-- Modal content will be injected dynamically -->
+    </div>
+
+    <!-- Add Family Member Modal -->
+    <div class="modal" id="addFamilyModal">
+        <!-- Modal content will be injected dynamically -->
+    </div>
+
+    <!-- Scripts -->
+    <script src="../public/js/api.js"></script>
+    <script src="../public/js/notifications.js"></script>
+    <script src="../public/js/dashboard.js"></script>
+    <script src="../public/js/modern.js"></script>
+    <script src="../public/js/forms.js"></script>
+    
+    <!-- Load Shared Components -->
+    <script>
+        function loadComponent(url, elementId) {
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                        element.innerHTML = data;
+                        if (elementId === 'navigation') {
+                            initializeMobileMenu();
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error(`Error loading ${url}:`, error);
+                    if (elementId === 'navigation') {
+                        createFallbackNavigation();
+                    }
+                });
+        }
+        
+        function createFallbackNavigation() {
+            const navigation = document.getElementById('navigation');
+            if (navigation) {
+                navigation.innerHTML = `
+                    <div class="floating-menu">
+                        <div class="navbar-container">
+                            <a href="index.html" class="navbar-brand">
+                                <i class="bx bx-health"></i>
+                                <span>MediCare<span style="color: #007BFF;">+</span></span>
+                            </a>
+                            <div class="navbar-nav">
+                                <a href="index.html" class="nav-link">Home</a>
+                                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                                <a href="schedule.html" class="nav-link">Schedule</a>
+                                <a href="reminders.html" class="nav-link">Reminders</a>
+                                <a href="appointments.html" class="nav-link">Appointments</a>
+                                <a href="blog.html" class="nav-link">Blog</a>
+                            </div>
+                            <div class="navbar-auth">
+                                <a href="login.html" class="btn btn-outline">Sign In</a>
+                                <a href="signup.html" class="btn btn-primary">Get Started</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        function initializeMobileMenu() {
+            window.toggleMobileMenu = function() {
+                const mobileMenu = document.getElementById('mobileMenu');
+                if (mobileMenu) {
+                    mobileMenu.style.display = mobileMenu.style.display === 'block' ? 'none' : 'block';
+                }
+            };
+        }
+
+
+    </script>
+</body>
+</html> 

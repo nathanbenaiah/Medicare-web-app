@@ -1,0 +1,55 @@
+// Supabase Client Configuration
+// Replace these with your actual Supabase credentials from your dashboard
+
+const SUPABASE_URL = 'https://qztwaldxgnbmfltpxnmn.supabase.co'
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF6dHdhbGR4Z25ibWZsdHB4bm1uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk0MzA4MjEsImV4cCI6MjA2NTAwNjgyMX0.bmhS_RT4mMezN8b3CVNC01WeucoaPANJqdOKMtoCxXk'
+
+// Initialize Supabase client
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+// Export for use in other files
+window.supabaseClient = supabase
+
+// Auth state change listener
+supabase.auth.onAuthStateChange((event, session) => {
+    console.log('Auth event:', event)
+    
+    if (event === 'SIGNED_IN') {
+        console.log('User signed in:', session.user)
+        // Redirect to dashboard if not already there
+        if (!window.location.pathname.includes('dashboard')) {
+            window.location.href = '/views/dashboard.html'
+        }
+    } else if (event === 'SIGNED_OUT') {
+        console.log('User signed out')
+        // Redirect to home page
+        if (window.location.pathname.includes('dashboard')) {
+            window.location.href = '/views/index.html'
+        }
+    }
+})
+
+// Utility functions
+window.supabaseUtils = {
+    // Get current user
+    getCurrentUser: async () => {
+        const { data: { user } } = await supabase.auth.getUser()
+        return user
+    },
+    
+    // Check if user is authenticated
+    isAuthenticated: async () => {
+        const user = await window.supabaseUtils.getCurrentUser()
+        return !!user
+    },
+    
+    // Sign out user
+    signOut: async () => {
+        const { error } = await supabase.auth.signOut()
+        if (error) {
+            console.error('Error signing out:', error)
+            return false
+        }
+        return true
+    }
+} 

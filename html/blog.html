@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog | MediCare+</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../public/css/modern.css">
+    <link rel="stylesheet" href="../public/css/buttons.css">
+    <link rel="stylesheet" href="../public/css/blog.css">
+    <link rel="stylesheet" href="../public/css/style.css">
+    
+    <style>
+        /* Page Hero Section Styles */
+        .page-hero {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e2e8f0 100%);
+            padding: 140px 2rem 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .page-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(0, 123, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 86, 179, 0.08) 0%, transparent 50%);
+        }
+
+        .hero-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: #6c757d;
+            font-weight: 400;
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .hero-features {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-feature {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem 1.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 123, 255, 0.1);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.1);
+        }
+
+        .hero-feature:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 123, 255, 0.2);
+            box-shadow: 0 8px 30px rgba(0, 123, 255, 0.2);
+        }
+
+        .hero-feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #007BFF, #66b3ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .hero-feature-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #212529;
+            text-align: center;
+        }
+
+        /* Responsive Hero */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-features {
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+            }
+            
+            .hero-feature {
+                padding: 1.5rem 1rem;
+            }
+            
+            .hero-feature-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Modern Navigation */
+        .modern-navbar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 123, 255, 0.1);
+            border-radius: 30px;
+            padding: 15px 30px;
+            box-shadow: 0 10px 40px rgba(0, 123, 255, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-container {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #212529;
+            text-decoration: none;
+        }
+
+        .navbar-brand i {
+            font-size: 1.8rem;
+            color: #007BFF;
+        }
+
+        .brand-accent {
+            color: #007BFF;
+        }
+
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 12px 16px;
+            color: #6c757d;
+            text-decoration: none;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #007BFF;
+            background: rgba(0, 123, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+        }
+
+        .navbar-auth {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .google-sign-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+        }
+
+        .google-sign-btn:hover {
+            background: linear-gradient(135deg, #0056b3, #003d82);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+        }
+
+        .mobile-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 0.25rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .mobile-toggle span {
+            width: 24px;
+            height: 3px;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(0, 123, 255, 0.95), rgba(0, 86, 179, 0.95));
+            backdrop-filter: blur(20px);
+            z-index: 9999;
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+
+        .mobile-menu-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .mobile-menu-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            color: white;
+        }
+
+        .mobile-menu-brand {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .mobile-nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .mobile-nav-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            color: white;
+            text-decoration: none;
+            font-size: 1.3rem;
+            font-weight: 600;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-width: 250px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .mobile-google-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            text-decoration: none;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            min-width: 250px;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-google-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .mobile-close {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+            border-radius: 50%;
+        }
+
+        .mobile-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        @media (max-width: 768px) {
+            .navbar-nav,
+            .navbar-auth {
+                display: none;
+            }
+            
+            .mobile-toggle {
+                display: flex;
+            }
+            
+            .modern-navbar {
+                top: 15px;
+                left: 15px;
+                right: 15px;
+                transform: none;
+                border-radius: 25px;
+                padding: 15px 20px;
+            }
+            
+            .page-hero {
+                padding-top: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Modern Navigation -->
+    <nav class="modern-navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-brand">
+                <i class="bx bx-health"></i>
+                <span>MediCare<span class="brand-accent">+</span></span>
+            </a>
+
+            <div class="navbar-nav">
+                <a href="index.html" class="nav-link">
+                    <i class="bx bx-home-alt"></i>
+                    <span>Home</span>
+                </a>
+                <a href="schedule.html" class="nav-link">
+                    <i class="bx bx-calendar"></i>
+                    <span>Schedule</span>
+                </a>
+                <a href="reminders.html" class="nav-link">
+                    <i class="bx bx-bell"></i>
+                    <span>Reminders</span>
+                </a>
+                <a href="appointments.html" class="nav-link">
+                    <i class="bx bx-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+                <a href="blog.html" class="nav-link active">
+                    <i class="bx bx-book-open"></i>
+                    <span>Blog</span>
+                </a>
+            </div>
+
+            <div class="navbar-auth">
+                <a href="#" class="google-sign-btn" onclick="signInWithGoogle()">
+                    <i class="bx bxl-google"></i>
+                    Sign
+                </a>
+            </div>
+
+            <button class="mobile-toggle" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Fullscreen Menu -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+        <div class="mobile-menu-content">
+            <button class="mobile-close" onclick="toggleMobileMenu()">
+                <i class="bx bx-x"></i>
+            </button>
+            
+            <div class="mobile-menu-brand">
+                <i class="bx bx-health"></i>
+                <span>MediCare<span class="brand-accent">+</span></span>
+            </div>
+            
+            <div class="mobile-nav-links">
+                <a href="index.html" class="mobile-nav-link">
+                    <i class="bx bx-home-alt"></i>
+                    <span>Home</span>
+                </a>
+                <a href="schedule.html" class="mobile-nav-link">
+                    <i class="bx bx-calendar"></i>
+                    <span>Schedule</span>
+                </a>
+                <a href="reminders.html" class="mobile-nav-link">
+                    <i class="bx bx-bell"></i>
+                    <span>Reminders</span>
+                </a>
+                <a href="appointments.html" class="mobile-nav-link">
+                    <i class="bx bx-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+                <a href="blog.html" class="mobile-nav-link">
+                    <i class="bx bx-book-open"></i>
+                    <span>Blog</span>
+                </a>
+            </div>
+            
+            <a href="#" class="mobile-google-btn" onclick="signInWithGoogle()">
+                <i class="bx bxl-google"></i>
+                <span>Sign</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Page Hero Section -->
+    <section class="page-hero">
+        <div class="hero-container">
+            <h1 class="hero-title">Health & Wellness Blog</h1>
+            <p class="hero-subtitle">Stay informed with the latest health tips, medical insights, and wellness advice from Sri Lankan healthcare experts</p>
+            
+            <div class="hero-features">
+                <div class="hero-feature">
+                    <div class="hero-feature-icon">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                    <h4 class="hero-feature-title">Expert Articles</h4>
+                </div>
+                <div class="hero-feature">
+                    <div class="hero-feature-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h4 class="hero-feature-title">Wellness Tips</h4>
+                </div>
+                <div class="hero-feature">
+                    <div class="hero-feature-icon">
+                        <i class="fas fa-pills"></i>
+                    </div>
+                    <h4 class="hero-feature-title">Medication Guides</h4>
+                </div>
+                <div class="hero-feature">
+                    <div class="hero-feature-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h4 class="hero-feature-title">Natural Health</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="blog-page container py-4" style="padding-top: 40px;">
+            <div class="actions flex gap-2">
+                <button id="filterBtn" class="btn secondary-btn">
+                    <i class='bx bx-filter'></i>
+                    <span>Filter</span>
+                </button>
+                <button id="searchBtn" class="btn secondary-btn">
+                    <i class='bx bx-search'></i>
+                    <span>Search</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Featured Post -->
+        <div class="featured-post card glass-card animate-scale mb-4">
+            <div class="featured-content grid grid-2 gap-4">
+                <div class="featured-image">
+                    <img src="https://source.unsplash.com/800x600/?health" alt="Featured Post" class="rounded-lg">
+                </div>
+                <div class="featured-text flex flex-col justify-center">
+                    <div class="post-meta flex gap-2 mb-2">
+                        <span class="category-tag">Featured</span>
+                        <span class="text-light">5 min read</span>
+                    </div>
+                    <h2 class="text-2xl font-bold mb-2">10 Essential Tips for Medication Adherence</h2>
+                    <p class="text-light mb-4">Learn how to stay consistent with your medication schedule and improve your health outcomes with these practical tips.</p>
+                    <a href="#" class="btn primary-btn self-start">Read More</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Categories -->
+        <div class="categories-scroll mb-4 animate-slideRight">
+            <div class="categories flex gap-2">
+                <button class="category-btn active">All</button>
+                <button class="category-btn">Blog</button>
+                <button class="category-btn">Medication</button>
+                <button class="category-btn">Wellness</button>
+                <button class="category-btn">Lifestyle</button>
+                <button class="category-btn">Mental Health</button>
+                <button class="category-btn">Nutrition</button>
+            </div>
+        </div>
+
+        <!-- Blog Grid -->
+        <div class="blog-grid grid grid-3 gap-4" id="blogGrid">
+            <!-- Blog posts will be dynamically inserted here -->
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="loading-state text-center py-4 hidden">
+            <div class="loading-spinner"></div>
+            <p>Loading posts...</p>
+        </div>
+
+        <!-- Load More -->
+        <div class="load-more text-center mt-4">
+            <button id="loadMoreBtn" class="btn secondary-btn">
+                <i class='bx bx-loader'></i>
+                <span>Load More</span>
+            </button>
+        </div>
+    </main>
+
+    <!-- Search Modal -->
+    <div id="searchModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close">
+                <i class='bx bx-x'></i>
+            </button>
+            <h2 class="text-2xl font-bold mb-4">Search Articles</h2>
+            <form id="searchForm" class="search-form">
+                <div class="form-group">
+                    <div class="search-input-wrapper">
+                        <i class='bx bx-search'></i>
+                        <input type="text" placeholder="Search by keyword..." class="form-input">
+                    </div>
+                </div>
+            </form>
+            <div id="searchResults" class="search-results mt-4">
+                <!-- Search results will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Modal -->
+    <div id="filterModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close">
+                <i class='bx bx-x'></i>
+            </button>
+            <h2 class="text-2xl font-bold mb-4">Filter Articles</h2>
+            <form id="filterForm" class="filter-form">
+                <div class="form-group mb-3">
+                    <label>Categories</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="category" value="health-tips" checked>
+                            <span>Blog</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="category" value="medication" checked>
+                            <span>Medication</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="category" value="wellness" checked>
+                            <span>Wellness</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group mb-3">
+                    <label>Sort By</label>
+                    <select class="form-select">
+                        <option value="latest">Latest First</option>
+                        <option value="popular">Most Popular</option>
+                        <option value="trending">Trending</option>
+                    </select>
+                </div>
+                <div class="form-actions flex gap-2">
+                    <button type="submit" class="btn primary-btn">Apply Filters</button>
+                    <button type="button" class="btn secondary-btn" data-close-modal>Reset</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container"></div>
+
+    <!-- Include Footer -->
+
+
+    <!-- Scripts -->
+    <script src="../public/js/common.js"></script>
+    <script src="../public/js/modern.js"></script>
+    <script>
+        function loadComponent(url, elementId) {
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                        element.innerHTML = data;
+                        if (elementId === 'navigation') {
+                            initializeMobileMenu();
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error(`Error loading ${url}:`, error);
+                    if (elementId === 'navigation') {
+                        createFallbackNavigation();
+                    }
+                });
+        }
+        
+        function createFallbackNavigation() {
+            const navigation = document.getElementById('navigation');
+            if (navigation) {
+                navigation.innerHTML = `
+                    <div class="floating-menu">
+                        <div class="navbar-container">
+                            <a href="index.html" class="navbar-brand">
+                                <i class="bx bx-health"></i>
+                                <span>MediCare<span style="color: #007BFF;">+</span></span>
+                            </a>
+                            <div class="navbar-nav">
+                                <a href="index.html" class="nav-link">Home</a>
+                                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                                <a href="schedule.html" class="nav-link">Schedule</a>
+                                <a href="reminders.html" class="nav-link">Reminders</a>
+                                <a href="appointments.html" class="nav-link">Appointments</a>
+                                <a href="blog.html" class="nav-link">Blog</a>
+                                <a href="about.html" class="nav-link">About</a>
+                            </div>
+                            <div class="navbar-auth">
+                                <a href="login.html" class="btn btn-outline">Sign In</a>
+                                <a href="signup.html" class="btn btn-primary">Get Started</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        function initializeMobileMenu() {
+            window.toggleMobileMenu = function() {
+                const mobileMenu = document.getElementById('mobileMenu');
+                if (mobileMenu) {
+                    mobileMenu.style.display = mobileMenu.style.display === 'block' ? 'none' : 'block';
+                }
+            };
+        }
+
+
+
+        // Sample blog posts data
+        const blogPosts = [
+            {
+                id: 1,
+                title: "Understanding Common Medication Side Effects",
+                excerpt: "Learn about potential side effects of common medications and how to manage them effectively.",
+                category: "Medication",
+                readTime: "4 min read",
+                image: "https://source.unsplash.com/600x400/?medicine",
+                date: "2024-03-15"
+            },
+            {
+                id: 2,
+                title: "Building Healthy Sleep Habits",
+                excerpt: "Discover practical tips for improving your sleep quality and maintaining a consistent sleep schedule.",
+                category: "Wellness",
+                readTime: "3 min read",
+                image: "https://source.unsplash.com/600x400/?sleep",
+                date: "2024-03-14"
+            },
+            {
+                id: 3,
+                title: "Nutrition Tips for Medication Absorption",
+                excerpt: "Find out how your diet can affect medication absorption and what foods to avoid.",
+                category: "Nutrition",
+                readTime: "5 min read",
+                image: "https://source.unsplash.com/600x400/?nutrition",
+                date: "2024-03-13"
+            },
+            {
+                id: 4,
+                title: "Managing Stress and Anxiety",
+                excerpt: "Effective strategies for managing stress and anxiety in your daily life.",
+                category: "Mental Health",
+                readTime: "6 min read",
+                image: "https://source.unsplash.com/600x400/?stress",
+                date: "2024-03-12"
+            },
+            {
+                id: 5,
+                title: "Exercise and Medication Timing",
+                excerpt: "Learn the best times to take medications in relation to your exercise routine.",
+                category: "Lifestyle",
+                readTime: "4 min read",
+                image: "https://source.unsplash.com/600x400/?exercise",
+                date: "2024-03-11"
+            },
+            {
+                id: 6,
+                title: "Seasonal Allergies and Medications",
+                excerpt: "Tips for managing seasonal allergies and understanding allergy medications.",
+                category: "Medication",
+                readTime: "3 min read",
+                image: "https://source.unsplash.com/600x400/?allergy",
+                date: "2024-03-10"
+            }
+        ];
+
+        // Function to create blog post card
+        function createBlogPostCard(post) {
+            return `
+                <article class="blog-card card reveal">
+                    <div class="card-image">
+                        <img src="${post.image}" alt="${post.title}">
+                        <span class="category-tag">${post.category}</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="post-meta flex gap-2 mb-2">
+                            <span class="text-light">${post.date}</span>
+                            <span class="text-light">${post.readTime}</span>
+                        </div>
+                        <h3 class="card-title mb-2">${post.title}</h3>
+                        <p class="card-excerpt text-light mb-4">${post.excerpt}</p>
+                        <a href="#" class="read-more">
+                            Read More
+                            <i class='bx bx-right-arrow-alt'></i>
+                        </a>
+                    </div>
+                </article>
+            `;
+        }
+
+        // Initialize blog grid
+        function initializeBlog() {
+            const blogGrid = document.getElementById('blogGrid');
+            blogPosts.forEach(post => {
+                blogGrid.innerHTML += createBlogPostCard(post);
+            });
+        }
+
+        // Scroll reveal animation
+        function reveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            reveals.forEach(element => {
+                const windowHeight = window.innerHeight;
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < windowHeight - elementVisible) {
+                    element.classList.add('active');
+                }
+            });
+        }
+
+        // Event listeners
+        window.addEventListener('scroll', reveal);
+        window.addEventListener('load', () => {
+            initializeBlog();
+            reveal();
+        });
+
+        // Category buttons
+        document.querySelectorAll('.category-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                document.querySelector('.category-btn.active').classList.remove('active');
+                button.classList.add('active');
+                // Add filter logic here
+            });
+        });
+
+        // Modal handlers
+        const modals = ['searchModal', 'filterModal'];
+        modals.forEach(modalId => {
+            const modal = document.getElementById(modalId);
+            const openBtn = document.getElementById(modalId.replace('Modal', 'Btn'));
+            const closeBtn = modal.querySelector('.modal-close');
+
+            openBtn.addEventListener('click', () => {
+                modal.classList.add('active');
+            });
+
+            closeBtn.addEventListener('click', () => {
+                modal.classList.remove('active');
+            });
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+
+        // Load more handler
+        document.getElementById('loadMoreBtn').addEventListener('click', () => {
+            document.getElementById('loadingState').classList.remove('hidden');
+            // Simulate loading
+            setTimeout(() => {
+                document.getElementById('loadingState').classList.add('hidden');
+                // Add more posts logic here
+            }, 1500);
+        });
+
+        // Mobile menu toggle function
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenuOverlay');
+            if (mobileMenu.classList.contains('active')) {
+                mobileMenu.classList.remove('active');
+                document.body.style.overflow = '';
+            } else {
+                mobileMenu.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // Google Sign In function
+        function signInWithGoogle() {
+            // Simulate Google Sign-in
+            alert('Google sign-in functionality would be implemented here');
+        }
+    </script>
+</body>
+</html> 
