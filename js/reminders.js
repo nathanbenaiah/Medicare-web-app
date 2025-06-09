@@ -564,129 +564,204 @@ function updateEmptyState(reminders) {
     }
 }
 
-// Reminders Management
+// Enhanced Reminders Manager with Supabase Integration
 class RemindersManager {
     constructor() {
         this.supabase = window.supabaseClient
         this.currentUser = null
         this.reminders = []
-        this.init()
+        this.isLoading = false
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            this.init()
+        })
     }
 
     async init() {
-        // Wait for auth to be ready
-        const user = await window.supabaseUtils.getCurrentUser()
-        if (user) {
-            this.currentUser = user
+        try {
+            // Check authentication
+            await this.checkAuth()
+            
+            if (!this.currentUser) {
+                this.redirectToLogin()
+                return
+            }
+
+            // Initialize UI components
+            this.initializeTheme()
+            this.setupEventListeners()
+            
+            // Load user reminders
             await this.loadReminders()
+            
+            // Track page view
+            if (window.authManager) {
+                await window.authManager.trackUserEvent('reminders_page_viewed')
+            }
+
+        } catch (error) {
+            console.error('Error initializing reminders:', error)
+            this.showError('Failed to initialize reminders. Please refresh the page.')
         }
     }
 
-    // Load all reminders for the current user
+    async checkAuth() {
+        const { data: { session } } = await this.supabase.auth.getSession()
+        this.currentUser = session?.user || null
+        
+        if (this.currentUser) {
+            this.updateUserDisplay()
+        }
+    }
+
+    redirectToLogin() {
+        window.location.href = '/html/index.html'
+    }
+
+    updateUserDisplay() {
+        const userDisplays = document.querySelectorAll('.user-display')
+        userDisplays.forEach(display => {
+            display.innerHTML = `
+                <img src="${this.currentUser.user_metadata?.avatar_url || '/images/default-avatar.png'}" 
+                     alt="Profile" class="user-avatar">
+                <span>Hello, ${this.currentUser.user_metadata?.full_name || this.currentUser.email}</span>
+            `
+            display.style.display = 'flex'
+        })
+    }
+
+    // Load user reminders from Supabase
     async loadReminders() {
         try {
-            if (!this.currentUser) {
-                console.log('No user logged in')
-                return []
-            }
-
+            this.showLoading(true)
+            
             const { data, error } = await this.supabase
                 .from('reminders')
                 .select('*')
                 .eq('user_id', this.currentUser.id)
-                .order('time', { ascending: true })
+                .eq('is_active', true)
+                .order('created_at', { ascending: false })
 
             if (error) {
-                console.error('Error loading reminders:', error)
-                this.showError('Failed to load reminders')
-                return []
+                throw error
             }
 
             this.reminders = data || []
             this.renderReminders()
-            return this.reminders
+            this.renderTodayReminders()
+            this.updateEmptyState()
+
+            console.log(`Loaded ${this.reminders.length} reminders for user`)
+
         } catch (error) {
             console.error('Error loading reminders:', error)
-            this.showError('An unexpected error occurred while loading reminders')
-            return []
+            this.showError('Failed to load reminders. Please try again.')
+        } finally {
+            this.showLoading(false)
         }
     }
 
     // Add new reminder
     async addReminder(reminderData) {
         try {
-            if (!this.currentUser) {
-                this.showError('Please sign in to add reminders')
-                return false
+            this.showLoading(true, 'Creating reminder...')
+
+            const newReminder = {
+                user_id: this.currentUser.id,
+                medication_name: reminderData.medicationName,
+                dosage: reminderData.dosage,
+                frequency: reminderData.frequency || 1,
+                times: reminderData.times || ['08:00'],
+                start_date: reminderData.startDate || new Date().toISOString().split('T')[0],
+                end_date: reminderData.endDate || null,
+                instructions: reminderData.instructions || '',
+                is_active: true,
+                color: reminderData.color || '#3B82F6',
+                priority: reminderData.priority || 1
             }
 
             const { data, error } = await this.supabase
                 .from('reminders')
-                .insert([{
-                    user_id: this.currentUser.id,
-                    medicine_name: reminderData.medicineName,
-                    dosage: reminderData.dosage,
-                    time: reminderData.time,
-                    frequency: reminderData.frequency,
-                    notes: reminderData.notes || '',
-                    is_active: true,
-                    created_at: new Date().toISOString()
-                }])
+                .insert(newReminder)
                 .select()
+                .single()
 
             if (error) {
-                console.error('Error adding reminder:', error)
-                this.showError('Failed to add reminder')
-                return false
+                throw error
             }
 
-            // Add to local array
-            this.reminders.push(data[0])
+            this.reminders.unshift(data)
             this.renderReminders()
-            this.showSuccess('Reminder added successfully!')
-            return true
+            this.updateEmptyState()
+            this.showSuccess('Reminder created successfully!')
+
+            // Track event
+            if (window.authManager) {
+                await window.authManager.trackUserEvent('reminder_created', {
+                    medication_name: reminderData.medicationName,
+                    frequency: reminderData.frequency
+                })
+            }
+
+            return data
+
         } catch (error) {
             console.error('Error adding reminder:', error)
-            this.showError('An unexpected error occurred')
-            return false
+            this.showError('Failed to create reminder. Please try again.')
+            throw error
+        } finally {
+            this.showLoading(false)
         }
     }
 
     // Update reminder
     async updateReminder(id, updates) {
         try {
+            this.showLoading(true, 'Updating reminder...')
+
             const { data, error } = await this.supabase
                 .from('reminders')
                 .update(updates)
                 .eq('id', id)
                 .eq('user_id', this.currentUser.id)
                 .select()
+                .single()
 
             if (error) {
-                console.error('Error updating reminder:', error)
-                this.showError('Failed to update reminder')
-                return false
+                throw error
             }
 
-            // Update local array
+            // Update local data
             const index = this.reminders.findIndex(r => r.id === id)
             if (index !== -1) {
-                this.reminders[index] = { ...this.reminders[index], ...updates }
+                this.reminders[index] = data
                 this.renderReminders()
             }
 
             this.showSuccess('Reminder updated successfully!')
-            return true
+
+            // Track event
+            if (window.authManager) {
+                await window.authManager.trackUserEvent('reminder_updated', { reminder_id: id })
+            }
+
+            return data
+
         } catch (error) {
             console.error('Error updating reminder:', error)
-            this.showError('An unexpected error occurred')
-            return false
+            this.showError('Failed to update reminder. Please try again.')
+            throw error
+        } finally {
+            this.showLoading(false)
         }
     }
 
     // Delete reminder
     async deleteReminder(id) {
         try {
+            this.showLoading(true, 'Deleting reminder...')
+
             const { error } = await this.supabase
                 .from('reminders')
                 .delete()
@@ -694,171 +769,315 @@ class RemindersManager {
                 .eq('user_id', this.currentUser.id)
 
             if (error) {
-                console.error('Error deleting reminder:', error)
-                this.showError('Failed to delete reminder')
-                return false
+                throw error
             }
 
-            // Remove from local array
+            // Remove from local data
             this.reminders = this.reminders.filter(r => r.id !== id)
             this.renderReminders()
+            this.updateEmptyState()
             this.showSuccess('Reminder deleted successfully!')
-            return true
+
+            // Track event
+            if (window.authManager) {
+                await window.authManager.trackUserEvent('reminder_deleted', { reminder_id: id })
+            }
+
         } catch (error) {
             console.error('Error deleting reminder:', error)
-            this.showError('An unexpected error occurred')
-            return false
+            this.showError('Failed to delete reminder. Please try again.')
+        } finally {
+            this.showLoading(false)
         }
     }
 
-    // Toggle reminder active status
-    async toggleReminder(id, isActive) {
-        return await this.updateReminder(id, { is_active: isActive })
-    }
-
-    // Mark reminder as taken
+    // Mark medication as taken
     async markAsTaken(reminderId) {
         try {
-            const { data, error } = await this.supabase
-                .from('reminder_logs')
-                .insert([{
-                    reminder_id: reminderId,
-                    user_id: this.currentUser.id,
-                    taken_at: new Date().toISOString(),
-                    status: 'taken'
-                }])
+            const reminder = this.reminders.find(r => r.id === reminderId)
+            if (!reminder) return
 
-            if (error) {
-                console.error('Error marking as taken:', error)
-                this.showError('Failed to mark as taken')
-                return false
+            // Create log entry
+            const logData = {
+                user_id: this.currentUser.id,
+                reminder_id: reminderId,
+                scheduled_time: new Date().toISOString(),
+                taken_at: new Date().toISOString(),
+                status: 'taken'
             }
 
-            this.showSuccess('Marked as taken!')
-            return true
+            const { error } = await this.supabase
+                .from('reminder_logs')
+                .insert(logData)
+
+            if (error) {
+                throw error
+            }
+
+            this.showSuccess(`${reminder.medication_name} marked as taken!`)
+
+            // Track event
+            if (window.authManager) {
+                await window.authManager.trackUserEvent('medication_taken', {
+                    medication_name: reminder.medication_name,
+                    reminder_id: reminderId
+                })
+            }
+
         } catch (error) {
             console.error('Error marking as taken:', error)
-            this.showError('An unexpected error occurred')
-            return false
+            this.showError('Failed to mark as taken. Please try again.')
         }
     }
 
-    // Get today's reminders
-    getTodaysReminders() {
-        const today = new Date().toLocaleDateString('en-CA') // YYYY-MM-DD format
-        return this.reminders.filter(reminder => {
-            if (!reminder.is_active) return false
-            
-            // Check if reminder should show today based on frequency
-            switch (reminder.frequency?.toLowerCase()) {
-                case 'daily':
-                    return true
-                case 'weekly':
-                    // This would need more complex logic based on start date
-                    return true
-                case 'as needed':
-                    return true
-                default:
-                    return true
-            }
+    // Render reminders
+    renderReminders() {
+        const grid = document.getElementById('remindersGrid')
+        if (!grid) return
+
+        grid.innerHTML = ''
+
+        if (this.reminders.length === 0) {
+            this.updateEmptyState()
+            return
+        }
+
+        this.reminders.forEach((reminder, index) => {
+            const card = this.createReminderCard(reminder)
+            grid.appendChild(card)
+
+            // Stagger animation
+            setTimeout(() => {
+                card.classList.add('visible')
+            }, index * 100)
         })
     }
 
-    // Render reminders to UI
-    renderReminders() {
-        const container = document.getElementById('reminders-container')
+    // Create reminder card
+    createReminderCard(reminder) {
+        const card = document.createElement('div')
+        card.className = 'reminder-card glass-effect'
+        card.dataset.id = reminder.id
+
+        const nextTime = reminder.times[0] || '08:00'
+        const isOverdue = this.isOverdue(reminder, nextTime)
+        const priorityClass = reminder.priority > 1 ? 'high-priority' : ''
+
+        card.innerHTML = `
+            <div class="reminder-header">
+                <div class="reminder-priority ${priorityClass}">
+                    ${reminder.priority > 1 ? '<i class="bx bx-error-circle"></i>' : '<i class="bx bx-pill"></i>'}
+                </div>
+                <div class="reminder-actions">
+                    <button class="action-btn edit" onclick="remindersManager.editReminder('${reminder.id}')">
+                        <i class="bx bx-edit"></i>
+                    </button>
+                    <button class="action-btn delete" onclick="remindersManager.confirmDelete('${reminder.id}')">
+                        <i class="bx bx-trash"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="reminder-content">
+                <h3 class="medication-name">${reminder.medication_name}</h3>
+                ${reminder.dosage ? `<p class="dosage">${reminder.dosage}</p>` : ''}
+                
+                <div class="reminder-schedule">
+                    <div class="schedule-item">
+                        <i class="bx bx-time"></i>
+                        <span>${this.formatTimes(reminder.times)}</span>
+                    </div>
+                    <div class="schedule-item">
+                        <i class="bx bx-calendar"></i>
+                        <span>${reminder.frequency}x daily</span>
+                    </div>
+                </div>
+                
+                ${reminder.instructions ? `
+                    <div class="instructions">
+                        <i class="bx bx-info-circle"></i>
+                        <span>${reminder.instructions}</span>
+                    </div>
+                ` : ''}
+            </div>
+            
+            <div class="reminder-footer">
+                <button class="take-btn" onclick="remindersManager.markAsTaken('${reminder.id}')">
+                    <i class="bx bx-check"></i>
+                    Mark as Taken
+                </button>
+                ${isOverdue ? '<span class="overdue-badge">Overdue</span>' : ''}
+            </div>
+        `
+
+        return card
+    }
+
+    // Check if reminder is overdue
+    isOverdue(reminder, time) {
+        const now = new Date()
+        const today = now.toISOString().split('T')[0]
+        const reminderTime = new Date(`${today} ${time}`)
+        return reminderTime < now
+    }
+
+    // Format times array
+    formatTimes(times) {
+        return times.map(time => this.formatTime(time)).join(', ')
+    }
+
+    // Format time to 12-hour format
+    formatTime(timeString) {
+        const [hours, minutes] = timeString.split(':')
+        const hour = parseInt(hours)
+        const ampm = hour >= 12 ? 'PM' : 'AM'
+        const hour12 = hour % 12 || 12
+        return `${hour12}:${minutes} ${ampm}`
+    }
+
+    // Render today's reminders for dashboard
+    renderTodayReminders() {
+        const container = document.getElementById('todayReminders')
         if (!container) return
 
-        if (this.reminders.length === 0) {
+        const today = new Date().toISOString().split('T')[0]
+        const todayReminders = this.reminders.filter(r => {
+            return r.start_date <= today && (!r.end_date || r.end_date >= today)
+        })
+
+        if (todayReminders.length === 0) {
             container.innerHTML = `
                 <div class="no-reminders">
-                    <i class="bx bx-bell-off"></i>
-                    <h3>No Reminders Yet</h3>
-                    <p>Add your first medication reminder to get started!</p>
-                    <button class="btn-primary" onclick="showAddReminderModal()">
-                        <i class="bx bx-plus"></i> Add Reminder
-                    </button>
+                    <i class="bx bx-check-circle"></i>
+                    <p>No reminders for today!</p>
                 </div>
             `
             return
         }
 
-        const remindersHTML = this.reminders.map(reminder => `
-            <div class="reminder-card ${reminder.is_active ? 'active' : 'inactive'}" data-id="${reminder.id}">
-                <div class="reminder-header">
-                    <div class="reminder-info">
-                        <h4>${reminder.medicine_name}</h4>
-                        <span class="dosage">${reminder.dosage}</span>
-                    </div>
-                    <div class="reminder-time">
-                        <i class="bx bx-time"></i>
-                        ${this.formatTime(reminder.time)}
-                    </div>
+        container.innerHTML = todayReminders.map(reminder => `
+            <div class="today-reminder-item">
+                <div class="reminder-info">
+                    <span class="medication-name">${reminder.medication_name}</span>
+                    <span class="next-time">${this.formatTimes(reminder.times)}</span>
                 </div>
-                
-                <div class="reminder-details">
-                    <span class="frequency">
-                        <i class="bx bx-repeat"></i>
-                        ${reminder.frequency}
-                    </span>
-                    ${reminder.notes ? `<p class="notes">${reminder.notes}</p>` : ''}
-                </div>
-                
-                <div class="reminder-actions">
-                    <button class="btn-taken" onclick="remindersManager.markAsTaken(${reminder.id})">
-                        <i class="bx bx-check"></i> Taken
-                    </button>
-                    <button class="btn-toggle ${reminder.is_active ? 'active' : ''}" 
-                            onclick="remindersManager.toggleReminder(${reminder.id}, ${!reminder.is_active})">
-                        <i class="bx ${reminder.is_active ? 'bx-pause' : 'bx-play'}"></i>
-                        ${reminder.is_active ? 'Pause' : 'Resume'}
-                    </button>
-                    <button class="btn-edit" onclick="editReminder(${reminder.id})">
-                        <i class="bx bx-edit"></i>
-                    </button>
-                    <button class="btn-delete" onclick="remindersManager.deleteReminder(${reminder.id})">
-                        <i class="bx bx-trash"></i>
-                    </button>
-                </div>
+                <button class="quick-take-btn" onclick="remindersManager.markAsTaken('${reminder.id}')">
+                    <i class="bx bx-check"></i>
+                </button>
             </div>
         `).join('')
-
-        container.innerHTML = remindersHTML
     }
 
-    // Format time for display
-    formatTime(timeString) {
-        if (!timeString) return 'No time set'
+    // Update empty state
+    updateEmptyState() {
+        const grid = document.getElementById('remindersGrid')
+        const emptyState = document.getElementById('emptyState')
         
-        try {
-            const [hours, minutes] = timeString.split(':')
-            const date = new Date()
-            date.setHours(parseInt(hours), parseInt(minutes))
-            return date.toLocaleTimeString('en-US', { 
-                hour: 'numeric', 
-                minute: '2-digit',
-                hour12: true 
-            })
-        } catch (error) {
-            return timeString
+        if (!grid || !emptyState) return
+
+        if (this.reminders.length === 0) {
+            grid.style.display = 'none'
+            emptyState.style.display = 'flex'
+        } else {
+            grid.style.display = 'grid'
+            emptyState.style.display = 'none'
         }
     }
 
-    // Show notification
-    showError(message) {
-        this.showNotification(message, 'error')
+    // Edit reminder
+    editReminder(id) {
+        const reminder = this.reminders.find(r => r.id === id)
+        if (reminder) {
+            this.openReminderModal(reminder)
+        }
     }
 
+    // Confirm delete
+    confirmDelete(id) {
+        const reminder = this.reminders.find(r => r.id === id)
+        if (reminder) {
+            if (confirm(`Are you sure you want to delete "${reminder.medication_name}"?`)) {
+                this.deleteReminder(id)
+            }
+        }
+    }
+
+    // Open reminder modal
+    openReminderModal(reminder = null) {
+        // Implementation for opening modal would go here
+        // For now, we'll redirect to add reminder page
+        window.location.href = '/html/add-reminder.html' + (reminder ? `?edit=${reminder.id}` : '')
+    }
+
+    // Theme handling
+    initializeTheme() {
+        const theme = localStorage.getItem('theme') || 'light'
+        document.body.classList.toggle('dark-mode', theme === 'dark')
+        this.updateThemeIcon()
+    }
+
+    toggleTheme() {
+        document.body.classList.toggle('dark-mode')
+        const isDark = document.body.classList.contains('dark-mode')
+        localStorage.setItem('theme', isDark ? 'dark' : 'light')
+        this.updateThemeIcon()
+    }
+
+    updateThemeIcon() {
+        const themeToggle = document.querySelector('.theme-toggle')
+        if (themeToggle) {
+            const isDark = document.body.classList.contains('dark-mode')
+            themeToggle.innerHTML = `<i class="bx ${isDark ? 'bx-sun' : 'bx-moon'}"></i>`
+        }
+    }
+
+    // Event listeners
+    setupEventListeners() {
+        // Theme toggle
+        const themeToggle = document.querySelector('.theme-toggle')
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => this.toggleTheme())
+        }
+
+        // Add reminder button
+        const addBtn = document.getElementById('addReminderBtn')
+        if (addBtn) {
+            addBtn.addEventListener('click', () => this.openReminderModal())
+        }
+
+        // Sign out button
+        const signOutBtn = document.querySelector('.sign-out-btn')
+        if (signOutBtn) {
+            signOutBtn.addEventListener('click', () => {
+                if (window.authManager) {
+                    window.authManager.signOut()
+                }
+            })
+        }
+    }
+
+    // Loading state
+    showLoading(show, message = 'Loading...') {
+        this.isLoading = show
+        
+        if (show) {
+            if (window.authManager) {
+                window.authManager.showLoadingState(message)
+            }
+        }
+    }
+
+    // Success message
     showSuccess(message) {
-        this.showNotification(message, 'success')
+        if (window.authManager) {
+            window.authManager.showSuccess(message)
+        }
     }
 
-    showNotification(message, type = 'info') {
-        // Use the same notification system as auth
+    // Error message
+    showError(message) {
         if (window.authManager) {
-            window.authManager.showNotification(message, type)
-        } else {
-            console.log(`${type.toUpperCase()}: ${message}`)
+            window.authManager.showError(message)
         }
     }
 }
@@ -866,27 +1085,5 @@ class RemindersManager {
 // Initialize reminders manager
 const remindersManager = new RemindersManager()
 
-// Global functions for HTML
-window.remindersManager = remindersManager
-
-// Form submission handler
-window.handleReminderForm = async (event) => {
-    event.preventDefault()
-    
-    const formData = new FormData(event.target)
-    const reminderData = {
-        medicineName: formData.get('medicineName'),
-        dosage: formData.get('dosage'),
-        time: formData.get('time'),
-        frequency: formData.get('frequency'),
-        notes: formData.get('notes')
-    }
-    
-    const success = await remindersManager.addReminder(reminderData)
-    if (success) {
-        event.target.reset()
-        // Close modal if exists
-        const modal = document.getElementById('addReminderModal')
-        if (modal) modal.style.display = 'none'
-    }
-} 
+// Make it globally accessible
+window.remindersManager = remindersManager 
