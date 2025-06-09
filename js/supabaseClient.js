@@ -18,13 +18,13 @@ supabase.auth.onAuthStateChange((event, session) => {
         console.log('User signed in:', session.user)
         // Redirect to dashboard if not already there
         if (!window.location.pathname.includes('dashboard')) {
-            window.location.href = '/views/dashboard.html'
+            window.location.href = '/html/dashboard.html'
         }
     } else if (event === 'SIGNED_OUT') {
         console.log('User signed out')
         // Redirect to home page
         if (window.location.pathname.includes('dashboard')) {
-            window.location.href = '/views/index.html'
+            window.location.href = '/html/index.html'
         }
     }
 })
