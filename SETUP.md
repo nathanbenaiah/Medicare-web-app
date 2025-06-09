@@ -1,210 +1,300 @@
-# 🏥 **Medication & Appointment Reminder - Complete Setup Guide**
+# 🏥 **Medicare Web App - Complete Setup Guide**
 
-This guide will help you set up the complete system with Google OAuth authentication, user data management, and analytics tracking.
+This guide will help you set up the Medicare Web App with Google Authentication, Supabase backend, and full user profile management.
 
 ## 📋 **Prerequisites**
 
-- Supabase account ([supabase.com](https://supabase.com))
-- Google Cloud Console account ([console.cloud.google.com](https://console.cloud.google.com))
-- Netlify account ([netlify.com](https://netlify.com))
-- GitHub repository (already created: `nathanbenaiah/Medicare-web-app`)
+- [Supabase Account](https://supabase.com)
+- [Google Cloud Console](https://console.cloud.google.com) access
+- [Netlify Account](https://netlify.com) (for hosting)
+- [GitHub Account](https://github.com) (for deployment)
+
+---
 
 ## 🗄️ **Step 1: Supabase Database Setup**
 
-### 1.1 Create New Supabase Project
-1. Go to [supabase.com](https://supabase.com) and sign in
-2. Click "New Project"
-3. Choose organization and enter:
-   - **Project Name**: `Medicare Web App`
-   - **Database Password**: Choose a strong password
+### 1.1 Create Supabase Project
+1. Go to [Supabase](https://supabase.com)
+2. Click "Start your project"
+3. Create a new organization (if needed)
+4. Create a new project:
+   - **Name**: `medicare-web-app`
+   - **Database Password**: Generate a strong password
    - **Region**: Choose closest to your users
-4. Click "Create new project"
 
-### 1.2 Import Database Schema
-1. Wait for project creation (2-3 minutes)
-2. Go to **SQL Editor** in left sidebar
-3. Click "New query"
-4. Copy the entire contents of `supabase-schema.sql` from your project
-5. Paste it into the SQL editor
-6. Click "Run" to execute the schema
-7. Verify tables are created in **Table Editor**
+### 1.2 Run Database Schema
+1. Go to **SQL Editor** in your Supabase dashboard
+2. Copy the entire content from `supabase-schema.sql`
+3. Paste and run the SQL script
+4. Verify tables are created in **Database** > **Tables**
 
-### 1.3 Configure Row Level Security (RLS)
-The schema already includes RLS policies, but verify:
-1. Go to **Authentication** → **Policies**
-2. You should see policies for all tables
-3. If not, run the RLS commands from the schema again
+### 1.3 Configure Storage
+1. Go to **Storage** in Supabase dashboard
+2. The `profile-pics` bucket should be automatically created
+3. If not, create it manually with public access
+
+---
 
 ## 🔐 **Step 2: Google OAuth Setup**
 
 ### 2.1 Create Google Cloud Project
 1. Go to [Google Cloud Console](https://console.cloud.google.com)
-2. Create new project or select existing one
-3. Enable **Google+ API** and **OAuth2 API**
+2. Create a new project or select existing
+3. Enable the **Google+ API** and **People API**
 
-### 2.2 Configure OAuth Credentials
-1. Go to **APIs & Services** → **Credentials**
-2. Click "Create Credentials" → "OAuth 2.0 Client IDs"
-3. Application type: **Web application**
-4. Name: `Medicare Web App`
-5. **Authorized redirect URIs**:
+### 2.2 Configure OAuth Consent Screen
+1. Go to **APIs & Services** > **OAuth consent screen**
+2. Choose **External** user type
+3. Fill in required information:
+   - **App name**: Medicare Web App
+   - **User support email**: Your email
+   - **Developer contact**: Your email
+4. Add authorized domains:
+   - `localhost` (for development)
+   - Your Netlify domain (e.g., `medicarewebapp.netlify.app`)
+
+### 2.3 Create OAuth Credentials
+1. Go to **APIs & Services** > **Credentials**
+2. Click **Create Credentials** > **OAuth 2.0 Client IDs**
+3. Choose **Web application**
+4. Add authorized origins:
    ```
-   https://[YOUR-SUPABASE-PROJECT-ID].supabase.co/auth/v1/callback
-   https://medicarewebapp.netlify.app/auth/callback
+   http://localhost:3000
+   https://your-app-name.netlify.app
+   ```
+5. Add redirect URIs:
+   ```
    http://localhost:3000/auth/callback
+   https://your-project-id.supabase.co/auth/v1/callback
+   https://your-app-name.netlify.app/auth/callback
    ```
-6. Save and copy **Client ID** and **Client Secret**
+6. Save and copy the **Client ID** and **Client Secret**
 
-### 2.3 Configure Supabase Authentication
-1. In Supabase, go to **Authentication** → **Providers**
-2. Find **Google** provider and click configure
-3. Enable Google provider
-4. Paste your **Client ID** and **Client Secret**
-5. Click "Save"
+---
 
-## ⚙️ **Step 3: Environment Configuration**
+## ⚙️ **Step 3: Supabase Authentication Configuration**
 
-### 3.1 Update Supabase Configuration
-1. In Supabase, go to **Settings** → **API**
-2. Copy your:
-   - **Project URL**
-   - **anon public key**
+### 3.1 Enable Google Provider
+1. Go to **Authentication** > **Providers** in Supabase
+2. Enable **Google** provider
+3. Enter your Google **Client ID** and **Client Secret**
+4. Set **Site URL**: `https://your-app-name.netlify.app`
+5. Add **Redirect URLs**:
+   ```
+   https://your-app-name.netlify.app/html/
+   http://localhost:3000/html/
+   ```
 
-### 3.2 Update Your Code
-1. Open `js/supabaseClient.js`
-2. Replace the placeholder values:
+### 3.2 Configure Authentication Settings
+1. Go to **Authentication** > **Settings**
+2. Set **Site URL**: Your main domain
+3. Enable **Email confirmations** (optional)
+4. Configure **Session timeout** as needed
+
+---
+
+## 🔧 **Step 4: Update Application Configuration**
+
+### 4.1 Update Supabase Credentials
+Edit `js/db.js`:
+
 ```javascript
-const SUPABASE_URL = 'https://YOUR-PROJECT-ID.supabase.co'
-const SUPABASE_ANON_KEY = 'your-anon-key-here'
+// Replace with your actual Supabase credentials
+const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co'
+const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY_HERE'
 ```
 
-## 🚀 **Step 4: Deploy to Netlify**
+**Find your credentials:**
+1. Go to **Settings** > **API** in Supabase dashboard
+2. Copy **Project URL** and **anon/public key**
 
-### 4.1 Connect Repository
-1. Go to [Netlify](https://netlify.com) and sign in
-2. Since you already have the site `medicarewebapp.netlify.app`, go to Site Settings
-3. Go to **Build & Deploy** → **Continuous Deployment**
-4. Click "Link repository"
-5. Connect to GitHub and select `nathanbenaiah/Medicare-web-app`
-
-### 4.2 Configure Build Settings
+### 4.2 Verify File Structure
+Ensure your project has this structure:
 ```
-Build command: (leave empty for static site)
-Publish directory: html
-```
-
-### 4.3 Deploy
-1. Click "Deploy site"
-2. Wait for deployment to complete
-3. Your site will be live at `https://medicarewebapp.netlify.app`
-
-## 🔧 **Step 5: Test the Complete System**
-
-### 5.1 Test Authentication
-1. Visit your deployed site
-2. Click "Sign In" button
-3. Should redirect to Google OAuth
-4. After successful login, should redirect to dashboard
-5. Check Supabase **Authentication** → **Users** to see new user
-
-### 5.2 Test User Data
-1. After sign-in, user profile should be created automatically
-2. Check Supabase **Table Editor** → **user_profiles**
-3. Should see new user record with Google data
-
-### 5.3 Test Analytics
-1. Navigate through the app
-2. Check **user_analytics** table
-3. Should see event tracking records
-
-### 5.4 Test Reminders
-1. Go to Reminders page
-2. Try adding a new reminder
-3. Check **reminders** table in Supabase
-4. Mark medication as taken
-5. Check **reminder_logs** table
-
-## 📊 **Step 6: Verify Analytics Dashboard**
-
-### 6.1 User Statistics
-The system automatically tracks:
-- Sign-in events
-- Page views
-- Reminder creation/updates
-- Medication taken events
-- User engagement metrics
-
-### 6.2 Database Functions
-Run these queries in Supabase SQL Editor to test analytics:
-
-```sql
--- Get user statistics
-SELECT get_user_stats('USER_UUID_HERE');
-
--- Get user adherence rate
-SELECT get_user_adherence_rate('USER_UUID_HERE', 30);
-
--- View analytics events
-SELECT * FROM user_analytics 
-WHERE user_id = 'USER_UUID_HERE' 
-ORDER BY timestamp DESC;
+├── html/
+│   ├── index.html
+│   ├── signup.html
+│   ├── profile.html
+│   └── dashboard.html
+├── js/
+│   ├── db.js
+│   ├── auth.js
+│   ├── form.js
+│   └── profile.js
+├── css/
+│   └── styles.css
+├── images/
+└── supabase-schema.sql
 ```
 
-## 🛠️ **Step 7: Ongoing Maintenance**
+---
 
-### 7.1 Data Cleanup
-The system includes automatic cleanup. To run manually:
-```sql
-SELECT cleanup_old_data();
+## 🚀 **Step 5: Local Development**
+
+### 5.1 Start Local Server
+```bash
+# Option 1: Python
+python -m http.server 3000
+
+# Option 2: Node.js
+npx serve . -p 3000
+
+# Option 3: Live Server (VS Code extension)
+# Right-click index.html > "Open with Live Server"
 ```
 
-### 7.2 Monitor Performance
-- Check Supabase **Logs** for any errors
-- Monitor **Database** usage in Supabase dashboard
-- Review **Analytics** in Netlify for site performance
+### 5.2 Test Authentication Flow
+1. Open `http://localhost:3000/html/index.html`
+2. Click "Sign In with Google"
+3. Complete Google OAuth flow
+4. Should redirect to signup form
+5. Fill out profile information
+6. Should redirect to profile page
 
-## 🔍 **Troubleshooting**
+---
 
-### Common Issues:
+## 🌐 **Step 6: Deploy to Netlify**
 
-1. **Google OAuth not working**:
-   - Verify redirect URIs match exactly
-   - Check Google Cloud Console credentials
-   - Ensure Google provider is enabled in Supabase
+### 6.1 Connect GitHub Repository
+1. Push your code to GitHub
+2. Go to [Netlify](https://netlify.com)
+3. Click "Add new site" > "Import from Git"
+4. Connect your GitHub repository
+5. Configure build settings (usually auto-detected)
 
-2. **Database errors**:
-   - Check if all tables were created successfully
-   - Verify RLS policies are in place
-   - Check user permissions
+### 6.2 Configure Environment Variables
+In Netlify dashboard > **Site settings** > **Environment variables**:
+```
+SUPABASE_URL=https://your-project-id.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
+```
 
-3. **Authentication redirect issues**:
-   - Verify `supabaseClient.js` has correct URLs
-   - Check network tab for API calls
-   - Ensure Netlify deployment is successful
+### 6.3 Update Domain Configuration
+1. Note your Netlify domain (e.g., `random-name-123.netlify.app`)
+2. Update Google OAuth redirect URIs with your new domain
+3. Update Supabase redirect URLs with your new domain
 
-4. **Analytics not tracking**:
-   - Check browser console for JavaScript errors
-   - Verify user_analytics table exists
-   - Check RLS policies allow inserts
+---
 
-## 📞 **Need Help?**
+## 🎯 **Step 7: Testing & Verification**
 
-- Check browser console for error messages
-- Review Supabase logs in dashboard
-- Verify all environment variables are correct
-- Test with different browsers/devices
+### 7.1 Test Complete User Flow
+1. **Sign In**: Google OAuth works
+2. **Profile Creation**: New users can complete signup
+3. **Profile Editing**: Users can update information
+4. **Image Upload**: Profile pictures upload to Supabase Storage
+5. **Session Persistence**: Users stay logged in across sessions
 
-## 🎉 **You're Ready!**
+### 7.2 Test Database Operations
+Check Supabase dashboard:
+1. **user_profiles** table has new entries
+2. **Storage** has uploaded images
+3. **Authentication** shows signed-in users
 
-Your complete medication reminder system is now live with:
+---
+
+## 🔧 **Troubleshooting**
+
+### Common Issues
+
+**"Supabase client not loaded"**
+- Check that `js/db.js` loads before `js/auth.js`
+- Verify Supabase CDN is accessible
+- Check browser console for errors
+
+**"Failed to sign in with Google"**
+- Verify OAuth redirect URIs are correct
+- Check Google OAuth consent screen is published
+- Ensure domains are authorized in Google Console
+
+**"Profile not found"**
+- Check database schema was applied correctly
+- Verify RLS policies are set up
+- Check user permissions in Supabase
+
+**"Image upload failed"**
+- Verify storage bucket exists and is public
+- Check storage policies are configured
+- Ensure file size is under limit (5MB)
+
+### Debug Mode
+Add to `js/db.js` for debugging:
+```javascript
+// Enable debug mode
+const DEBUG = true
+if (DEBUG) {
+    console.log('Supabase URL:', SUPABASE_URL)
+    console.log('User:', await supabase.auth.getUser())
+}
+```
+
+---
+
+## 🎉 **Success!**
+
+Your Medicare Web App should now have:
 - ✅ Google OAuth authentication
-- ✅ User profile management
-- ✅ Real-time data synchronization
-- ✅ Analytics tracking
-- ✅ No dummy data
-- ✅ Secure user-specific data
+- ✅ Complete user profile system
+- ✅ Image upload functionality
+- ✅ Secure database with RLS
+- ✅ Session management
+- ✅ Responsive design
 
-Users can now sign in with Google and have their own personalized medication and appointment tracking system!
+---
+
+## 📱 **Features Included**
+
+### Authentication System
+- Google OAuth integration
+- Session persistence
+- Automatic profile creation
+- Secure logout
+
+### Profile Management
+- Extended signup form
+- Profile editing
+- Image upload/preview
+- Skills management
+- Form validation
+
+### Database Features
+- Row Level Security (RLS)
+- User profile storage
+- Image storage
+- Session tracking
+- Data validation
+
+### User Experience
+- Loading states
+- Error handling
+- Success notifications
+- Responsive design
+- Professional UI
+
+---
+
+## 🛠️ **Next Steps**
+
+Once everything is working:
+1. Customize styling in `css/styles.css`
+2. Add more profile fields as needed
+3. Implement medication/appointment features
+4. Add email notifications
+5. Set up analytics tracking
+
+---
+
+## 📞 **Support**
+
+If you encounter issues:
+1. Check browser console for errors
+2. Verify all configuration steps
+3. Test in incognito/private mode
+4. Check Supabase logs in dashboard
+
+---
+
+**Happy coding! 🚀**
 
 ## 🚀 5-Minute Deployment
 

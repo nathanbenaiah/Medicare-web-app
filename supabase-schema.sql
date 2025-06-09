@@ -204,14 +204,20 @@ CREATE TABLE user_profiles (
     id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
     email VARCHAR(255) NOT NULL,
     full_name VARCHAR(100),
+    phone_number VARCHAR(20),
+    bio TEXT,
+    address TEXT,
+    occupation VARCHAR(100),
+    skills TEXT[],
+    profile_picture TEXT,
     avatar_url TEXT,
-    provider VARCHAR(50) DEFAULT 'email',
+    provider VARCHAR(50) DEFAULT 'google',
     timezone VARCHAR(50) DEFAULT 'UTC',
     date_of_birth DATE,
-    phone_number VARCHAR(20),
     emergency_contact VARCHAR(255),
     medical_conditions TEXT[],
     allergies TEXT[],
+    is_profile_complete BOOLEAN DEFAULT false,
     last_sign_in TIMESTAMP DEFAULT NOW(),
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
@@ -503,17 +509,344 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Sample Data for Testing (Optional)
--- Uncomment to add sample medications
+-- =============================================
+-- USER PROFILE SPECIFIC FUNCTIONS
+-- =============================================
 
-/*
-INSERT INTO medications_db (name, generic_name, category, common_dosages, side_effects) VALUES
-('Lisinopril', 'Lisinopril', 'ACE Inhibitor', ARRAY['5mg', '10mg', '20mg'], ARRAY['Dry cough', 'Dizziness', 'Headache']),
-('Metformin', 'Metformin HCl', 'Diabetes', ARRAY['500mg', '850mg', '1000mg'], ARRAY['Nausea', 'Diarrhea', 'Stomach upset']),
-('Atorvastatin', 'Atorvastatin Calcium', 'Statin', ARRAY['10mg', '20mg', '40mg', '80mg'], ARRAY['Muscle pain', 'Liver problems', 'Memory issues']),
-('Omeprazole', 'Omeprazole', 'PPI', ARRAY['20mg', '40mg'], ARRAY['Headache', 'Stomach pain', 'Nausea']),
-('Amlodipine', 'Amlodipine Besylate', 'Calcium Channel Blocker', ARRAY['2.5mg', '5mg', '10mg'], ARRAY['Swelling', 'Dizziness', 'Flushing']);
-*/
+-- Function to check if user profile is complete
+CREATE OR REPLACE FUNCTION is_user_profile_complete(user_uuid UUID)
+RETURNS BOOLEAN AS $$
+DECLARE
+    profile_complete BOOLEAN := false;
+BEGIN
+    SELECT 
+        CASE WHEN 
+            full_name IS NOT NULL AND 
+            full_name != '' AND
+            is_profile_complete = true
+        THEN true 
+        ELSE false 
+        END
+    INTO profile_complete
+    FROM user_profiles 
+    WHERE id = user_uuid;
+    
+    RETURN COALESCE(profile_complete, false);
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Function to create complete user profile
+CREATE OR REPLACE FUNCTION create_user_profile(
+    user_uuid UUID,
+    user_email TEXT,
+    user_full_name TEXT,
+    user_phone TEXT DEFAULT NULL,
+    user_bio TEXT DEFAULT NULL,
+    user_address TEXT DEFAULT NULL,
+    user_occupation TEXT DEFAULT NULL,
+    user_skills TEXT[] DEFAULT ARRAY[]::TEXT[],
+    user_profile_picture TEXT DEFAULT NULL,
+    user_avatar_url TEXT DEFAULT NULL
+)
+RETURNS JSON AS $$
+DECLARE
+    result JSON;
+BEGIN
+    INSERT INTO user_profiles (
+        id, email, full_name, phone_number, bio, address, 
+        occupation, skills, profile_picture, avatar_url,
+        is_profile_complete, provider, last_sign_in
+    ) VALUES (
+        user_uuid, user_email, user_full_name, user_phone, user_bio, user_address,
+        user_occupation, user_skills, user_profile_picture, user_avatar_url,
+        CASE WHEN user_full_name IS NOT NULL AND user_full_name != '' THEN true ELSE false END,
+        'google', NOW()
+    )
+    ON CONFLICT (id) DO UPDATE SET
+        email = EXCLUDED.email,
+        full_name = EXCLUDED.full_name,
+        phone_number = EXCLUDED.phone_number,
+        bio = EXCLUDED.bio,
+        address = EXCLUDED.address,
+        occupation = EXCLUDED.occupation,
+        skills = EXCLUDED.skills,
+        profile_picture = EXCLUDED.profile_picture,
+        avatar_url = EXCLUDED.avatar_url,
+        is_profile_complete = CASE WHEN EXCLUDED.full_name IS NOT NULL AND EXCLUDED.full_name != '' THEN true ELSE false END,
+        updated_at = NOW()
+    RETURNING row_to_json(user_profiles.*) INTO result;
+    
+    RETURN result;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Function to update user profile
+CREATE OR REPLACE FUNCTION update_user_profile(
+    user_uuid UUID,
+    user_full_name TEXT DEFAULT NULL,
+    user_phone TEXT DEFAULT NULL,
+    user_bio TEXT DEFAULT NULL,
+    user_address TEXT DEFAULT NULL,
+    user_occupation TEXT DEFAULT NULL,
+    user_skills TEXT[] DEFAULT NULL,
+    user_profile_picture TEXT DEFAULT NULL
+)
+RETURNS JSON AS $$
+DECLARE
+    result JSON;
+BEGIN
+    UPDATE user_profiles SET
+        full_name = COALESCE(user_full_name, full_name),
+        phone_number = COALESCE(user_phone, phone_number),
+        bio = COALESCE(user_bio, bio),
+        address = COALESCE(user_address, address),
+        occupation = COALESCE(user_occupation, occupation),
+        skills = COALESCE(user_skills, skills),
+        profile_picture = COALESCE(user_profile_picture, profile_picture),
+        is_profile_complete = CASE WHEN COALESCE(user_full_name, full_name) IS NOT NULL AND COALESCE(user_full_name, full_name) != '' THEN true ELSE false END,
+        updated_at = NOW()
+    WHERE id = user_uuid
+    RETURNING row_to_json(user_profiles.*) INTO result;
+    
+    RETURN result;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Function to get user profile with computed fields
+CREATE OR REPLACE FUNCTION get_user_profile(user_uuid UUID)
+RETURNS JSON AS $$
+DECLARE
+    result JSON;
+BEGIN
+    SELECT row_to_json(profile_data) INTO result
+    FROM (
+        SELECT 
+            up.*,
+            CASE 
+                WHEN up.profile_picture IS NOT NULL THEN up.profile_picture
+                WHEN up.avatar_url IS NOT NULL THEN up.avatar_url
+                ELSE NULL
+            END as display_picture,
+            DATE_PART('day', NOW() - up.created_at) as days_since_joined,
+            CASE 
+                WHEN up.full_name IS NOT NULL AND up.full_name != '' THEN 'complete'
+                ELSE 'incomplete'
+            END as profile_status
+        FROM user_profiles up
+        WHERE up.id = user_uuid
+    ) profile_data;
+    
+    RETURN result;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Function to validate profile data
+CREATE OR REPLACE FUNCTION validate_profile_data(
+    user_full_name TEXT,
+    user_email TEXT,
+    user_phone TEXT DEFAULT NULL
+)
+RETURNS JSON AS $$
+DECLARE
+    errors TEXT[] := ARRAY[]::TEXT[];
+    result JSON;
+BEGIN
+    -- Check required fields
+    IF user_full_name IS NULL OR user_full_name = '' THEN
+        errors := array_append(errors, 'Full name is required');
+    END IF;
+    
+    IF user_email IS NULL OR user_email = '' THEN
+        errors := array_append(errors, 'Email is required');
+    END IF;
+    
+    -- Validate email format
+    IF user_email IS NOT NULL AND user_email !~ '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$' THEN
+        errors := array_append(errors, 'Invalid email format');
+    END IF;
+    
+    -- Validate phone format (if provided)
+    IF user_phone IS NOT NULL AND user_phone != '' AND user_phone !~ '^\+?[1-9]\d{1,14}$' THEN
+        errors := array_append(errors, 'Invalid phone number format');
+    END IF;
+    
+    SELECT json_build_object(
+        'valid', array_length(errors, 1) IS NULL,
+        'errors', errors
+    ) INTO result;
+    
+    RETURN result;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to search users by skills (for networking features)
+CREATE OR REPLACE FUNCTION find_users_by_skills(search_skills TEXT[])
+RETURNS TABLE(
+    user_id UUID,
+    full_name TEXT,
+    occupation TEXT,
+    matching_skills TEXT[],
+    profile_picture TEXT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        up.id,
+        up.full_name,
+        up.occupation,
+        array(SELECT unnest(up.skills) INTERSECT SELECT unnest(search_skills)) as matching_skills,
+        up.profile_picture
+    FROM user_profiles up
+    WHERE up.skills && search_skills
+    AND up.is_profile_complete = true
+    AND up.full_name IS NOT NULL
+    ORDER BY array_length(array(SELECT unnest(up.skills) INTERSECT SELECT unnest(search_skills)), 1) DESC;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Function to convert comma-separated skills to array
+CREATE OR REPLACE FUNCTION skills_string_to_array(skills_string TEXT)
+RETURNS TEXT[] AS $$
+BEGIN
+    IF skills_string IS NULL OR skills_string = '' THEN
+        RETURN ARRAY[]::TEXT[];
+    END IF;
+    
+    RETURN string_to_array(
+        regexp_replace(skills_string, '\s*,\s*', ',', 'g'), 
+        ','
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to convert skills array to comma-separated string
+CREATE OR REPLACE FUNCTION skills_array_to_string(skills_array TEXT[])
+RETURNS TEXT AS $$
+BEGIN
+    IF skills_array IS NULL OR array_length(skills_array, 1) IS NULL THEN
+        RETURN '';
+    END IF;
+    
+    RETURN array_to_string(skills_array, ', ');
+END;
+$$ LANGUAGE plpgsql;
+
+-- =============================================
+-- COMPREHENSIVE SAMPLE DATA FOR TESTING
+-- =============================================
+
+-- Sample Medications Database
+INSERT INTO medications_db (name, generic_name, category, common_dosages, side_effects, description, interactions, warnings, storage_instructions) VALUES
+('Lisinopril', 'Lisinopril', 'ACE Inhibitor', 
+ ARRAY['5mg', '10mg', '20mg'], 
+ ARRAY['Dry cough', 'Dizziness', 'Headache', 'Fatigue'],
+ 'Used to treat high blood pressure and heart failure',
+ ARRAY['NSAIDs may reduce effectiveness', 'Potassium supplements may cause hyperkalemia'],
+ ARRAY['May cause severe drop in blood pressure', 'Not suitable during pregnancy'],
+ 'Store at room temperature, away from moisture and heat'),
+
+('Metformin', 'Metformin HCl', 'Diabetes', 
+ ARRAY['500mg', '850mg', '1000mg'], 
+ ARRAY['Nausea', 'Diarrhea', 'Stomach upset', 'Metallic taste'],
+ 'Used to control blood sugar levels in type 2 diabetes',
+ ARRAY['Alcohol may increase risk of lactic acidosis', 'Contrast dyes may affect kidney function'],
+ ARRAY['May cause lactic acidosis in rare cases', 'Monitor kidney function regularly'],
+ 'Store in original container at room temperature'),
+
+('Atorvastatin', 'Atorvastatin Calcium', 'Statin', 
+ ARRAY['10mg', '20mg', '40mg', '80mg'], 
+ ARRAY['Muscle pain', 'Liver problems', 'Memory issues', 'Digestive problems'],
+ 'Used to lower cholesterol and reduce risk of heart disease',
+ ARRAY['Grapefruit juice increases risk of side effects', 'Some antibiotics may increase concentration'],
+ ARRAY['May cause serious muscle problems', 'Regular liver function tests required'],
+ 'Store at room temperature, protect from light'),
+
+('Omeprazole', 'Omeprazole', 'PPI', 
+ ARRAY['20mg', '40mg'], 
+ ARRAY['Headache', 'Stomach pain', 'Nausea', 'Diarrhea', 'Vitamin B12 deficiency'],
+ 'Used to treat acid reflux, heartburn, and stomach ulcers',
+ ARRAY['May reduce effectiveness of clopidogrel', 'May increase digoxin levels'],
+ ARRAY['Long-term use may increase fracture risk', 'May mask symptoms of stomach cancer'],
+ 'Store in original container, protect from moisture'),
+
+('Amlodipine', 'Amlodipine Besylate', 'Calcium Channel Blocker', 
+ ARRAY['2.5mg', '5mg', '10mg'], 
+ ARRAY['Swelling', 'Dizziness', 'Flushing', 'Fatigue', 'Palpitations'],
+ 'Used to treat high blood pressure and chest pain (angina)',
+ ARRAY['May interact with simvastatin', 'Grapefruit juice may increase concentration'],
+ ARRAY['May cause severe hypotension', 'Use with caution in liver disease'],
+ 'Store at room temperature, away from light and moisture'),
+
+('Aspirin', 'Acetylsalicylic Acid', 'NSAID/Antiplatelet', 
+ ARRAY['81mg', '325mg', '500mg'], 
+ ARRAY['Stomach irritation', 'Bleeding risk', 'Ringing in ears', 'Allergic reactions'],
+ 'Used for pain relief, fever reduction, and blood clot prevention',
+ ARRAY['Increases bleeding risk with warfarin', 'May reduce effectiveness of ACE inhibitors'],
+ ARRAY['Reye syndrome risk in children', 'Contraindicated in severe liver disease'],
+ 'Store in tight container at room temperature'),
+
+('Levothyroxine', 'Levothyroxine Sodium', 'Thyroid Hormone', 
+ ARRAY['25mcg', '50mcg', '75mcg', '100mcg', '125mcg'], 
+ ARRAY['Heart palpitations', 'Insomnia', 'Tremors', 'Weight loss'],
+ 'Used to treat hypothyroidism and thyroid hormone deficiency',
+ ARRAY['Coffee may reduce absorption', 'Calcium supplements may interfere'],
+ ARRAY['May cause irregular heartbeat', 'Requires regular blood monitoring'],
+ 'Store at room temperature, protect from light and moisture'),
+
+('Warfarin', 'Warfarin Sodium', 'Anticoagulant', 
+ ARRAY['1mg', '2mg', '5mg', '10mg'], 
+ ARRAY['Bleeding', 'Bruising', 'Hair loss', 'Skin necrosis'],
+ 'Used to prevent blood clots in various conditions',
+ ARRAY['Many drug interactions', 'Vitamin K foods affect dosing', 'Alcohol increases bleeding risk'],
+ ARRAY['Requires regular INR monitoring', 'High bleeding risk', 'Pregnancy category X'],
+ 'Store at room temperature, protect from light');
+
+-- Sample Pharmacies (Extended for Sri Lanka)
+INSERT INTO pharmacies (name, address, city, phone, hours, latitude, longitude) VALUES
+('Osu Sala Pharmacy', 'No. 123, Galle Road', 'Colombo', '+94 11 234 5678', '8:00 AM - 10:00 PM', 6.9271, 79.8612),
+('Green Cross Pharmacy', 'No. 456, Kandy Road', 'Kandy', '+94 81 234 5678', '7:00 AM - 9:00 PM', 7.2906, 80.6337),
+('State Pharmaceuticals Corporation', 'No. 789, Main Street', 'Galle', '+94 91 234 5678', '8:00 AM - 8:00 PM', 6.0535, 80.2210),
+('Life Pharmacy', 'No. 321, Negombo Road', 'Negombo', '+94 31 234 5678', '24 Hours', 7.2084, 79.8380),
+('Medicare Pharmacy', 'No. 654, Jaffna Road', 'Jaffna', '+94 21 234 5678', '8:00 AM - 9:00 PM', 9.6615, 80.0255),
+('Keells Super Pharmacy', 'No. 12, Independence Square', 'Colombo 07', '+94 11 345 6789', '9:00 AM - 10:00 PM', 6.9080, 79.8700),
+('Healthguard Pharmacy', 'No. 45, Peradeniya Road', 'Kandy', '+94 81 345 6789', '8:00 AM - 8:00 PM', 7.2960, 80.6350),
+('New Pharmacy', 'No. 78, Station Road', 'Matara', '+94 41 234 5678', '8:00 AM - 9:00 PM', 5.9549, 80.5550),
+('Central Dispensary', 'No. 56, Hospital Street', 'Anuradhapura', '+94 25 234 5678', '7:00 AM - 7:00 PM', 8.3114, 80.4037),
+('Wellness Pharmacy', 'No. 90, Sea Street', 'Batticaloa', '+94 65 234 5678', '8:00 AM - 8:00 PM', 7.7102, 81.6924);
+
+-- Sample User Analytics Events
+INSERT INTO user_analytics (event_type, event_data, timestamp) VALUES
+('page_view', '{"page": "index", "referrer": "google.com"}', NOW() - INTERVAL '2 days'),
+('sign_in_attempt', '{"provider": "google", "success": true}', NOW() - INTERVAL '2 days'),
+('profile_created', '{"fields_completed": 8, "upload_profile_pic": true}', NOW() - INTERVAL '2 days'),
+('reminder_created', '{"medication": "Lisinopril", "frequency": "daily"}', NOW() - INTERVAL '1 day'),
+('appointment_booked', '{"doctor": "Dr. Smith", "specialty": "Cardiology"}', NOW() - INTERVAL '1 day'),
+('medication_taken', '{"reminder_id": "123", "on_time": true}', NOW() - INTERVAL '4 hours'),
+('page_view', '{"page": "profile", "session_duration": 180}', NOW() - INTERVAL '1 hour');
+
+-- Sample Notifications
+INSERT INTO notifications (type, title, message, priority, scheduled_for, expires_at) VALUES
+('system', 'Welcome to Medicare+', 'Thank you for joining our health management platform!', 1, NOW(), NOW() + INTERVAL '7 days'),
+('reminder', 'Medication Reminder', 'Time to take your Lisinopril 10mg', 2, NOW() + INTERVAL '1 hour', NOW() + INTERVAL '2 hours'),
+('appointment', 'Upcoming Appointment', 'Dr. Smith appointment tomorrow at 2:00 PM', 2, NOW() + INTERVAL '1 day', NOW() + INTERVAL '2 days'),
+('refill', 'Prescription Refill', 'Your Metformin prescription needs refilling', 2, NOW() + INTERVAL '3 days', NOW() + INTERVAL '7 days'),
+('system', 'Health Tip', 'Remember to drink 8 glasses of water daily for better health!', 1, NOW() + INTERVAL '1 day', NOW() + INTERVAL '3 days');
+
+-- Create Storage Bucket for Profile Pictures
+INSERT INTO storage.buckets (id, name, public) VALUES ('profile-pics', 'profile-pics', true);
+
+-- Create policy for profile pictures
+CREATE POLICY "Users can upload their own profile pictures" ON storage.objects
+FOR INSERT WITH CHECK (bucket_id = 'profile-pics' AND auth.uid()::text = (storage.foldername(name))[1]);
+
+CREATE POLICY "Users can view all profile pictures" ON storage.objects
+FOR SELECT USING (bucket_id = 'profile-pics');
+
+CREATE POLICY "Users can update their own profile pictures" ON storage.objects
+FOR UPDATE USING (bucket_id = 'profile-pics' AND auth.uid()::text = (storage.foldername(name))[1]);
+
+CREATE POLICY "Users can delete their own profile pictures" ON storage.objects
+FOR DELETE USING (bucket_id = 'profile-pics' AND auth.uid()::text = (storage.foldername(name))[1]);
 
 -- Grant permissions
 GRANT ALL ON ALL TABLES IN SCHEMA public TO postgres, authenticated;

@@ -1,256 +1,253 @@
-# 🏥 MediCare+ - Medication & Appointment Reminder Web App
+# 🏥 Medicare+ Web Application
 
-A modern, secure healthcare management web application built with HTML5, JavaScript, Supabase, and deployed on Netlify.
+A comprehensive healthcare management platform with user authentication, profile management, medication database, and pharmacy network integration.
 
-## 🌟 Features
+## 🚀 **Key Features**
 
-- 💊 **Medication Reminders** - Set up daily medication schedules
-- 🏥 **Appointment Management** - Book and track medical appointments  
-- 🔐 **Secure Authentication** - Google OAuth & Email login
-- 📱 **Responsive Design** - Works on all devices
-- ☁️ **Cloud Database** - Real-time data sync with Supabase
-- 🔔 **Smart Notifications** - Never miss your medication or appointments
+### 🔐 **Authentication & User Management**
+- **Google OAuth 2.0** integration for secure sign-in
+- **Profile completion flow** with comprehensive user data collection
+- **Session persistence** across browser sessions
+- **Enhanced security** with Row Level Security (RLS) policies
 
-## 🚀 Quick Start Guide
+### 👤 **User Profile System**
+- **Complete profile management** with profile picture upload
+- **Skills and interests** tagging system
+- **Professional information** tracking
+- **Real-time profile updates** with server-side validation
 
-### Prerequisites
-- GitHub account
-- Netlify account  
-- Supabase account
-- Google Cloud Console access (for OAuth)
+### 💊 **Comprehensive Medication Database**
+- **8 detailed medications** with full pharmaceutical information
+- **Advanced search functionality** with real-time results
+- **Detailed medication information** including:
+  - Generic names and categories
+  - Common dosages and descriptions
+  - Side effects and drug interactions
+  - Warnings and storage instructions
+- **Interactive medication details** modal with comprehensive data
 
----
+### 🏪 **Pharmacy Network**
+- **10 pharmacies** across Sri Lanka with complete contact information
+- **Location-based data** with coordinates for future map integration
+- **Operating hours** and contact details
+- **Network expansion** ready infrastructure
 
-## 📂 Project Structure
+### 📊 **Analytics & Insights**
+- **User activity tracking** with event logging
+- **Search analytics** for medication queries
+- **Profile completion** metrics
+- **Session management** and user engagement data
 
-```
-medicare-plus/
-├── public/
-│   ├── css/           # Stylesheets
-│   ├── js/            # JavaScript files
-│   │   ├── supabaseClient.js    # Database connection
-│   │   ├── auth.js              # Authentication logic
-│   │   ├── reminders.js         # Medication management
-│   │   └── appointments.js      # Appointment management
-│   └── images/        # Static assets
-├── views/
-│   ├── index.html           # Landing page
-│   ├── dashboard.html       # Main dashboard
-│   ├── login.html           # Login page
-│   ├── signup.html          # Registration page
-│   ├── reminders.html       # Medication reminders
-│   └── appointments.html    # Appointment booking
-├── package.json             # Dependencies
-├── netlify.toml             # Netlify deployment config
-├── supabase-schema.sql      # Database schema
-└── .gitignore              # Git ignore rules
-```
+### 🔔 **Notification System**
+- **System-wide announcements** and health tips
+- **Medication reminders** infrastructure
+- **Appointment notifications** ready
+- **Priority-based** notification management
 
----
+## 🗄️ **Enhanced Database Schema**
 
-## 🛠️ Step-by-Step Setup
+### **Core Tables**
+```sql
+-- User profiles with comprehensive data
+user_profiles (
+  id, email, full_name, phone_number, bio, 
+  address, occupation, skills[], profile_picture,
+  is_profile_complete, created_at, updated_at
+)
 
-### **STEP 1: GitHub Repository**
+-- Detailed medications database
+medications_db (
+  id, name, generic_name, category, description,
+  common_dosages[], side_effects[], interactions[],
+  warnings[], storage_instructions, created_at
+)
 
-1. **Create Repository**
-   ```bash
-   # Go to github.com → New Repository
-   # Name: medicare-plus
-   # Public/Private: Your choice
-   # ✅ Add README file
-   ```
+-- Pharmacy network
+pharmacies (
+  id, name, address, city, phone, hours,
+  latitude, longitude, created_at
+)
 
-2. **Upload Files**
-   - Download/Clone this project
-   - Upload all files to your new repository
-   - Commit: "Initial commit - MediCare+ Web App"
+-- User analytics and tracking
+user_analytics (
+  id, event_type, event_data, timestamp
+)
 
-### **STEP 2: Supabase Database Setup**
-
-1. **Create Supabase Project**
-   - Go to [supabase.com](https://supabase.com)
-   - New Project → Name: `medicare-plus-db`
-   - Choose region closest to you
-   - Set strong database password
-
-2. **Run Database Schema**
-   - In Supabase Dashboard → SQL Editor
-   - Copy entire `supabase-schema.sql` content
-   - Click "Run" to create all tables
-
-3. **Get Credentials**
-   - Settings → API
-   - Copy **Project URL** and **anon public key**
-   - Keep these safe - you'll need them!
-
-### **STEP 3: Google OAuth Setup**
-
-1. **Google Cloud Console**
-   - Go to [console.cloud.google.com](https://console.cloud.google.com)
-   - Create new project: "MediCare Plus"
-   - Enable "Google+ API"
-
-2. **Create OAuth Credentials**
-   - Credentials → Create Credentials → OAuth 2.0 Client IDs
-   - Application type: "Web application"
-   - Authorized JavaScript origins: `https://your-site-name.netlify.app`
-   - Authorized redirect URIs: `https://your-supabase-url.supabase.co/auth/v1/callback`
-   - Save **Client ID** and **Client Secret**
-
-### **STEP 4: Configure Supabase Authentication**
-
-1. **Enable Google Provider**
-   - Supabase Dashboard → Authentication → Providers
-   - Enable "Google"
-   - Enter your Google **Client ID** and **Client Secret**
-   - Site URL: `https://your-site-name.netlify.app`
-   - Redirect URLs: `https://your-site-name.netlify.app/views/dashboard.html`
-
-### **STEP 5: Update Your Code**
-
-1. **Update Supabase Credentials**
-   - Edit `public/js/supabaseClient.js`
-   - Replace with your real Supabase URL and anon key:
-   ```javascript
-   const SUPABASE_URL = 'https://your-project.supabase.co'
-   const SUPABASE_ANON_KEY = 'your-anon-key-here'
-   ```
-
-2. **Commit Changes**
-   - Commit message: "Update Supabase credentials"
-
-### **STEP 6: Deploy to Netlify**
-
-1. **Connect Repository**
-   - Go to [netlify.com](https://netlify.com)
-   - New site from Git → GitHub
-   - Select your `medicare-plus` repository
-
-2. **Build Settings**
-   - Branch: `main`
-   - Build command: `npm install`
-   - Publish directory: `views`
-   - Deploy site!
-
-3. **Environment Variables (Recommended)**
-   - Site settings → Environment variables
-   - Add:
-     - `SUPABASE_URL` = your Supabase URL
-     - `SUPABASE_ANON_KEY` = your anon key
-
-### **STEP 7: Test Your App**
-
-1. **Visit Your Live Site**
-   - Use the Netlify URL provided
-   - Test user registration
-   - Try Google login
-   - Add medication reminders
-   - Book appointments
-
-2. **Verify Database**
-   - Check Supabase Table Editor
-   - Your data should appear in `reminders` and `appointments` tables
-
----
-
-## 🔧 Configuration Files Explained
-
-### **netlify.toml**
-```toml
-[build]
-  publish = "views"          # Serves HTML files from views folder
-  command = "npm install"    # Installs dependencies
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"         # SPA routing
-  status = 200
+-- Notification system
+notifications (
+  id, type, title, message, priority,
+  user_id, scheduled_for, expires_at, read_at
+)
 ```
 
-### **supabase-schema.sql**
-Creates these tables:
-- `reminders` - Medication schedules
-- `appointments` - Medical appointments
-- `reminder_logs` - Track medication compliance
-- `user_preferences` - User settings
-- `pharmacies` - Pharmacy directory
+### **Advanced Database Functions**
+- `create_user_profile()` - Enhanced profile creation with validation
+- `update_user_profile()` - Comprehensive profile updates
+- `validate_profile_data()` - Server-side data validation
+- `is_user_profile_complete()` - Profile completion checking
+- `find_users_by_skills()` - Skill-based user discovery
+- `get_user_profile()` - Enhanced profile retrieval
+
+## 📁 **Project Structure**
+
+```
+Medicare+ Web App/
+├── 📄 Database & Setup
+│   ├── supabase-schema.sql       # Complete database schema with sample data
+│   ├── SETUP.md                  # Comprehensive setup guide
+│   └── DEPLOYMENT_CHECKLIST.md   # Deployment checklist
+├── 🌐 Frontend Pages
+│   ├── html/
+│   │   ├── index.html           # Landing page with auth
+│   │   ├── signup.html          # User registration form
+│   │   ├── profile.html         # Profile management + medication search
+│   │   ├── dashboard.html       # Data visualization dashboard
+│   │   └── test.html           # Development testing
+├── ⚡ JavaScript Modules
+│   ├── js/
+│   │   ├── db.js               # Enhanced database client
+│   │   ├── auth.js             # Authentication manager
+│   │   ├── form.js             # Form handling with validation
+│   │   └── profile.js          # Profile + medication functionality
+└── 📊 Sample Data
+    ├── 8 detailed medications   # Complete pharmaceutical data
+    ├── 10 Sri Lankan pharmacies # Network coverage
+    ├── System notifications     # Health tips and announcements
+    └── Analytics events         # User interaction tracking
+```
+
+## 🔧 **Technology Stack**
+
+- **Frontend**: HTML5, CSS3, Vanilla JavaScript
+- **Backend**: Supabase (PostgreSQL + Real-time + Auth + Storage)
+- **Authentication**: Google OAuth 2.0
+- **Database**: PostgreSQL with advanced functions
+- **Storage**: Supabase Cloud Storage for profile pictures
+- **Hosting**: Netlify (deployment ready)
+
+## 🎯 **New Functionality**
+
+### **Medication Search & Discovery**
+```javascript
+// Real-time medication search
+await dbClient.searchMedications('aspirin')
+
+// Detailed medication information
+await dbClient.getMedication(medicationId)
+
+// Category-based browsing
+await dbClient.getMedicationCategories()
+```
+
+### **Enhanced Analytics**
+```javascript
+// Track user interactions
+await dbClient.logEvent('medication_search', {
+  query: 'lisinopril',
+  results_count: 3,
+  user_id: userId
+})
+
+// Profile completion tracking
+await dbClient.logEvent('profile_completed', {
+  fields_completed: 8,
+  has_profile_picture: true
+})
+```
+
+### **Pharmacy Integration**
+```javascript
+// Load pharmacy network
+await dbClient.getAllPharmacies()
+
+// Future: Location-based search
+await dbClient.getNearbyPharmacies(lat, lng, radius)
+```
+
+## 🚀 **Quick Start**
+
+### **1. Database Setup**
+```bash
+# Import the complete schema with sample data
+psql -h your-supabase-host -U postgres -d postgres < supabase-schema.sql
+```
+
+### **2. Environment Configuration**
+```javascript
+// Update js/db.js with your Supabase credentials
+const SUPABASE_URL = 'https://your-project-id.supabase.co'
+const SUPABASE_ANON_KEY = 'your-anon-key-here'
+```
+
+### **3. Google OAuth Setup**
+1. Create Google Cloud Project
+2. Configure OAuth 2.0 credentials
+3. Add authorized redirect URIs
+4. Update Supabase Auth settings
+
+### **4. Deployment**
+```bash
+# Deploy to Netlify
+git push origin main  # Auto-deployment configured
+
+# Or manual deployment
+npm run build && netlify deploy --prod
+```
+
+## 📊 **Sample Data Included**
+
+### **Medications Database**
+- **8 comprehensive medications** with detailed pharmaceutical information
+- **Categories**: ACE Inhibitors, Diabetes, Statins, PPIs, Calcium Channel Blockers, NSAIDs, Thyroid Hormones, Anticoagulants
+- **Complete data**: Dosages, side effects, interactions, warnings, storage instructions
+
+### **Pharmacy Network**
+- **10 pharmacies** across major Sri Lankan cities
+- **Coverage**: Colombo, Kandy, Galle, Negombo, Jaffna, Matara, Anuradhapura, Batticaloa
+- **Details**: Complete addresses, phone numbers, operating hours, coordinates
+
+### **System Features**
+- **User analytics** with event tracking
+- **Notification system** with health tips
+- **Profile completion** workflow
+- **Search functionality** with real-time results
+
+## 🔮 **Future Enhancements**
+
+- **Medication reminders** with scheduling
+- **Appointment booking** system
+- **Doctor network** integration
+- **Health records** management
+- **Prescription tracking**
+- **Location-based services** with maps
+- **Mobile app** development
+- **API integration** with healthcare providers
+
+## 📈 **Analytics & Monitoring**
+
+The system includes comprehensive analytics tracking:
+- User registration and authentication events
+- Profile completion metrics
+- Medication search patterns
+- Feature usage statistics
+- Error tracking and monitoring
+
+## 🛡️ **Security Features**
+
+- **Row Level Security (RLS)** for data protection
+- **Google OAuth 2.0** for secure authentication
+- **Input validation** and sanitization
+- **Image upload** security with compression
+- **Session management** with secure tokens
+
+## 📞 **Support & Documentation**
+
+- **Setup Guide**: See `SETUP.md` for detailed instructions
+- **Deployment Guide**: See `DEPLOYMENT_CHECKLIST.md`
+- **Database Schema**: See `supabase-schema.sql`
+- **API Documentation**: Built-in function documentation
 
 ---
 
-## 🔐 Security Features
-
-- **Row Level Security (RLS)** - Users only see their own data
-- **OAuth Authentication** - Secure Google login
-- **Environment Variables** - Credentials stored securely
-- **HTTPS Encryption** - All data transmitted securely
-
----
-
-## 🎯 Usage Guide
-
-### **For Users:**
-1. **Sign Up** - Create account with email or Google
-2. **Add Medications** - Set name, dosage, time, frequency
-3. **Book Appointments** - Doctor, date, time, reason
-4. **Get Reminders** - Automatic notifications
-5. **Track Progress** - Mark medications as taken
-
-### **For Developers:**
-1. **Customize UI** - Edit HTML/CSS in `views/` and `public/css/`
-2. **Add Features** - Extend JavaScript in `public/js/`
-3. **Modify Database** - Update schema in Supabase dashboard
-4. **Deploy Changes** - Git push automatically deploys via Netlify
-
----
-
-## 🆘 Troubleshooting
-
-### **Common Issues:**
-
-**Authentication not working?**
-- Check Google OAuth redirect URLs
-- Verify Supabase auth settings
-- Ensure site URL matches deployment URL
-
-**Database not saving data?**
-- Confirm schema was run successfully
-- Check RLS policies are enabled
-- Verify Supabase credentials in code
-
-**Site not loading?**
-- Check Netlify build logs
-- Ensure `views` is publish directory
-- Verify all file paths are correct
-
-### **Getting Help:**
-- 📖 [Supabase Docs](https://docs.supabase.com)
-- 🌐 [Netlify Docs](https://docs.netlify.com)
-- 💬 [Discord Communities](https://discord.supabase.com)
-
----
-
-## 🎉 Success!
-
-**Congratulations!** You now have a fully functional healthcare management web app with:
-
-✅ User authentication  
-✅ Real-time database  
-✅ Responsive design  
-✅ Automatic deployments  
-✅ Professional hosting  
-
-**Your app is live and ready to help people manage their health!** 🚀💊
-
----
-
-## 📄 License
-
-MIT License - feel free to use for personal or commercial projects.
-
-## 🤝 Contributing
-
-Pull requests welcome! Please read contributing guidelines first.
-
----
-
-**Built with ❤️ for better healthcare management**
+**Medicare+** - *Comprehensive Healthcare Management Platform*
+Built with ❤️ for better health management and accessibility.
