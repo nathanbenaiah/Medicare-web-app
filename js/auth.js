@@ -1,43 +1,119 @@
-// Enhanced Authentication & User Management System
+// Enhanced Authentication Manager with Profile System
 class AuthManager {
     constructor() {
         this.supabase = window.supabaseClient
+        this.dbClient = window.dbClient
         this.currentUser = null
         this.userProfile = null
         this.init()
     }
 
     async init() {
-        // Get current session
-        const { data: { session } } = await this.supabase.auth.getSession()
-        if (session) {
-            this.currentUser = session.user
-            await this.loadUserProfile()
-            this.updateUI(true)
-        }
-
-        // Listen for auth changes
-        this.supabase.auth.onAuthStateChange(async (event, session) => {
-            console.log('Auth event:', event)
+        try {
+            // Get current session
+            const { data: { session } } = await this.supabase.auth.getSession()
             
-            if (event === 'SIGNED_IN') {
+            if (session) {
                 this.currentUser = session.user
-                await this.handleUserSignIn()
-            } else if (event === 'SIGNED_OUT') {
-                await this.handleUserSignOut()
+                await this.handleUserSession()
             }
-        })
+
+            // Listen for auth changes
+            this.supabase.auth.onAuthStateChange(async (event, session) => {
+                console.log('Auth event:', event)
+                
+                if (event === 'SIGNED_IN') {
+                    this.currentUser = session.user
+                    await this.handleUserSession()
+                } else if (event === 'SIGNED_OUT') {
+                    this.handleSignOut()
+                }
+            })
+
+            this.updateUI()
+        } catch (error) {
+            console.error('Error initializing auth:', error)
+        }
     }
 
-    // Google OAuth Sign In with Complete User Setup
+    // Handle user session after sign-in
+    async handleUserSession() {
+        try {
+            this.showLoading('Checking your profile...')
+            
+            // Check if user profile exists and is complete using new SQL function
+            const isComplete = await this.dbClient.checkUserProfile(this.currentUser.id)
+            
+            if (isComplete !== null) {
+                // Get full profile data using enhanced function
+                this.userProfile = await this.dbClient.getUserProfile(this.currentUser.id)
+                
+                if (!isComplete) {
+                    // Redirect to signup form to complete profile
+                    this.redirectToSignup()
+                } else {
+                    // User has complete profile, update UI
+                    this.updateUI()
+                    this.showSuccess(`Welcome back, ${this.userProfile.full_name || this.currentUser.email}!`)
+                    
+                    // Log successful user session for analytics
+                    await this.dbClient.logEvent('user_session_started', {
+                        user_id: this.currentUser.id,
+                        page: window.location.pathname,
+                        has_complete_profile: true,
+                        last_login: new Date().toISOString()
+                    })
+                }
+            } else {
+                // New user, create basic profile and redirect to signup
+                await this.createBasicProfile()
+                this.redirectToSignup()
+                
+                // Log new user registration
+                await this.dbClient.logEvent('new_user_registration', {
+                    user_id: this.currentUser.id,
+                    provider: 'google',
+                    registration_time: new Date().toISOString()
+                })
+            }
+        } catch (error) {
+            console.error('Error handling user session:', error)
+            this.showError('Error loading your profile. Please try again.')
+        } finally {
+            this.hideLoading()
+        }
+    }
+
+    // Create basic profile for new user
+    async createBasicProfile() {
+        try {
+            const userData = {
+                id: this.currentUser.id,
+                email: this.currentUser.email,
+                full_name: this.currentUser.user_metadata?.full_name || '',
+                avatar_url: this.currentUser.user_metadata?.avatar_url || '',
+                provider: 'google',
+                is_profile_complete: false,
+                last_sign_in: new Date().toISOString()
+            }
+
+            this.userProfile = await this.dbClient.createUserProfile(userData)
+            console.log('Basic profile created for new user')
+        } catch (error) {
+            console.error('Error creating basic profile:', error)
+            throw error
+        }
+    }
+
+    // Google OAuth Sign In
     async signInWithGoogle() {
         try {
-            this.showLoadingState('Connecting to Google...')
+            this.showLoading('Connecting to Google...')
             
             const { data, error } = await this.supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: `${window.location.origin}/html/dashboard.html`,
+                    redirectTo: `${window.location.origin}/html/`,
                     queryParams: {
                         access_type: 'offline',
                         prompt: 'consent',
@@ -46,316 +122,178 @@ class AuthManager {
             })
 
             if (error) {
-                console.error('Google sign-in error:', error)
-                this.showError('Failed to sign in with Google. Please try again.')
-                return false
-            }
-
-            // The redirect will handle the rest
-            return true
-        } catch (error) {
-            console.error('Google sign-in error:', error)
-            this.showError('An unexpected error occurred. Please try again.')
-            return false
-        }
-    }
-
-    // Handle successful user sign-in
-    async handleUserSignIn() {
-        try {
-            this.showLoadingState('Setting up your account...')
-            
-            // Create or update user profile
-            await this.createUserProfile()
-            
-            // Initialize user analytics
-            await this.trackUserEvent('user_signed_in')
-            
-            // Clear any dummy data
-            await this.clearDummyData()
-            
-            // Load user profile
-            await this.loadUserProfile()
-            
-            // Update UI
-            this.updateUI(true)
-            
-            this.showSuccess(`Welcome ${this.userProfile?.full_name || this.currentUser.email}!`)
-            
-            // Redirect to dashboard if not already there
-            if (!window.location.pathname.includes('dashboard')) {
-                setTimeout(() => {
-                    window.location.href = '/html/dashboard.html'
-                }, 1500)
-            }
-            
-        } catch (error) {
-            console.error('Error handling sign-in:', error)
-            this.showError('Error setting up your account. Please try again.')
-        }
-    }
-
-    // Create or update user profile in database
-    async createUserProfile() {
-        try {
-            const userData = {
-                id: this.currentUser.id,
-                email: this.currentUser.email,
-                full_name: this.currentUser.user_metadata?.full_name || this.currentUser.user_metadata?.name,
-                avatar_url: this.currentUser.user_metadata?.avatar_url,
-                provider: 'google',
-                last_sign_in: new Date().toISOString(),
-                created_at: new Date().toISOString()
-            }
-
-            // Insert or update user profile
-            const { data, error } = await this.supabase
-                .from('user_profiles')
-                .upsert(userData, { 
-                    onConflict: 'id',
-                    ignoreDuplicates: false 
-                })
-                .select()
-
-            if (error) {
-                console.error('Error creating user profile:', error)
                 throw error
             }
 
-            // Create default user preferences
-            await this.createDefaultPreferences()
-            
-            console.log('User profile created/updated:', data)
-            return data
-
-        } catch (error) {
-            console.error('Error in createUserProfile:', error)
-            throw error
-        }
-    }
-
-    // Create default user preferences
-    async createDefaultPreferences() {
-        try {
-            const preferences = {
-                user_id: this.currentUser.id,
-                notification_enabled: true,
-                reminder_advance_time: 15,
-                timezone: 'Asia/Colombo',
-                language: 'en',
-                theme: 'light'
-            }
-
-            const { error } = await this.supabase
-                .from('user_preferences')
-                .upsert(preferences, { onConflict: 'user_id' })
-
-            if (error) {
-                console.error('Error creating preferences:', error)
-            }
-        } catch (error) {
-            console.error('Error in createDefaultPreferences:', error)
-        }
-    }
-
-    // Load user profile from database
-    async loadUserProfile() {
-        try {
-            const { data, error } = await this.supabase
-                .from('user_profiles')
-                .select('*')
-                .eq('id', this.currentUser.id)
-                .single()
-
-            if (error && error.code !== 'PGRST116') {
-                console.error('Error loading user profile:', error)
-                return null
-            }
-
-            this.userProfile = data
-            return data
-        } catch (error) {
-            console.error('Error in loadUserProfile:', error)
-            return null
-        }
-    }
-
-    // Clear any dummy/sample data for new user
-    async clearDummyData() {
-        try {
-            // Clear any existing reminders
-            await this.supabase
-                .from('reminders')
-                .delete()
-                .eq('user_id', this.currentUser.id)
-
-            // Clear any existing appointments
-            await this.supabase
-                .from('appointments')
-                .delete()
-                .eq('user_id', this.currentUser.id)
-
-            // Clear reminder logs
-            await this.supabase
-                .from('reminder_logs')
-                .delete()
-                .eq('user_id', this.currentUser.id)
-
-            console.log('Dummy data cleared for user:', this.currentUser.id)
-        } catch (error) {
-            console.error('Error clearing dummy data:', error)
-        }
-    }
-
-    // Track user events for analytics
-    async trackUserEvent(event_type, event_data = {}) {
-        try {
-            const analyticsData = {
-                user_id: this.currentUser?.id,
-                event_type: event_type,
-                event_data: event_data,
-                timestamp: new Date().toISOString(),
-                session_id: this.generateSessionId(),
-                user_agent: navigator.userAgent,
-                page_url: window.location.href
-            }
-
-            const { error } = await this.supabase
-                .from('user_analytics')
-                .insert(analyticsData)
-
-            if (error) {
-                console.error('Error tracking event:', error)
-            }
-        } catch (error) {
-            console.error('Error in trackUserEvent:', error)
-        }
-    }
-
-    // Generate session ID for analytics
-    generateSessionId() {
-        return Date.now().toString(36) + Math.random().toString(36).substr(2)
-    }
-
-    // Email/Password Sign In (Enhanced)
-    async signInWithEmail(email, password) {
-        try {
-            this.showLoadingState('Signing you in...')
-            
-            const { data, error } = await this.supabase.auth.signInWithPassword({
-                email,
-                password
-            })
-
-            if (error) {
-                console.error('Email sign-in error:', error)
-                this.showError(error.message)
-                return false
-            }
-
-            this.currentUser = data.user
-            await this.handleUserSignIn()
             return true
         } catch (error) {
-            console.error('Email sign-in error:', error)
-            this.showError('An unexpected error occurred. Please try again.')
+            console.error('Google sign-in error:', error)
+            this.showError('Failed to sign in with Google. Please try again.')
+            this.hideLoading()
             return false
-        }
-    }
-
-    // Handle user sign out
-    async handleUserSignOut() {
-        try {
-            // Track sign out event
-            if (this.currentUser) {
-                await this.trackUserEvent('user_signed_out')
-            }
-            
-            this.currentUser = null
-            this.userProfile = null
-            this.updateUI(false)
-            
-            // Redirect to home
-            if (window.location.pathname.includes('dashboard')) {
-                window.location.href = '/html/index.html'
-            }
-        } catch (error) {
-            console.error('Error handling sign out:', error)
         }
     }
 
     // Sign Out
     async signOut() {
         try {
-            this.showLoadingState('Signing you out...')
+            this.showLoading('Signing you out...')
             
             const { error } = await this.supabase.auth.signOut()
             
             if (error) {
-                console.error('Sign-out error:', error)
-                this.showError('Failed to sign out. Please try again.')
-                return false
+                throw error
             }
 
             return true
         } catch (error) {
             console.error('Sign-out error:', error)
-            this.showError('An unexpected error occurred.')
+            this.showError('Failed to sign out. Please try again.')
             return false
+        } finally {
+            this.hideLoading()
         }
     }
 
-    // Update UI based on auth state
-    updateUI(isSignedIn) {
-        // Update sign-in buttons
-        const signInBtns = document.querySelectorAll('.google-sign-btn, .sign-in-btn')
-        const signOutBtns = document.querySelectorAll('.sign-out-btn')
-        const userDisplays = document.querySelectorAll('.user-display')
+    // Handle sign out
+    handleSignOut() {
+        this.currentUser = null
+        this.userProfile = null
+        this.updateUI()
+        
+        // Redirect to home if on protected pages
+        if (window.location.pathname.includes('profile') || 
+            window.location.pathname.includes('signup')) {
+            window.location.href = '/html/index.html'
+        }
+    }
 
-        if (isSignedIn && this.currentUser) {
-            signInBtns.forEach(btn => {
-                if (btn.textContent.includes('Sign')) {
-                    btn.innerHTML = '<i class="bx bx-user"></i> Dashboard'
-                    btn.onclick = () => window.location.href = '/html/dashboard.html'
-                }
-            })
-            
-            signOutBtns.forEach(btn => {
-                btn.style.display = 'block'
-                btn.onclick = () => this.signOut()
-            })
-            
-            userDisplays.forEach(display => {
-                const displayName = this.userProfile?.full_name || this.currentUser.email
+    // Redirect to signup form
+    redirectToSignup() {
+        if (!window.location.pathname.includes('signup')) {
+            window.location.href = '/html/signup.html'
+        }
+    }
+
+    // Redirect to profile page
+    redirectToProfile() {
+        window.location.href = '/html/profile.html'
+    }
+
+    // Update UI based on auth state
+    updateUI() {
+        this.updateSignInButton()
+        this.updateUserDisplay()
+        this.updateNavigation()
+    }
+
+    // Update sign-in button
+    updateSignInButton() {
+        const signInBtn = document.getElementById('signin')
+        const userIcon = document.getElementById('user-icon')
+        
+        if (this.currentUser && this.userProfile?.is_profile_complete) {
+            // Show user icon
+            if (signInBtn) signInBtn.style.display = 'none'
+            if (userIcon) {
+                userIcon.style.display = 'flex'
+                const profileImg = this.userProfile.profile_picture || this.userProfile.avatar_url || this.getDefaultAvatar()
+                userIcon.innerHTML = `
+                    <img src="${profileImg}" 
+                         alt="Profile" class="profile-icon" onclick="authManager.redirectToProfile()"
+                         onerror="this.src='${this.getDefaultAvatar()}'">
+                `
+            }
+        } else {
+            // Show sign-in button
+            if (signInBtn) {
+                signInBtn.style.display = 'block'
+                signInBtn.innerHTML = '<i class="bx bxl-google"></i> Sign In with Google'
+            }
+            if (userIcon) userIcon.style.display = 'none'
+        }
+    }
+
+    // Get default avatar URL
+    getDefaultAvatar() {
+        return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2NjdlZWEiLz4KPHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeD0iOCIgeT0iOCI+CjxwYXRoIGQ9Ik0yMCAyMXYtMmE0IDQgMCAwIDAtNC00SDhhNCA0IDAgMCAwLTQgNHYyIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8Y2lyY2xlIGN4PSIxMiIgY3k9IjciIHI9IjQiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo8L3N2Zz4K'
+    }
+
+    // Update user display elements
+    updateUserDisplay() {
+        const userDisplays = document.querySelectorAll('.user-display')
+        
+        userDisplays.forEach(display => {
+            if (this.currentUser && this.userProfile) {
+                const displayName = this.userProfile.full_name || this.currentUser.email
+                const profileImg = this.userProfile.profile_picture || this.userProfile.avatar_url || this.getDefaultAvatar()
                 display.innerHTML = `
                     <div class="user-info">
-                        <img src="${this.userProfile?.avatar_url || '/images/default-avatar.png'}" alt="Profile" class="user-avatar">
+                        <img src="${profileImg}" 
+                             alt="Profile" class="user-avatar"
+                             onerror="this.src='${this.getDefaultAvatar()}'">
                         <span>Hello, ${displayName}</span>
                     </div>
                 `
                 display.style.display = 'flex'
+            } else {
+                display.style.display = 'none'
+            }
+        })
+    }
+
+    // Update navigation for authenticated users
+    updateNavigation() {
+        const protectedLinks = document.querySelectorAll('.protected-link')
+        const signOutBtns = document.querySelectorAll('.sign-out-btn')
+        
+        if (this.currentUser && this.userProfile?.is_profile_complete) {
+            protectedLinks.forEach(link => link.style.display = 'block')
+            signOutBtns.forEach(btn => {
+                btn.style.display = 'block'
+                btn.onclick = () => this.signOut()
             })
         } else {
-            signInBtns.forEach(btn => {
-                if (btn.textContent.includes('Dashboard')) {
-                    btn.innerHTML = '<i class="bx bxl-google"></i> Sign In'
-                    btn.onclick = () => this.signInWithGoogle()
-                }
-            })
-            
+            protectedLinks.forEach(link => link.style.display = 'none')
             signOutBtns.forEach(btn => btn.style.display = 'none')
-            userDisplays.forEach(display => display.style.display = 'none')
         }
     }
 
-    // Show loading state
-    showLoadingState(message) {
-        this.showNotification(message, 'info', 10000)
+    // Check if user is authenticated and has complete profile
+    isAuthenticated() {
+        return this.currentUser && this.userProfile?.is_profile_complete
     }
 
-    // Show error message
-    showError(message) {
-        this.showNotification(message, 'error')
+    // Get current user
+    getCurrentUser() {
+        return this.currentUser
+    }
+
+    // Get user profile
+    getUserProfile() {
+        return this.userProfile
+    }
+
+    // Refresh user profile
+    async refreshUserProfile() {
+        if (this.currentUser) {
+            this.userProfile = await this.dbClient.checkUserProfile(this.currentUser.id)
+            this.updateUI()
+        }
+    }
+
+    // Loading state management
+    showLoading(message = 'Loading...') {
+        this.showNotification(message, 'info', 0)
+    }
+
+    hideLoading() {
+        const notifications = document.querySelectorAll('.notification')
+        notifications.forEach(notification => {
+            if (notification.classList.contains('notification-info')) {
+                notification.remove()
+            }
+        })
     }
 
     // Show success message
@@ -363,10 +301,15 @@ class AuthManager {
         this.showNotification(message, 'success')
     }
 
+    // Show error message
+    showError(message) {
+        this.showNotification(message, 'error')
+    }
+
     // Enhanced notification system
     showNotification(message, type = 'info', duration = 5000) {
-        // Remove existing notifications
-        const existingNotifications = document.querySelectorAll('.notification')
+        // Remove existing notifications of the same type
+        const existingNotifications = document.querySelectorAll(`.notification-${type}`)
         existingNotifications.forEach(notification => notification.remove())
 
         // Create notification element
@@ -381,9 +324,9 @@ class AuthManager {
                 <i class="bx ${icon}"></i>
                 <span>${message}</span>
             </div>
-            <button class="notification-close" onclick="this.parentElement.remove()">
+            ${duration > 0 ? `<button class="notification-close" onclick="this.parentElement.remove()">
                 <i class="bx bx-x"></i>
-            </button>
+            </button>` : ''}
         `
         
         // Add styles
@@ -409,7 +352,7 @@ class AuthManager {
             ${type === 'info' ? 'background: linear-gradient(135deg, #3b82f6, #2563eb);' : ''}
         `
 
-        // Add animation keyframes
+        // Add animation keyframes if not exists
         if (!document.querySelector('#notification-styles')) {
             const style = document.createElement('style')
             style.id = 'notification-styles'
@@ -435,6 +378,18 @@ class AuthManager {
                 .notification-close:hover {
                     background: rgba(255,255,255,0.2);
                 }
+                .profile-icon {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    transition: transform 0.2s;
+                    border: 2px solid rgba(255,255,255,0.3);
+                }
+                .profile-icon:hover {
+                    transform: scale(1.1);
+                    border-color: rgba(255,255,255,0.8);
+                }
             `
             document.head.appendChild(style)
         }
@@ -449,57 +404,6 @@ class AuthManager {
                 }
             }, duration)
         }
-    }
-
-    // Get user statistics for dashboard
-    async getUserStats() {
-        try {
-            const [remindersResult, appointmentsResult, logsResult] = await Promise.all([
-                this.supabase
-                    .from('reminders')
-                    .select('*', { count: 'exact' })
-                    .eq('user_id', this.currentUser.id)
-                    .eq('is_active', true),
-                
-                this.supabase
-                    .from('appointments')
-                    .select('*', { count: 'exact' })
-                    .eq('user_id', this.currentUser.id)
-                    .gte('appointment_date', new Date().toISOString().split('T')[0]),
-                
-                this.supabase
-                    .from('reminder_logs')
-                    .select('*', { count: 'exact' })
-                    .eq('user_id', this.currentUser.id)
-                    .eq('status', 'taken')
-                    .gte('taken_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
-            ])
-
-            return {
-                activeReminders: remindersResult.count || 0,
-                upcomingAppointments: appointmentsResult.count || 0,
-                medicationsTaken: logsResult.count || 0,
-                adherenceRate: this.calculateAdherenceRate(logsResult.data || [])
-            }
-        } catch (error) {
-            console.error('Error getting user stats:', error)
-            return {
-                activeReminders: 0,
-                upcomingAppointments: 0,
-                medicationsTaken: 0,
-                adherenceRate: 0
-            }
-        }
-    }
-
-    // Calculate medication adherence rate
-    calculateAdherenceRate(logs) {
-        if (!logs.length) return 0
-        
-        const takenCount = logs.filter(log => log.status === 'taken').length
-        const totalCount = logs.length
-        
-        return Math.round((takenCount / totalCount) * 100)
     }
 }
 
@@ -523,7 +427,7 @@ window.signOut = () => {
 
 // Auto-initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    if (window.supabaseClient && !window.authManager) {
+    if (window.supabaseClient && window.dbClient && !window.authManager) {
         window.authManager = new AuthManager()
         console.log('Auth manager initialized')
     }

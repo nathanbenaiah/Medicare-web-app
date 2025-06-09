@@ -3,84 +3,323 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - MediCare+</title>
+    <title>Complete Your Profile - Medicare Web App</title>
     
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Boxicons CSS -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/styles.css">
     
-    <!-- Styles -->
-    <link rel="stylesheet" href="../public/css/modern.css">
-    <link rel="stylesheet" href="../public/css/buttons.css">
-    <link rel="stylesheet" href="../public/css/forms.css">
-    <link rel="stylesheet" href="../public/css/style.css">
+    <style>
+        .signup-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .signup-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .signup-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .signup-header h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+        
+        .signup-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .skills-input {
+            position: relative;
+        }
+        
+        .skills-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .skill-tag {
+            background: #667eea;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .skill-tag .remove-skill {
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .profile-upload {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .profile-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            border: 4px solid #e1e8ed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .profile-preview:hover {
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+        
+        .profile-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .profile-preview i {
+            font-size: 40px;
+            color: #ccc;
+        }
+        
+        .upload-label {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .upload-label:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+        
+        .upload-label input {
+            display: none;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px 30px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ffffff;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .signup-card {
+                padding: 30px 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Include Clean Navigation -->
-
-
-    <!-- Main Content -->
-    <main class="page-content" style="padding-top: 100px;">
-        <div class="container">
-            <div class="auth-container" data-animate="fadeIn">
-                <div class="auth-card">
-                    <h1 class="auth-title">Create Your Account</h1>
-                    <p class="auth-subtitle">Join thousands of users managing their health with MediCare+</p>
-                    
-                    <form class="auth-form">
-                        <div class="form-group">
-                            <label for="fullName">Full Name</label>
-                            <input type="text" id="fullName" class="form-input" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="email">Email Address</label>
-                            <input type="email" id="email" class="form-input" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input type="password" id="password" class="form-input" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="confirmPassword">Confirm Password</label>
-                            <input type="password" id="confirmPassword" class="form-input" required>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary btn-block">Create Account</button>
-                    </form>
-                    
-                    <div class="auth-divider">
-                        <span>or</span>
+    <div class="signup-container">
+        <div class="signup-card">
+            <div class="signup-header">
+                <h1>🏥 Complete Your Profile</h1>
+                <p>Help us personalize your medication reminder experience</p>
+            </div>
+            
+            <form id="signup-form">
+                <!-- Profile Picture Upload -->
+                <div class="profile-upload">
+                    <div class="profile-preview" onclick="document.getElementById('profile-upload').click()">
+                        <img id="profile-image" src="" alt="Profile" style="display: none;">
+                        <i class="bx bx-user" id="profile-placeholder"></i>
+                    </div>
+                    <label for="profile-upload" class="upload-label">
+                        <input type="file" id="profile-upload" accept="image/*">
+                        <i class="bx bx-cloud-upload"></i> Upload Profile Picture
+                    </label>
+                </div>
+                
+                <!-- Email (Pre-filled, readonly) -->
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" readonly 
+                           style="background-color: #f8f9fa; cursor: not-allowed;">
+                </div>
+                
+                <!-- Name and Phone -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="full_name">Full Name *</label>
+                        <input type="text" id="full_name" name="full_name" required 
+                               placeholder="Enter your full name">
                     </div>
                     
-                    <button class="btn btn-outline btn-block">
-                        <i class="bx bxl-google"></i>
-                        Sign up with Google
-                    </button>
-                    
-                    <p class="auth-footer">
-                        Already have an account? <a href="/login.html">Log In</a>
-                    </p>
+                    <div class="form-group">
+                        <label for="phone_number">Phone Number</label>
+                        <input type="tel" id="phone_number" name="phone_number" 
+                               placeholder="+1 (555) 123-4567">
+                    </div>
                 </div>
-            </div>
+                
+                <!-- Bio -->
+                <div class="form-group">
+                    <label for="bio">Bio</label>
+                    <textarea id="bio" name="bio" 
+                              placeholder="Tell us a little about yourself..."></textarea>
+                </div>
+                
+                <!-- Address and Occupation -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <input type="text" id="address" name="address" 
+                               placeholder="Your address">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="occupation">Occupation</label>
+                        <input type="text" id="occupation" name="occupation" 
+                               placeholder="Your job title">
+                    </div>
+                </div>
+                
+                <!-- Skills -->
+                <div class="form-group">
+                    <label for="skills">Skills & Interests</label>
+                    <div class="skills-input">
+                        <input type="text" id="skills" name="skills" 
+                               placeholder="Type a skill and press Enter...">
+                        <div class="skills-tags" id="skills-tags"></div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="submit-btn" id="submit-profile">
+                    <div class="loading-spinner" id="loading-spinner"></div>
+                    <span id="btn-text">Complete Profile</span>
+                </button>
+            </form>
         </div>
-    </main>
+    </div>
 
-    <!-- Include Clean Footer -->
-
-
-    <!-- Scripts -->
-    <script src="../public/js/modern.js"></script>
-    <script src="../public/js/forms.js"></script>
-    <script src="../public/js/validation.js"></script>
-    <script src="../public/js/api.js"></script>
+    <!-- Supabase JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.4/dist/umd/supabase.min.js"></script>
     
-
+    <!-- Our JS modules -->
+    <script src="/js/db.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/form.js"></script>
+    
+    <script>
+        // Wait for DOM to load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize form handler
+            if (window.FormHandler) {
+                window.formHandler = new FormHandler()
+            }
+        })
+    </script>
 </body>
 </html> 

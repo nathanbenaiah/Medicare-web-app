@@ -1,8 +1,8 @@
 // Supabase Client Configuration
-// Replace these with your actual Supabase credentials from your dashboard
+// Uses environment variables for production deployment
 
-const SUPABASE_URL = 'https://qztwaldxgnbmfltpxnmn.supabase.co'
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF6dHdhbGR4Z25ibWZsdHB4bm1uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk0MzA4MjEsImV4cCI6MjA2NTAwNjgyMX0.bmhS_RT4mMezN8b3CVNC01WeucoaPANJqdOKMtoCxXk'
+const SUPABASE_URL = window?.process?.env?.VITE_SUPABASE_URL || 'https://gcggnrwqilylykppizb.supabase.co'
+const SUPABASE_ANON_KEY = window?.process?.env?.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjZ2ducndxaWx5bHlrcHBpemIiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTczNzIxMzgzNiwiZXhwIjoyMDUyNzg5ODM2fQ.LzgHWMlVzLKmP3cEYdwv5mVSUjRJU8VCCCgCMN_eVkc'
 
 // Initialize Supabase client
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
