@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - MediCare+ (React)</title>
+    
+    <!-- Boxicons CSS -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- React and ReactDOM from CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Your existing CSS -->
+    <link rel="stylesheet" href="/css/modern.css">
+    <link rel="stylesheet" href="/css/mobile-responsive.css">
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #007BFF 0%, #0056b3 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 480px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #007BFF, #0056b3, #007BFF);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .auth-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .auth-logo i {
+            font-size: 2.5rem;
+            color: #007BFF;
+        }
+
+        .auth-logo span {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #333;
+        }
+
+        .brand-accent {
+            color: #007BFF;
+        }
+
+        .auth-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .auth-subtitle {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 30px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 4px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .auth-tab.active {
+            background: #007BFF;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fff;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #007BFF;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        .password-input-container {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+            font-size: 1.2rem;
+        }
+
+        .auth-button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .auth-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+        }
+
+        .auth-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .google-auth-button {
+            width: 100%;
+            padding: 15px;
+            background: white;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .google-auth-button:hover:not(:disabled) {
+            border-color: #007BFF;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .google-auth-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 30px 0;
+            color: #666;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e1e5e9;
+        }
+
+        .divider span {
+            padding: 0 20px;
+            background: white;
+            font-size: 0.9rem;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            border: 1px solid #fcc;
+            font-size: 14px;
+        }
+
+        .success-message {
+            background: #efe;
+            color: #363;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            border: 1px solid #cfc;
+            font-size: 14px;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .auth-footer p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .security-badges {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .security-badge {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Loading state */
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .auth-container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            .auth-logo span {
+                font-size: 1.5rem;
+            }
+            
+            .auth-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-header">
+            <div class="auth-logo">
+                <i class='bx bx-health'></i>
+                <span>Medi<span class="brand-accent">Care+</span></span>
+            </div>
+            <h1 class="auth-title">Welcome Back</h1>
+            <p class="auth-subtitle">Sign in to your healthcare account</p>
+        </div>
+
+        <!-- React Authentication Component will render here -->
+        <div id="react-auth-container"></div>
+
+        <div class="auth-footer">
+            <p>Secure healthcare management platform</p>
+            <div class="security-badges">
+                <span class="security-badge">🔒 SSL Encrypted</span>
+                <span class="security-badge">🛡️ HIPAA Compliant</span>
+                <span class="security-badge">✅ SOC 2 Certified</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- React Authentication System -->
+    <script>
+        // React Authentication System for MediCare+ (Embedded in existing HTML)
+        const { React, ReactDOM } = window;
+        const { useState, useEffect, useContext, createContext, useCallback } = React;
+
+        // Supabase configuration
+        const SUPABASE_URL = 'https://gcggnrwqilylyykppizb.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjZ2ducndxaWx5bHl5a3BwaXpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk0ODA1NjAsImV4cCI6MjA2NTA1NjU2MH0.9ayDDoyjUiYA3Hmir_A92U2i7QNkIuER-94kDNVVgoE';
+
+        // Initialize Supabase client
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Auth Context
+        const AuthContext = createContext(null);
+
+        // Auth Provider Component
+        const AuthProvider = ({ children }) => {
+            const [user, setUser] = useState(null);
+            const [loading, setLoading] = useState(true);
+
+            useEffect(() => {
+                // Get initial session
+                const getSession = async () => {
+                    const { data: { session } } = await supabase.auth.getSession();
+                    setUser(session?.user ?? null);
+                    setLoading(false);
+                };
+
+                getSession();
+
+                // Listen for auth changes
+                const { data: { subscription } } = supabase.auth.onAuthStateChange(
+                    async (event, session) => {
+                        setUser(session?.user ?? null);
+                        setLoading(false);
+                        
+                        // Redirect to dashboard on successful login
+                        if (event === 'SIGNED_IN' && session?.user) {
+                            setTimeout(() => {
+                                window.location.href = '/html/dashboard.html';
+                            }, 1000);
+                        }
+                        
+                        // Redirect to auth on logout
+                        if (event === 'SIGNED_OUT') {
+                            window.location.href = '/html/auth-react.html';
+                        }
+                    }
+                );
+
+                return () => subscription.unsubscribe();
+            }, []);
+
+            // Authentication methods
+            const signUp = useCallback(async (email, password, fullName) => {
+                try {
+                    const { data, error } = await supabase.auth.signUp({
+                        email,
+                        password,
+                        options: {
+                            data: {
+                                full_name: fullName,
+                            },
+                        },
+                    });
+
+                    if (error) throw error;
+                    return { success: true };
+                } catch (error) {
+                    return { success: false, error: error.message };
+                }
+            }, []);
+
+            const signIn = useCallback(async (email, password) => {
+                try {
+                    const { data, error } = await supabase.auth.signInWithPassword({
+                        email,
+                        password,
+                    });
+
+                    if (error) throw error;
+                    return { success: true };
+                } catch (error) {
+                    return { success: false, error: error.message };
+                }
+            }, []);
+
+            const signInWithOTP = useCallback(async (email) => {
+                try {
+                    const { data, error } = await supabase.auth.signInWithOtp({
+                        email,
+                        options: {
+                            shouldCreateUser: true,
+                        },
+                    });
+
+                    if (error) throw error;
+                    return { success: true };
+                } catch (error) {
+                    return { success: false, error: error.message };
+                }
+            }, []);
+
+            const signInWithGoogle = useCallback(async () => {
+                try {
+                    const { data, error } = await supabase.auth.signInWithOAuth({
+                        provider: 'google',
+                        options: {
+                            redirectTo: `${window.location.origin}/html/dashboard.html`,
+                        },
+                    });
+
+                    if (error) throw error;
+                    return { success: true };
+                } catch (error) {
+                    return { success: false, error: error.message };
+                }
+            }, []);
+
+            const signOut = useCallback(async () => {
+                await supabase.auth.signOut();
+            }, []);
+
+            return React.createElement(AuthContext.Provider, {
+                value: {
+                    user,
+                    loading,
+                    signUp,
+                    signIn,
+                    signInWithOTP,
+                    signInWithGoogle,
+                    signOut,
+                }
+            }, children);
+        };
+
+        // Hook to use auth context
+        const useAuth = () => {
+            const context = useContext(AuthContext);
+            if (!context) {
+                throw new Error('useAuth must be used within an AuthProvider');
+            }
+            return context;
+        };
+
+        // Sign In Form Component
+        const SignInForm = () => {
+            const { signIn, signInWithGoogle } = useAuth();
+            const [formData, setFormData] = useState({ email: '', password: '' });
+            const [showPassword, setShowPassword] = useState(false);
+            const [loading, setLoading] = useState(false);
+            const [error, setError] = useState('');
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setLoading(true);
+                setError('');
+
+                if (!formData.email || !formData.password) {
+                    setError('Please fill in all fields');
+                    setLoading(false);
+                    return;
+                }
+
+                const result = await signIn(formData.email, formData.password);
+                
+                if (!result.success) {
+                    setError(result.error || 'Sign in failed');
+                    setLoading(false);
+                }
+            };
+
+            const handleGoogleSignIn = async () => {
+                setLoading(true);
+                setError('');
+                const result = await signInWithGoogle();
+                if (!result.success) {
+                    setError(result.error || 'Google sign in failed');
+                    setLoading(false);
+                }
+            };
+
+            return React.createElement('form', { onSubmit: handleSubmit, className: 'auth-form active' },
+                React.createElement('div', { className: 'form-group' },
+                    React.createElement('label', null, 'Email Address'),
+                    React.createElement('input', {
+                        type: 'email',
+                        className: 'form-input',
+                        value: formData.email,
+                        onChange: (e) => {
+                            setFormData({ ...formData, email: e.target.value });
+                            setError('');
+                        },
+                        placeholder: 'Enter your email',
+                        required: true
+                    })
+                ),
+                React.createElement('div', { className: 'form-group' },
+                    React.createElement('label', null, 'Password'),
+                    React.createElement('div', { className: 'password-input-container' },
+                        React.createElement('input', {
+                            type: showPassword ? 'text' : 'password',
+                            className: 'form-input',
+                            value: formData.password,
+                            onChange: (e) => {
+                                setFormData({ ...formData, password: e.target.value });
+                                setError('');
+                            },
+                            placeholder: 'Enter your password',
+                            required: true
+                        }),
+                        React.createElement('i', {
+                            className: `bx ${showPassword ? 'bx-hide' : 'bx-show'} password-toggle`,
+                            onClick: () => setShowPassword(!showPassword)
+                        })
+                    )
+                ),
+                error && React.createElement('div', { className: 'error-message' }, error),
+                React.createElement('button', {
+                    type: 'submit',
+                    className: 'auth-button',
+                    disabled: loading
+                }, 
+                    loading && React.createElement('span', { className: 'loading-spinner' }),
+                    loading ? 'Signing In...' : 'Sign In'
+                ),
+                React.createElement('div', { className: 'divider' }, React.createElement('span', null, 'Or continue with')),
+                React.createElement('button', {
+                    type: 'button',
+                    className: 'google-auth-button',
+                    onClick: handleGoogleSignIn,
+                    disabled: loading
+                },
+                    React.createElement('i', { className: 'bx bxl-google', style: { fontSize: '20px', color: '#4285f4' } }),
+                    'Sign in with Google'
+                )
+            );
+        };
+
+        // Sign Up Form Component
+        const SignUpForm = () => {
+            const { signUp } = useAuth();
+            const [formData, setFormData] = useState({
+                fullName: '',
+                email: '',
+                password: '',
+                confirmPassword: ''
+            });
+            const [showPassword, setShowPassword] = useState(false);
+            const [loading, setLoading] = useState(false);
+            const [error, setError] = useState('');
+            const [success, setSuccess] = useState('');
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setLoading(true);
+                setError('');
+                setSuccess('');
+
+                if (!formData.fullName || !formData.email || !formData.password || !formData.confirmPassword) {
+                    setError('Please fill in all fields');
+                    setLoading(false);
+                    return;
+                }
+
+                if (formData.password !== formData.confirmPassword) {
+                    setError('Passwords do not match');
+                    setLoading(false);
+                    return;
+                }
+
+                if (formData.password.length < 6) {
+                    setError('Password must be at least 6 characters');
+                    setLoading(false);
+                    return;
+                }
+
+                const result = await signUp(formData.email, formData.password, formData.fullName);
+                
+                if (result.success) {
+                    setSuccess('Account created successfully! Please check your email to verify your account.');
+                    setFormData({ fullName: '', email: '', password: '', confirmPassword: '' });
+                } else {
+                    setError(result.error || 'Sign up failed');
+                }
+                
+                setLoading(false);
+            };
+
+            return React.createElement('form', { onSubmit: handleSubmit, className: 'auth-form' },
+                React.createElement('div', { className: 'form-group' },
+                    React.createElement('label', null, 'Full Name'),
+                    React.createElement('input', {
+                        type: 'text',
+                        className: 'form-input',
+                        value: formData.fullName,
+                        onChange: (e) => setFormData({ ...formData, fullName: e.target.value }),
+                        placeholder: 'Enter your full name',
+                        required: true
+                    })
+                ),
+                React.createElement('div', { className: 'form-group' },
+                    React.createElement('label', null, 'Email Address'),
+                    React.createElement('input', {
+                        type: 'email',
+                        className: 'form-input',
+                        value: formData.email,
+                        onChange: (e) => setFormData({ ...formData, email: e.target.value }),
+                        placeholder: 'Enter your email',
+                        required: true
+                    })
+                ),
+                React.createElement('div', { className: 'form-group' },
+                    React.createElement('label', null, 'Password'),
+                    React.createElement('div', { className: 'password-input-container' },
+                        React.createElement('input', {
+                            type: showPassword ? 'text' : 'password',
+                            className: 'form-input',
+                            value: formData.password,
+                            onChange: (e) => setFormData({ ...formData, password: e.target.value }),
+                            placeholder: 'Create a password',
+                            required: true
+                        }),
+                        React.createElement('i', {
+                            className: `bx ${showPassword ? 'bx-hide' : 'bx-show'} password-toggle`,
+                            onClick: () => setShowPassword(!showPassword)
+                        })
+                    )
+                ),
+                React.createElement('div', { className: 'form-group' },
+                    React.createElement('label', null, 'Confirm Password'),
+                    React.createElement('input', {
+                        type: showPassword ? 'text' : 'password',
+                        className: 'form-input',
+                        value: formData.confirmPassword,
+                        onChange: (e) => setFormData({ ...formData, confirmPassword: e.target.value }),
+                        placeholder: 'Confirm your password',
+                        required: true
+                    })
+                ),
+                error && React.createElement('div', { className: 'error-message' }, error),
+                success && React.createElement('div', { className: 'success-message' }, success),
+                React.createElement('button', {
+                    type: 'submit',
+                    className: 'auth-button',
+                    disabled: loading
+                }, 
+                    loading && React.createElement('span', { className: 'loading-spinner' }),
+                    loading ? 'Creating Account...' : 'Create Account'
+                )
+            );
+        };
+
+        // OTP Form Component
+        const OTPForm = ({ onOTPSent }) => {
+            const { signInWithOTP } = useAuth();
+            const [email, setEmail] = useState('');
+            const [loading, setLoading] = useState(false);
+            const [error, setError] = useState('');
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setLoading(true);
+                setError('');
+
+                if (!email) {
+                    setError('Please enter your email address');
+                    setLoading(false);
+                    return;
+                }
+
+                const result = await signInWithOTP(email);
+                
+                if (result.success) {
+                    // Redirect to OTP verification page
+                    window.location.href = `/html/auth-otp.html?email=${encodeURIComponent(email)}`;
+                } else {
+                    setError(result.error || 'Failed to send verification code');
+                    setLoading(false);
+                }
+            };
+
+            return React.createElement('form', { onSubmit: handleSubmit, className: 'auth-form' },
+                React.createElement('div', { style: { textAlign: 'center', marginBottom: '30px' } },
+                    React.createElement('h3', { style: { color: '#333', marginBottom: '10px' } }, '📧 Email Verification'),
+                    React.createElement('p', { style: { color: '#666', fontSize: '14px' } }, 'Enter your email address and we\'ll send you a 6-digit verification code.')
+                ),
+                React.createElement('div', { className: 'form-group' },
+                    React.createElement('label', null, 'Email Address'),
+                    React.createElement('input', {
+                        type: 'email',
+                        className: 'form-input',
+                        value: email,
+                        onChange: (e) => {
+                            setEmail(e.target.value);
+                            setError('');
+                        },
+                        placeholder: 'Enter your email',
+                        required: true
+                    })
+                ),
+                error && React.createElement('div', { className: 'error-message' }, error),
+                React.createElement('button', {
+                    type: 'submit',
+                    className: 'auth-button',
+                    disabled: loading
+                }, 
+                    loading && React.createElement('span', { className: 'loading-spinner' }),
+                    loading ? 'Sending Code...' : '📤 Send Verification Code'
+                )
+            );
+        };
+
+        // Main Auth App Component
+        const AuthApp = () => {
+            const [activeTab, setActiveTab] = useState('signin');
+
+            return React.createElement(AuthProvider, null,
+                React.createElement('div', { className: 'auth-tabs' },
+                    React.createElement('div', {
+                        className: `auth-tab ${activeTab === 'signin' ? 'active' : ''}`,
+                        onClick: () => setActiveTab('signin')
+                    }, 'Sign In'),
+                    React.createElement('div', {
+                        className: `auth-tab ${activeTab === 'signup' ? 'active' : ''}`,
+                        onClick: () => setActiveTab('signup')
+                    }, 'Sign Up'),
+                    React.createElement('div', {
+                        className: `auth-tab ${activeTab === 'otp' ? 'active' : ''}`,
+                        onClick: () => setActiveTab('otp')
+                    }, 'Email OTP')
+                ),
+                React.createElement('div', { className: 'auth-content' },
+                    activeTab === 'signin' && React.createElement(SignInForm),
+                    activeTab === 'signup' && React.createElement(SignUpForm),
+                    activeTab === 'otp' && React.createElement(OTPForm)
+                )
+            );
+        };
+
+        // Initialize the React app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            const authContainer = document.getElementById('react-auth-container');
+            if (authContainer) {
+                const root = ReactDOM.createRoot(authContainer);
+                root.render(React.createElement(AuthApp));
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Medicare Web App</title>
+    <title>Dashboard - MediCare+</title>
     
     <!-- Boxicons CSS -->
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
         * {
@@ -401,66 +404,67 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.4/dist/umd/supabase.min.js"></script>
     
     <!-- Our JS modules -->
+    <script src="/js/supabaseClient.js"></script>
     <script src="/js/db.js"></script>
+    <script src="/js/auth.js"></script>
     
     <script>
+        let authManager;
+
         // Initialize dashboard
         document.addEventListener('DOMContentLoaded', async function() {
-            await initDashboard()
-        })
+            authManager = new AuthManager();
+            await initDashboard();
+        });
 
         async function initDashboard() {
             try {
-                const supabase = window.supabaseClient
-                const { data: { session } } = await supabase.auth.getSession()
+                // Check authentication
+                const isAuthenticated = await authManager.isAuthenticated();
                 
-                if (!session) {
-                    window.location.href = '/html/auth.html'
-                    return
+                if (!isAuthenticated) {
+                    window.location.href = '/html/auth.html';
+                    return;
                 }
 
-                // Load user profile
-                const dbClient = new DatabaseClient()
-                const profile = await dbClient.getUserProfile(session.user.id)
+                // Load user data
+                const user = authManager.getCurrentUser();
+                const profile = authManager.getUserProfile();
                 
-                if (profile) {
+                if (user) {
                     // Update user info in header
-                    document.getElementById('user-name').textContent = profile.full_name || session.user.email
+                    const displayName = profile?.full_name || user.user_metadata?.full_name || user.email;
+                    document.getElementById('user-name').textContent = displayName;
                     
                     // Set user initials or profile picture
-                    const userAvatar = document.getElementById('user-avatar')
-                    const userInitials = document.getElementById('user-initials')
+                    const userAvatar = document.getElementById('user-avatar');
+                    const userInitials = document.getElementById('user-initials');
                     
-                    if (profile.profile_image_url) {
-                        userAvatar.innerHTML = `<img src="${profile.profile_image_url}" alt="Profile">`
+                    const avatarUrl = profile?.avatar_url || user.user_metadata?.avatar_url;
+                    if (avatarUrl) {
+                        userAvatar.innerHTML = `<img src="${avatarUrl}" alt="Profile" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
                     } else {
-                        const initials = (profile.full_name || session.user.email)
+                        const initials = displayName
                             .split(' ')
                             .map(name => name.charAt(0))
                             .join('')
                             .toUpperCase()
-                            .substring(0, 2)
-                        userInitials.textContent = initials
+                            .substring(0, 2);
+                        userInitials.textContent = initials;
                     }
-                } else {
-                    // No profile found, redirect to signup
-                    window.location.href = '/html/signup.html'
                 }
             } catch (error) {
-                console.error('Dashboard initialization error:', error)
-                window.location.href = '/html/auth.html'
+                console.error('Dashboard initialization error:', error);
+                window.location.href = '/html/auth.html';
             }
         }
 
         async function signOut() {
-            try {
-                const supabase = window.supabaseClient
-                const { error } = await supabase.auth.signOut()
-                if (error) throw error
-                window.location.href = '/html/auth.html'
-            } catch (error) {
-                console.error('Sign out error:', error)
-                alert('Failed to sign out. Please try again.')
+            if (authManager) {
+                const success = await authManager.signOut();
+                if (success) {
+                    window.location.href = '/html/index.html';
+                }
             }
         }
     </script>

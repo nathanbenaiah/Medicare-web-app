@@ -1916,6 +1916,7 @@ body {
     display: flex;
     gap: 1rem;
     margin-top: 1rem;
+    justify-content: center;
 }
 
 .social-icons a {
@@ -1955,5 +1956,197 @@ body {
     .footer-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 1.5rem;
+    }
+}
+
+/* Modern Footer Styles */
+.modern-footer {
+    background: var(--text-primary);
+    color: white;
+    padding: 3rem 0 1rem;
+    margin-top: auto;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.footer-main {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.footer-section h4 {
+    margin-bottom: 1.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: white;
+}
+
+.footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.footer-links a {
+    color: var(--text-light);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    padding: 0.25rem 0;
+}
+
+.footer-links a:hover {
+    color: white;
+    transform: translateX(5px);
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 2rem;
+    border-top: 1px solid var(--text-secondary);
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.footer-brand i {
+    color: var(--primary-color);
+}
+
+.brand-accent {
+    color: var(--primary-color);
+}
+
+.footer-copyright {
+    color: var(--text-light);
+    font-size: 0.875rem;
+}
+
+/* Mobile Footer Responsiveness */
+@media (max-width: 768px) {
+    .modern-footer {
+        padding: 2rem 0 1rem;
+    }
+    
+    .footer-main {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        text-align: center;
+    }
+    
+    .footer-section {
+        align-items: center;
+    }
+    
+    .footer-section h4 {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+    
+    .footer-links {
+        align-items: center;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .footer-brand {
+        justify-content: center;
+    }
+    
+    .footer-copyright {
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer-main {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .footer-section h4 {
+        font-size: 1rem;
+    }
+    
+    .footer-links a {
+        font-size: 0.875rem;
+    }
+    
+    .footer-brand {
+        font-size: 1.1rem;
+    }
+    
+    .footer-copyright {
+        font-size: 0.8rem;
+    }
+}
+
+/* General Mobile Responsiveness Enhancements */
+@media (max-width: 768px) {
+    .container, .footer-container {
+        padding: 0 1rem;
+    }
+    
+    body {
+        font-size: 0.9rem;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .section-subtitle {
+        font-size: 1rem;
+    }
+    
+    /* Ensure content doesn't get too cramped */
+    .main-content {
+        padding-top: 1rem;
+        min-height: calc(100vh - 120px);
+    }
+    
+    /* Better touch targets for mobile */
+    button, .btn, a {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* Improved form elements for mobile */
+    input, textarea, select {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+}
+
+@media (max-width: 480px) {
+    .container, .footer-container {
+        padding: 0 0.75rem;
+    }
+    
+    body {
+        font-size: 0.85rem;
+    }
+    
+    .section-title {
+        font-size: 1.75rem;
+    }
+    
+    .section-subtitle {
+        font-size: 0.95rem;
     }
 }

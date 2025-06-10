@@ -10,19 +10,30 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 // Export for use in other files
 window.supabaseClient = supabase
 
+// Flag to control automatic redirects (can be set by auth pages)
+window.disableAutoRedirect = false
+
 // Auth state change listener
 supabase.auth.onAuthStateChange((event, session) => {
-    console.log('Auth event:', event)
+    console.log('Auth event:', event, session?.user?.email)
     
-    if (event === 'SIGNED_IN') {
-        console.log('User signed in:', session.user)
-        // Redirect to dashboard if not already there
-        if (!window.location.pathname.includes('dashboard')) {
+    // Don't redirect if auto-redirect is disabled (e.g., during OTP flow)
+    if (window.disableAutoRedirect) {
+        console.log('Auto-redirect disabled, skipping redirect')
+        return
+    }
+    
+    if (event === 'SIGNED_IN' && session) {
+        console.log('User signed in:', session.user.email)
+        // Only redirect to dashboard if not already there and not on auth-otp page
+        if (!window.location.pathname.includes('dashboard') && 
+            !window.location.pathname.includes('auth-otp')) {
+            console.log('Redirecting to dashboard...')
             window.location.href = '/html/dashboard.html'
         }
     } else if (event === 'SIGNED_OUT') {
         console.log('User signed out')
-        // Redirect to home page
+        // Redirect to home page only if currently on dashboard
         if (window.location.pathname.includes('dashboard')) {
             window.location.href = '/html/index.html'
         }

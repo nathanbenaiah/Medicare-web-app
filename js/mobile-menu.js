@@ -41,10 +41,14 @@ class MobileMenuManager {
     }
 
     bindEvents() {
+        // Remove touch vibration/haptic feedback
+        this.removeTouchFeedback();
+        
         // Mobile toggle button
         if (this.mobileToggle) {
             this.mobileToggle.addEventListener('click', (e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 this.toggle();
             });
         }
@@ -214,6 +218,38 @@ class MobileMenuManager {
             if (window.innerWidth > 768 && this.isOpen) {
                 this.close();
             }
+        });
+    }
+
+    removeTouchFeedback() {
+        // Disable vibration and haptic feedback
+        const elements = [
+            this.mobileToggle,
+            this.mobileMenu,
+            ...document.querySelectorAll('.mobile-nav-link'),
+            ...document.querySelectorAll('.mobile-close')
+        ].filter(el => el); // Remove null/undefined elements
+
+        elements.forEach(element => {
+            // Disable touch vibration
+            element.style.webkitTouchCallout = 'none';
+            element.style.webkitUserSelect = 'none';
+            element.style.userSelect = 'none';
+            element.style.webkitTapHighlightColor = 'transparent';
+            
+            // Disable haptic feedback on touch
+            element.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                // Disable any potential vibration
+                if (navigator.vibrate) {
+                    navigator.vibrate(0);
+                }
+            }, { passive: false });
+            
+            // Disable context menu
+            element.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+            });
         });
     }
 

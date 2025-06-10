@@ -105,6 +105,200 @@ class AuthManager {
         }
     }
 
+    // Email Sign Up
+    async signUpWithEmail(email, password, fullName) {
+        try {
+            this.showLoading('Creating your account...')
+            
+            const { data, error } = await this.supabase.auth.signUp({
+                email: email,
+                password: password,
+                options: {
+                    data: {
+                        full_name: fullName,
+                    }
+                }
+            })
+
+            if (error) {
+                throw error
+            }
+
+            if (data.user && !data.session) {
+                // Email confirmation required
+                this.showSuccess('Please check your email and click the confirmation link to complete your registration.')
+                return { success: true, needsConfirmation: true }
+            }
+
+            return { success: true, needsConfirmation: false }
+        } catch (error) {
+            console.error('Email sign-up error:', error)
+            this.showError(error.message || 'Failed to create account. Please try again.')
+            return { success: false, error: error.message }
+        } finally {
+            this.hideLoading()
+        }
+    }
+
+    // Email Sign In (Traditional)
+    async signInWithEmail(email, password) {
+        try {
+            this.showLoading('Signing you in...')
+            
+            const { data, error } = await this.supabase.auth.signInWithPassword({
+                email: email,
+                password: password,
+            })
+
+            if (error) {
+                throw error
+            }
+
+            return { success: true }
+        } catch (error) {
+            console.error('Email sign-in error:', error)
+            this.showError(error.message || 'Failed to sign in. Please check your credentials.')
+            return { success: false, error: error.message }
+        } finally {
+            this.hideLoading()
+        }
+    }
+
+    // Email OTP Sign In (Step 1: Send OTP)
+    async signInWithOTP(email, shouldCreateUser = true) {
+        try {
+            this.showLoading('Sending verification code...')
+            
+            const { data, error } = await this.supabase.auth.signInWithOtp({
+                email: email,
+                options: {
+                    shouldCreateUser: shouldCreateUser,
+                    data: {
+                        // You can add additional metadata here if needed
+                    }
+                }
+            })
+
+            if (error) {
+                throw error
+            }
+
+            this.showSuccess('Verification code sent! Please check your email.')
+            return { success: true, needsVerification: true }
+        } catch (error) {
+            console.error('OTP send error:', error)
+            this.showError(error.message || 'Failed to send verification code. Please try again.')
+            return { success: false, error: error.message }
+        } finally {
+            this.hideLoading()
+        }
+    }
+
+    // Email OTP Verify (Step 2: Verify OTP)
+    async verifyOTP(email, token) {
+        try {
+            this.showLoading('Verifying code...')
+            
+            const { data: { session }, error } = await this.supabase.auth.verifyOtp({
+                email: email,
+                token: token,
+                type: 'email'
+            })
+
+            if (error) {
+                throw error
+            }
+
+            if (session) {
+                this.showSuccess('Code verified successfully!')
+                return { success: true, session: session }
+            } else {
+                throw new Error('No session created after verification')
+            }
+        } catch (error) {
+            console.error('OTP verify error:', error)
+            this.showError(error.message || 'Invalid verification code. Please try again.')
+            return { success: false, error: error.message }
+        } finally {
+            this.hideLoading()
+        }
+    }
+
+    // Resend OTP
+    async resendOTP(email) {
+        try {
+            this.showLoading('Resending verification code...')
+            
+            const { data, error } = await this.supabase.auth.signInWithOtp({
+                email: email,
+                options: {
+                    shouldCreateUser: false // Don't create new user on resend
+                }
+            })
+
+            if (error) {
+                throw error
+            }
+
+            this.showSuccess('New verification code sent!')
+            return { success: true }
+        } catch (error) {
+            console.error('OTP resend error:', error)
+            this.showError(error.message || 'Failed to resend verification code.')
+            return { success: false, error: error.message }
+        } finally {
+            this.hideLoading()
+        }
+    }
+
+    // Password Reset
+    async resetPassword(email) {
+        try {
+            this.showLoading('Sending password reset email...')
+            
+            const { error } = await this.supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: `${window.location.origin}/html/auth.html?mode=reset`,
+            })
+
+            if (error) {
+                throw error
+            }
+
+            this.showSuccess('Password reset email sent! Please check your inbox.')
+            return { success: true }
+        } catch (error) {
+            console.error('Password reset error:', error)
+            this.showError(error.message || 'Failed to send password reset email.')
+            return { success: false, error: error.message }
+        } finally {
+            this.hideLoading()
+        }
+    }
+
+    // Update Password (for password reset)
+    async updatePassword(newPassword) {
+        try {
+            this.showLoading('Updating your password...')
+            
+            const { error } = await this.supabase.auth.updateUser({
+                password: newPassword
+            })
+
+            if (error) {
+                throw error
+            }
+
+            this.showSuccess('Password updated successfully!')
+            return { success: true }
+        } catch (error) {
+            console.error('Password update error:', error)
+            this.showError(error.message || 'Failed to update password.')
+            return { success: false, error: error.message }
+        } finally {
+            this.hideLoading()
+        }
+    }
+
     // Google OAuth Sign In
     async signInWithGoogle() {
         try {
