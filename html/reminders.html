@@ -1,0 +1,2031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medication Reminders - MediCare+</title>
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="/css/mobile-responsive.css">
+    <link rel="stylesheet" href="/css/reminders.css">
+    <link rel="stylesheet" href="/css/modern.css">
+    <link rel="stylesheet" href="/css/buttons.css">
+    <link rel="stylesheet" href="/css/style.css">
+    
+    <style>
+        /* Modern Navigation Styles */
+        .modern-navbar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 60px;
+            padding: 12px 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            max-width: 90vw;
+        }
+
+        .modern-navbar:hover {
+            transform: translateX(-50%) translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .navbar-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #1a1a1a;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            transform: scale(1.05);
+        }
+
+        .navbar-brand i {
+            font-size: 1.8rem;
+            color: #007BFF;
+            filter: drop-shadow(0 0 8px rgba(0, 123, 255, 0.3));
+        }
+
+        .brand-accent {
+            color: #007BFF;
+            filter: drop-shadow(0 0 4px rgba(0, 123, 255, 0.2));
+        }
+
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: #6b7280;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 12px 16px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0, 123, 255, 0.1), rgba(0, 86, 179, 0.1));
+            opacity: 0;
+            transition: all 0.3s ease;
+            border-radius: 30px;
+        }
+
+        .nav-link:hover::before {
+            opacity: 1;
+        }
+
+        .nav-link:hover {
+            color: #007BFF;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.2);
+            filter: drop-shadow(0 0 12px rgba(0, 123, 255, 0.3));
+        }
+
+        .nav-link i {
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover i {
+            filter: drop-shadow(0 0 8px rgba(0, 123, 255, 0.4));
+        }
+
+        .navbar-auth {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .google-sign-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 14px 48px;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+            min-width: 160px;
+            justify-content: center;
+        }
+
+        .google-sign-btn:hover {
+            background: linear-gradient(135deg, #0056b3, #003d82);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+            filter: drop-shadow(0 0 12px rgba(0, 123, 255, 0.5));
+        }
+
+        .google-sign-btn i {
+            font-size: 1.1rem;
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 0.25rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-toggle span {
+            width: 24px;
+            height: 3px;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-toggle:hover span {
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+        }
+
+        /* Mobile Fullscreen Menu */
+        .mobile-menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(0, 123, 255, 0.95), rgba(0, 86, 179, 0.95));
+            backdrop-filter: blur(20px);
+            z-index: 9999;
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+
+        .mobile-menu-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .mobile-menu-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            color: white;
+        }
+
+        .mobile-menu-brand {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .mobile-menu-brand i {
+            font-size: 3rem;
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.5));
+        }
+
+        .mobile-nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .mobile-nav-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            color: white;
+            text-decoration: none;
+            font-size: 1.3rem;
+            font-weight: 600;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-width: 250px;
+        }
+
+        .mobile-nav-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .mobile-nav-link i {
+            font-size: 1.5rem;
+        }
+
+        .mobile-google-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            text-decoration: none;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            min-width: 250px;
+            justify-content: center;
+        }
+
+        .mobile-google-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .mobile-close {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+            border-radius: 50%;
+        }
+
+        .mobile-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .navbar-nav {
+                gap: 0.3rem;
+            }
+            
+            .nav-link span {
+                display: none;
+            }
+            
+            .nav-link {
+                padding: 10px;
+                border-radius: 50%;
+                width: 45px;
+                height: 45px;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar-nav,
+            .navbar-auth {
+                display: none;
+            }
+            
+            .mobile-toggle {
+                display: flex;
+            }
+            
+            .modern-navbar {
+                top: 15px;
+                left: 15px;
+                right: 15px;
+                transform: none;
+                border-radius: 25px;
+                padding: 15px 20px;
+            }
+        }
+
+        /* Active States */
+        .nav-link.active {
+            color: #007BFF;
+            background: rgba(0, 123, 255, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+        }
+
+        .nav-link.active::before {
+            opacity: 1;
+        }
+
+        /* Modern Footer Styles */
+        .modern-footer {
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            color: #ffffff;
+            margin-top: 5rem;
+            padding: 4rem 0 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modern-footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -50%;
+            width: 200%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #007BFF, transparent);
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .footer-main {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 300px;
+            gap: 3rem;
+            margin-bottom: 3rem;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-section h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .footer-section h4::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .footer-links a {
+            color: #b3b3b3;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            padding: 0.2rem 0;
+        }
+
+        .footer-links a:hover {
+            color: #007BFF;
+            transform: translateX(5px);
+            filter: drop-shadow(0 0 5px rgba(0, 123, 255, 0.3));
+        }
+
+        .footer-contact {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1.3rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .social-link.facebook { color: #1877f2; }
+        .social-link.twitter { color: #1da1f2; }
+        .social-link.linkedin { color: #0077b5; }
+        .social-link.youtube { color: #ff0000; }
+
+        .social-link:hover {
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .contact-info p {
+            color: #b3b3b3;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-phone {
+            color: #007BFF;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .footer-brand i {
+            font-size: 2.4rem;
+            color: #007BFF;
+            filter: drop-shadow(0 0 8px rgba(0, 123, 255, 0.3));
+        }
+
+        .footer-copyright {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        /* Footer Responsive Design */
+        @media (max-width: 1024px) {
+            .footer-main {
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
+            }
+            
+            .footer-contact {
+                grid-column: span 2;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .footer-main {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                text-align: center;
+            }
+            
+            .footer-contact {
+                grid-column: span 1;
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        /* Existing page styles */
+        body {
+            background: #f8fafc;
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Page Hero Section Styles */
+        .page-hero {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e2e8f0 100%);
+            padding: 140px 2rem 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .page-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(0, 123, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 86, 179, 0.08) 0%, transparent 50%);
+        }
+
+        .hero-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: #6c757d;
+            font-weight: 400;
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .hero-features {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-feature {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem 1.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 123, 255, 0.1);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.1);
+        }
+
+        .hero-feature:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 123, 255, 0.3);
+            box-shadow: 0 8px 30px rgba(0, 123, 255, 0.3);
+            background: linear-gradient(135deg, rgba(0, 123, 255, 0.1), rgba(0, 86, 179, 0.05));
+        }
+
+        .hero-feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #007BFF, #66b3ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .hero-feature-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #212529;
+            text-align: center;
+        }
+
+        /* Responsive Hero */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-features {
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+            }
+            
+            .hero-feature {
+                padding: 1.5rem 1rem;
+            }
+            
+            .hero-feature-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 16px;
+            min-height: 100vh;
+        }
+
+        /* Add Reminder Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 10000;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #212529;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6c757d;
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+            border-radius: 50%;
+        }
+
+        .modal-close:hover {
+            background: #f8f9fa;
+            color: #007BFF;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #007BFF;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .time-input-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .time-input {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .frequency-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .frequency-option {
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .frequency-option:hover {
+            border-color: #007BFF;
+            background: #f8f9ff;
+        }
+
+        .frequency-option.selected {
+            border-color: #007BFF;
+            background: #007BFF;
+            color: white;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .btn-cancel {
+            padding: 12px 24px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel:hover {
+            background: #5a6268;
+        }
+
+        .btn-save {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-save:hover {
+            background: linear-gradient(135deg, #0056b3, #003d82);
+            transform: translateY(-2px);
+        }
+
+        /* Enhanced Reminders Styles */
+        .reminders-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #6c757d;
+            border: 2px solid #e9ecef;
+        }
+
+        .btn-secondary.active,
+        .btn-secondary:hover {
+            background: #007BFF;
+            color: white;
+            border-color: #007BFF;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #0056b3, #003d82);
+            transform: translateY(-2px);
+        }
+
+        .reminder-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid #f0f0f0;
+            transition: all 0.3s ease;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .reminder-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.15);
+            border-color: rgba(0, 123, 255, 0.2);
+        }
+
+        .reminder-type {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .reminder-type.medication {
+            background: linear-gradient(135deg, #007BFF, #66b3ff);
+        }
+
+        .reminder-type.appointment {
+            background: linear-gradient(135deg, #28a745, #34d058);
+        }
+
+        .reminder-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .reminder-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            gap: 1rem;
+        }
+
+        .reminder-header h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #212529;
+            margin: 0;
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        .badge.active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge.upcoming {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .reminder-details p {
+            margin: 0.25rem 0;
+            color: #6c757d;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .reminder-progress {
+            margin-top: 1rem;
+        }
+
+        .progress-text {
+            font-size: 0.8rem;
+            color: #007BFF;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(135deg, #007BFF, #66b3ff);
+            transition: width 0.3s ease;
+        }
+
+        .reminder-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: #f8f9fa;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .btn-icon:hover {
+            background: #007BFF;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* Mobile Responsive Enhancements */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 12px;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+                margin-bottom: 1rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+                margin-bottom: 2rem;
+            }
+
+            .hero-features {
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+            }
+
+            .reminders-controls {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+
+            .filter-controls {
+                justify-content: center;
+            }
+
+            .btn {
+                padding: 12px 16px;
+                font-size: 0.85rem;
+            }
+
+            .reminder-card {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .reminder-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .reminder-actions {
+                align-self: flex-end;
+                margin-top: 1rem;
+            }
+
+            .modal-content {
+                margin: 10px;
+                padding: 1.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .frequency-options {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn-cancel,
+            .btn-save {
+                width: 100%;
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-features {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-controls {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 0.5rem;
+                width: 100%;
+            }
+
+            .reminder-type {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+
+            .reminder-header h4 {
+                font-size: 1rem;
+            }
+
+            .reminder-actions {
+                gap: 0.25rem;
+            }
+
+            .btn-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Modern Navigation -->
+    <nav class="modern-navbar">
+        <div class="navbar-container">
+            <!-- Brand Logo -->
+            <a href="index.html" class="navbar-brand">
+                <i class="bx bx-health"></i>
+                <span>MediCare<span class="brand-accent">+</span></span>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="navbar-nav">
+                <a href="index.html" class="nav-link" data-page="index">
+                    <i class="bx bx-home-alt"></i>
+                    <span>Home</span>
+                </a>
+                <a href="schedule.html" class="nav-link" data-page="schedule">
+                    <i class="bx bx-calendar"></i>
+                    <span>Schedule</span>
+                </a>
+                <a href="reminders.html" class="nav-link active" data-page="reminders">
+                    <i class="bx bx-bell"></i>
+                    <span>Reminders</span>
+                </a>
+                <a href="appointments.html" class="nav-link" data-page="appointments">
+                    <i class="bx bx-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+                <a href="blog.html" class="nav-link" data-page="blog">
+                    <i class="bx bx-book-open"></i>
+                    <span>Blog</span>
+                </a>
+            </div>
+
+            <!-- Auth Section -->
+            <div class="navbar-auth">
+                <a href="auth.html" class="google-sign-btn">
+                    <i class="bx bx-user"></i>
+                    <span>Get Started</span>
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-toggle" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Fullscreen Menu -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+        <div class="mobile-menu-content">
+            <button class="mobile-close" onclick="toggleMobileMenu()">
+                <i class="bx bx-x"></i>
+            </button>
+            
+            <div class="mobile-menu-brand">
+                <i class="bx bx-health"></i>
+                <span>MediCare<span class="brand-accent">+</span></span>
+            </div>
+            
+            <div class="mobile-nav-links">
+                <a href="index.html" class="mobile-nav-link">
+                    <i class="bx bx-home-alt"></i>
+                    <span>Home</span>
+                </a>
+                <a href="schedule.html" class="mobile-nav-link">
+                    <i class="bx bx-calendar"></i>
+                    <span>Schedule</span>
+                </a>
+                <a href="reminders.html" class="mobile-nav-link">
+                    <i class="bx bx-bell"></i>
+                    <span>Reminders</span>
+                </a>
+                <a href="appointments.html" class="mobile-nav-link">
+                    <i class="bx bx-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+                            <a href="blog.html" class="mobile-nav-link">
+                <i class="bx bx-book-open"></i>
+                <span>Blog</span>
+            </a>
+            </div>
+            
+            <a href="auth.html" class="mobile-google-btn">
+                <i class="bx bx-user"></i>
+                <span>Get Started</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Page Hero Section -->
+    <section class="page-hero">
+        <div class="hero-container">
+            <h1 class="hero-title">Medication Reminders</h1>
+            <p class="hero-subtitle">Never miss your medication again with our smart reminder system designed for Sri Lankan families</p>
+            
+            <div class="hero-features">
+                <div class="hero-feature">
+                    <div class="hero-feature-icon">
+                        <i class="fas fa-pills"></i>
+                    </div>
+                    <h4 class="hero-feature-title">Smart Scheduling</h4>
+                </div>
+                <div class="hero-feature">
+                    <div class="hero-feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h4 class="hero-feature-title">Timely Alerts</h4>
+                </div>
+                <div class="hero-feature">
+                    <div class="hero-feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h4 class="hero-feature-title">Progress Tracking</h4>
+                </div>
+                <div class="hero-feature">
+                    <div class="hero-feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h4 class="hero-feature-title">Family Support</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <!-- Add Reminder Modal -->
+        <div class="modal-overlay" id="addReminderModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Add Medicine Reminder</h3>
+                    <button class="modal-close" onclick="closeAddReminderModal()">
+                        <i class="bx bx-x"></i>
+                    </button>
+                </div>
+                
+                <form id="reminderForm">
+                    <div class="form-group">
+                        <label class="form-label">Medicine Name *</label>
+                        <input type="text" class="form-control" id="medicineName" placeholder="e.g., Lisinopril, Metformin" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Dosage *</label>
+                            <input type="text" class="form-control" id="dosage" placeholder="e.g., 10mg" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Quantity *</label>
+                            <input type="number" class="form-control" id="quantity" placeholder="e.g., 1" min="1" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Frequency *</label>
+                        <div class="frequency-options">
+                            <div class="frequency-option" data-value="once">Once Daily</div>
+                            <div class="frequency-option" data-value="twice">Twice Daily</div>
+                            <div class="frequency-option" data-value="three">Three Times</div>
+                            <div class="frequency-option" data-value="custom">Custom</div>
+                        </div>
+                        <input type="hidden" id="frequency" required>
+                    </div>
+                    
+                    <div class="form-group" id="timesGroup">
+                        <label class="form-label">Reminder Times *</label>
+                        <div class="time-input-group" id="timeInputs">
+                            <input type="time" class="form-control time-input" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Start Date *</label>
+                        <input type="date" class="form-control" id="startDate" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">End Date (Optional)</label>
+                        <input type="date" class="form-control" id="endDate">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Notes (Optional)</label>
+                        <textarea class="form-control" id="notes" rows="3" placeholder="Additional instructions or notes..."></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" onclick="closeAddReminderModal()">Cancel</button>
+                        <button type="submit" class="btn-save">Save Reminder</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Reminders Content -->
+        <div class="reminders-wrapper" data-animate="fadeIn">
+            <!-- Reminders Controls -->
+            <div class="reminders-controls">
+                <div class="filter-controls">
+                    <button class="btn btn-secondary active" data-filter="all">All</button>
+                    <button class="btn btn-secondary" data-filter="medications">Medications</button>
+                    <button class="btn btn-secondary" data-filter="appointments">Appointments</button>
+                </div>
+                <button class="btn btn-primary" onclick="openAddReminderModal()">
+                    <i class="bx bx-plus"></i>
+                    Add Reminder
+                </button>
+            </div>
+
+            <!-- My Reminders -->
+            <div class="reminders-section" id="myRemindersSection" style="display: none;">
+                <h3>My Medication Reminders</h3>
+                <div class="reminder-list" id="myRemindersList">
+                    <!-- Dynamic reminders will be added here -->
+                </div>
+            </div>
+
+            <!-- Sample Medication Reminders -->
+            <div class="reminders-section medication-section">
+                <h3>Active Medication Reminders</h3>
+                <div class="reminder-list">
+                    <div class="reminder-card">
+                        <div class="reminder-type medication">
+                            <i class="bx bx-capsule"></i>
+                        </div>
+                        <div class="reminder-details">
+                            <div class="reminder-header">
+                                <h4>Lisinopril</h4>
+                                <span class="badge active">Active</span>
+                            </div>
+                            <p class="dosage"><i class="bx bx-dots-horizontal-rounded"></i> 10mg - 1 tablet</p>
+                            <p class="schedule"><i class="bx bx-time"></i> Daily at 8:00 AM</p>
+                            <div class="reminder-progress">
+                                <span class="progress-text">Next dose in 2 hours</span>
+                                <div class="progress-bar">
+                                    <div class="progress" style="width: 75%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="reminder-actions">
+                            <button class="btn btn-icon" title="Take Now"><i class="bx bx-check"></i></button>
+                            <button class="btn btn-icon" title="Skip"><i class="bx bx-x"></i></button>
+                            <button class="btn btn-icon" title="Edit"><i class="bx bx-edit"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="reminder-card">
+                        <div class="reminder-type medication">
+                            <i class="bx bx-capsule"></i>
+                        </div>
+                        <div class="reminder-details">
+                            <div class="reminder-header">
+                                <h4>Metformin</h4>
+                                <span class="badge active">Active</span>
+                            </div>
+                            <p class="dosage"><i class="bx bx-dots-horizontal-rounded"></i> 500mg - 2 tablets</p>
+                            <p class="schedule"><i class="bx bx-time"></i> Twice daily at 9:00 AM and 9:00 PM</p>
+                            <div class="reminder-progress">
+                                <span class="progress-text">Next dose in 5 hours</span>
+                                <div class="progress-bar">
+                                    <div class="progress" style="width: 60%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="reminder-actions">
+                            <button class="btn btn-icon" title="Take Now"><i class="bx bx-check"></i></button>
+                            <button class="btn btn-icon" title="Skip"><i class="bx bx-x"></i></button>
+                            <button class="btn btn-icon" title="Edit"><i class="bx bx-edit"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Appointment Reminders -->
+            <div class="reminders-section appointment-section">
+                <h3>Upcoming Appointments</h3>
+                <div class="reminder-list">
+                    <div class="reminder-card">
+                        <div class="reminder-type appointment">
+                            <i class="bx bx-calendar"></i>
+                        </div>
+                        <div class="reminder-details">
+                            <div class="reminder-header">
+                                <h4>Dental Checkup</h4>
+                                <span class="badge upcoming">Tomorrow</span>
+                            </div>
+                            <p><i class="bx bx-time"></i> Feb 16, 2024 at 2:00 PM</p>
+                            <p><i class="bx bx-map"></i> Dental Clinic, Suite 205</p>
+                            <p><i class="bx bx-note"></i> Bring dental records</p>
+                        </div>
+                        <div class="reminder-actions">
+                            <button class="btn btn-icon" title="Confirm"><i class="bx bx-check"></i></button>
+                            <button class="btn btn-icon" title="Reschedule"><i class="bx bx-calendar"></i></button>
+                            <button class="btn btn-icon" title="Cancel"><i class="bx bx-x"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modern Footer -->
+    <footer class="modern-footer">
+        <div class="footer-container">
+            <!-- Main Footer Content -->
+            <div class="footer-main">
+                <!-- Company Section -->
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <div class="footer-links">
+                        <a href="index.html">Home</a>
+                        <a href="about.html">About</a>
+                        <a href="dashboard.html">Dashboard</a>
+                        <a href="blog.html">Blog</a>
+                    </div>
+                </div>
+
+                <!-- Solutions Section -->
+                <div class="footer-section">
+                    <h4>Solutions</h4>
+                    <div class="footer-links">
+                        <a href="reminders.html">Medication Management</a>
+                        <a href="appointments.html">Appointment Scheduling</a>
+                        <a href="schedule.html">Health Calendar</a>
+                        <a href="#family">Family Care</a>
+                        <a href="#notifications">Smart Reminders</a>
+                        <a href="#analytics">Health Analytics</a>
+                    </div>
+                </div>
+
+                <!-- Resources Section -->
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <div class="footer-links">
+                        <a href="blog.html">Blog</a>
+                        <a href="#help">Help Center</a>
+                        <a href="#contact">Contact Us</a>
+                        <a href="#privacy">Privacy Policy</a>
+                        <a href="#terms">Terms of Use</a>
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="footer-contact">
+                    <div class="social-icons">
+                        <a href="#" class="social-link facebook" aria-label="Facebook">
+                            <i class="bx bxl-facebook"></i>
+                        </a>
+                        <a href="#" class="social-link twitter" aria-label="Twitter">
+                            <i class="bx bxl-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link linkedin" aria-label="LinkedIn">
+                            <i class="bx bxl-linkedin"></i>
+                        </a>
+                        <a href="#" class="social-link youtube" aria-label="YouTube">
+                            <i class="bx bxl-youtube"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="contact-info">
+                        <p>123 Health Street</p>
+                        <p>Suite 456</p>
+                        <p>Medical City, MC 12345</p>
+                        <p class="contact-phone">800-MEDICARE</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <div class="footer-brand">
+                    <i class="bx bx-health"></i>
+                    <span>MediCare<span class="brand-accent">+</span></span>
+                </div>
+                <div class="footer-copyright">
+                    <p>Copyright 2024 ©. All rights reserved</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.4/dist/umd/supabase.min.js"></script>
+    <script src="/js/button-manager.js"></script>
+    <script src="/js/reminders.js"></script>
+    <script src="/js/notifications.js"></script>
+    <script src="/js/mobile-menu.js"></script>
+    <script src="/js/auth.js"></script>
+    
+    <script>
+        // Global variables
+        let myReminders = [];
+
+        // Mobile menu toggle function
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenuOverlay');
+            if (mobileMenu.classList.contains('active')) {
+                mobileMenu.classList.remove('active');
+                document.body.style.overflow = '';
+            } else {
+                mobileMenu.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // Modal functions
+        function openAddReminderModal() {
+            const modal = document.getElementById('addReminderModal');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Set default start date to today
+            const startDateInput = document.getElementById('startDate');
+            const today = new Date().toISOString().split('T')[0];
+            startDateInput.value = today;
+        }
+
+        function closeAddReminderModal() {
+            const modal = document.getElementById('addReminderModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            
+            // Reset form
+            document.getElementById('reminderForm').reset();
+            clearFrequencySelection();
+            resetTimeInputs();
+        }
+
+        // Frequency selection
+        function initializeFrequencyOptions() {
+            const frequencyOptions = document.querySelectorAll('.frequency-option');
+            const frequencyInput = document.getElementById('frequency');
+            
+            frequencyOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Clear previous selection
+                    frequencyOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Select current option
+                    this.classList.add('selected');
+                    frequencyInput.value = this.dataset.value;
+                    
+                    // Update time inputs based on selection
+                    updateTimeInputs(this.dataset.value);
+                });
+            });
+        }
+
+        function clearFrequencySelection() {
+            const frequencyOptions = document.querySelectorAll('.frequency-option');
+            frequencyOptions.forEach(opt => opt.classList.remove('selected'));
+            document.getElementById('frequency').value = '';
+        }
+
+        function updateTimeInputs(frequency) {
+            const timeInputsContainer = document.getElementById('timeInputs');
+            let timeCount = 1;
+            
+            switch(frequency) {
+                case 'once':
+                    timeCount = 1;
+                    break;
+                case 'twice':
+                    timeCount = 2;
+                    break;
+                case 'three':
+                    timeCount = 3;
+                    break;
+                case 'custom':
+                    timeCount = 1;
+                    break;
+            }
+            
+            // Clear existing inputs
+            timeInputsContainer.innerHTML = '';
+            
+            // Add time inputs
+            for (let i = 0; i < timeCount; i++) {
+                const timeInput = document.createElement('input');
+                timeInput.type = 'time';
+                timeInput.className = 'form-control time-input';
+                timeInput.required = true;
+                timeInput.name = `time${i + 1}`;
+                
+                // Set default times
+                if (frequency === 'twice') {
+                    timeInput.value = i === 0 ? '08:00' : '20:00';
+                } else if (frequency === 'three') {
+                    const times = ['08:00', '13:00', '20:00'];
+                    timeInput.value = times[i];
+                } else {
+                    timeInput.value = '08:00';
+                }
+                
+                timeInputsContainer.appendChild(timeInput);
+            }
+            
+            // Add "Add Time" button for custom frequency
+            if (frequency === 'custom') {
+                const addTimeBtn = document.createElement('button');
+                addTimeBtn.type = 'button';
+                addTimeBtn.className = 'btn btn-secondary';
+                addTimeBtn.innerHTML = '<i class="bx bx-plus"></i> Add Time';
+                addTimeBtn.style.minWidth = '120px';
+                addTimeBtn.addEventListener('click', addCustomTime);
+                timeInputsContainer.appendChild(addTimeBtn);
+            }
+        }
+
+        function addCustomTime() {
+            const timeInputsContainer = document.getElementById('timeInputs');
+            const timeInputs = timeInputsContainer.querySelectorAll('.time-input');
+            
+            if (timeInputs.length < 6) { // Limit to 6 times per day
+                const timeInput = document.createElement('input');
+                timeInput.type = 'time';
+                timeInput.className = 'form-control time-input';
+                timeInput.required = true;
+                timeInput.value = '08:00';
+                
+                // Insert before the "Add Time" button
+                const addButton = timeInputsContainer.querySelector('button');
+                timeInputsContainer.insertBefore(timeInput, addButton);
+            }
+        }
+
+        function resetTimeInputs() {
+            const timeInputsContainer = document.getElementById('timeInputs');
+            timeInputsContainer.innerHTML = '<input type="time" class="form-control time-input" required>';
+        }
+
+        // Form submission
+        function initializeForm() {
+            const form = document.getElementById('reminderForm');
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(form);
+                const timeInputs = document.querySelectorAll('.time-input');
+                
+                // Collect all times
+                const times = Array.from(timeInputs).map(input => input.value).filter(time => time);
+                
+                if (times.length === 0) {
+                    alert('Please select at least one reminder time.');
+                    return;
+                }
+                
+                const reminder = {
+                    id: Date.now(),
+                    medicineName: document.getElementById('medicineName').value,
+                    dosage: document.getElementById('dosage').value,
+                    quantity: document.getElementById('quantity').value,
+                    frequency: document.getElementById('frequency').value,
+                    times: times,
+                    startDate: document.getElementById('startDate').value,
+                    endDate: document.getElementById('endDate').value,
+                    notes: document.getElementById('notes').value,
+                    active: true,
+                    createdAt: new Date().toISOString()
+                };
+                
+                addReminder(reminder);
+                closeAddReminderModal();
+            });
+        }
+
+        // Reminder management
+        function addReminder(reminder) {
+            myReminders.push(reminder);
+            saveRemindersToStorage();
+            renderMyReminders();
+            showSuccessMessage('Reminder added successfully!');
+        }
+
+        function renderMyReminders() {
+            const myRemindersList = document.getElementById('myRemindersList');
+            const myRemindersSection = document.getElementById('myRemindersSection');
+            
+            if (myReminders.length === 0) {
+                myRemindersSection.style.display = 'none';
+                return;
+            }
+            
+            myRemindersSection.style.display = 'block';
+            myRemindersList.innerHTML = '';
+            
+            myReminders.forEach(reminder => {
+                const reminderCard = createReminderCard(reminder);
+                myRemindersList.appendChild(reminderCard);
+            });
+        }
+
+        function createReminderCard(reminder) {
+            const card = document.createElement('div');
+            card.className = 'reminder-card';
+            card.innerHTML = `
+                <div class="reminder-type medication">
+                    <i class="bx bx-capsule"></i>
+                </div>
+                <div class="reminder-details">
+                    <div class="reminder-header">
+                        <h4>${reminder.medicineName}</h4>
+                        <span class="badge ${reminder.active ? 'active' : 'inactive'}">${reminder.active ? 'Active' : 'Inactive'}</span>
+                    </div>
+                    <p class="dosage"><i class="bx bx-dots-horizontal-rounded"></i> ${reminder.dosage} - ${reminder.quantity} tablet${reminder.quantity > 1 ? 's' : ''}</p>
+                    <p class="schedule"><i class="bx bx-time"></i> ${formatSchedule(reminder.frequency, reminder.times)}</p>
+                    ${reminder.notes ? `<p class="notes"><i class="bx bx-note"></i> ${reminder.notes}</p>` : ''}
+                    <div class="reminder-progress">
+                        <span class="progress-text">Next dose: ${getNextDoseTime(reminder.times)}</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: ${getProgressPercentage()}%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="reminder-actions">
+                    <button class="btn btn-icon" title="Take Now" onclick="markAsTaken(${reminder.id})"><i class="bx bx-check"></i></button>
+                    <button class="btn btn-icon" title="Edit" onclick="editReminder(${reminder.id})"><i class="bx bx-edit"></i></button>
+                    <button class="btn btn-icon" title="Delete" onclick="deleteReminder(${reminder.id})"><i class="bx bx-trash"></i></button>
+                </div>
+            `;
+            return card;
+        }
+
+        function formatSchedule(frequency, times) {
+            const timeStrings = times.map(time => {
+                const [hours, minutes] = time.split(':');
+                const hour12 = ((hours % 12) || 12);
+                const period = hours >= 12 ? 'PM' : 'AM';
+                return `${hour12}:${minutes} ${period}`;
+            });
+            
+            if (frequency === 'once') {
+                return `Daily at ${timeStrings[0]}`;
+            } else if (frequency === 'twice') {
+                return `Twice daily at ${timeStrings.join(' and ')}`;
+            } else if (frequency === 'three') {
+                return `Three times daily at ${timeStrings.join(', ')}`;
+            } else {
+                return `Custom schedule: ${timeStrings.join(', ')}`;
+            }
+        }
+
+        function getNextDoseTime(times) {
+            const now = new Date();
+            const currentTime = now.getHours() * 60 + now.getMinutes();
+            
+            for (let time of times) {
+                const [hours, minutes] = time.split(':').map(Number);
+                const timeInMinutes = hours * 60 + minutes;
+                
+                if (timeInMinutes > currentTime) {
+                    const [hour, min] = time.split(':');
+                    const hour12 = ((hour % 12) || 12);
+                    const period = hour >= 12 ? 'PM' : 'AM';
+                    return `${hour12}:${min} ${period}`;
+                }
+            }
+            
+            // If no time today, return first time tomorrow
+            const [hour, min] = times[0].split(':');
+            const hour12 = ((hour % 12) || 12);
+            const period = hour >= 12 ? 'PM' : 'AM';
+            return `Tomorrow ${hour12}:${min} ${period}`;
+        }
+
+        function getProgressPercentage() {
+            return Math.floor(Math.random() * 100); // Simplified for demo
+        }
+
+        function markAsTaken(id) {
+            showSuccessMessage('Dose marked as taken!');
+        }
+
+        function editReminder(id) {
+            const reminder = myReminders.find(r => r.id === id);
+            if (reminder) {
+                // Populate form with reminder data
+                document.getElementById('medicineName').value = reminder.medicineName;
+                document.getElementById('dosage').value = reminder.dosage;
+                document.getElementById('quantity').value = reminder.quantity;
+                document.getElementById('startDate').value = reminder.startDate;
+                document.getElementById('endDate').value = reminder.endDate;
+                document.getElementById('notes').value = reminder.notes;
+                
+                // Set frequency and times
+                const frequencyOption = document.querySelector(`[data-value="${reminder.frequency}"]`);
+                if (frequencyOption) {
+                    frequencyOption.click();
+                    
+                    setTimeout(() => {
+                        const timeInputs = document.querySelectorAll('.time-input');
+                        reminder.times.forEach((time, index) => {
+                            if (timeInputs[index]) {
+                                timeInputs[index].value = time;
+                            }
+                        });
+                    }, 100);
+                }
+                
+                // Remove old reminder and open modal for editing
+                deleteReminder(id);
+                openAddReminderModal();
+            }
+        }
+
+        function deleteReminder(id) {
+            if (confirm('Are you sure you want to delete this reminder?')) {
+                myReminders = myReminders.filter(r => r.id !== id);
+                saveRemindersToStorage();
+                renderMyReminders();
+                showSuccessMessage('Reminder deleted successfully!');
+            }
+        }
+
+        // Filter functionality
+        function initializeFilters() {
+            const filterButtons = document.querySelectorAll('[data-filter]');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Update active filter button
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Apply filter
+                    const filter = this.dataset.filter;
+                    filterReminders(filter);
+                });
+            });
+        }
+
+        function filterReminders(filter) {
+            const medicationSections = document.querySelectorAll('.medication-section');
+            const appointmentSections = document.querySelectorAll('.appointment-section');
+            
+            switch(filter) {
+                case 'all':
+                    medicationSections.forEach(section => section.style.display = 'block');
+                    appointmentSections.forEach(section => section.style.display = 'block');
+                    break;
+                case 'medications':
+                    medicationSections.forEach(section => section.style.display = 'block');
+                    appointmentSections.forEach(section => section.style.display = 'none');
+                    break;
+                case 'appointments':
+                    medicationSections.forEach(section => section.style.display = 'none');
+                    appointmentSections.forEach(section => section.style.display = 'block');
+                    break;
+            }
+        }
+
+        // Storage functions
+        function saveRemindersToStorage() {
+            localStorage.setItem('medicareReminders', JSON.stringify(myReminders));
+        }
+
+        function loadRemindersFromStorage() {
+            const stored = localStorage.getItem('medicareReminders');
+            if (stored) {
+                myReminders = JSON.parse(stored);
+                renderMyReminders();
+            }
+        }
+
+        // Utility functions
+        function showSuccessMessage(message) {
+            // Create and show a temporary success message
+            const successDiv = document.createElement('div');
+            successDiv.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: linear-gradient(135deg, #28a745, #34d058);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 10px;
+                box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+                z-index: 10001;
+                font-weight: 600;
+                opacity: 0;
+                transform: translateX(100%);
+                transition: all 0.3s ease;
+            `;
+            successDiv.textContent = message;
+            document.body.appendChild(successDiv);
+            
+            // Animate in
+            setTimeout(() => {
+                successDiv.style.opacity = '1';
+                successDiv.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                successDiv.style.opacity = '0';
+                successDiv.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    document.body.removeChild(successDiv);
+                }, 300);
+            }, 3000);
+        }
+
+        // Google Sign In function
+        function signInWithGoogle() {
+            if (window.authManager) {
+                window.authManager.signInWithGoogle();
+            } else {
+                console.error('Auth manager not initialized');
+                alert('Authentication system is loading. Please try again in a moment.');
+            }
+        }
+
+        // Add active class to current page
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const navLinks = document.querySelectorAll('.nav-link, .mobile-nav-link');
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                const href = link.getAttribute('href');
+                if (href === currentPage || (currentPage === '' && href === 'index.html')) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Close mobile menu when clicking on nav links
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    setTimeout(() => {
+                        toggleMobileMenu();
+                    }, 200);
+                });
+            });
+        });
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeFrequencyOptions();
+            initializeForm();
+            initializeFilters();
+            loadRemindersFromStorage();
+            
+            // Close modal when clicking outside
+            document.getElementById('addReminderModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeAddReminderModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

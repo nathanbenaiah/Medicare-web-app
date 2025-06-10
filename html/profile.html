@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Medicare+ Platform</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/css/mobile-responsive.css">
+    <link rel="stylesheet" href="/css/modern.css">
+    <link rel="stylesheet" href="/css/buttons.css">
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/style.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Inter', 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            padding-top: 70px; /* Account for fixed navbar */
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-top: 60px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding-top: 56px;
+            }
+        }
+        
+        .profile-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .profile-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            border: 6px solid #667eea;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .profile-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .profile-avatar i {
+            font-size: 60px;
+            color: #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        
+        .avatar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .profile-avatar:hover .avatar-overlay {
+            opacity: 1;
+        }
+        
+        .profile-name {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .profile-email {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .profile-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .profile-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .profile-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .profile-container {
+                padding: 15px;
+            }
+            
+            .profile-header {
+                padding: 30px 20px;
+            }
+            
+            .profile-name {
+                font-size: 2rem;
+            }
+            
+            .profile-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .profile-container {
+                padding: 10px;
+            }
+            
+            .profile-header {
+                padding: 20px 15px;
+            }
+            
+            .profile-avatar {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .profile-avatar i {
+                font-size: 48px;
+            }
+            
+            .profile-name {
+                font-size: 1.8rem;
+            }
+            
+            .profile-email {
+                font-size: 1rem;
+            }
+            
+            .profile-section {
+                padding: 20px 15px;
+            }
+            
+            .section-title {
+                font-size: 1.3rem;
+            }
+        }
+        
+        .profile-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .info-value {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .skill-tag {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .edit-mode .info-item {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #e1e8ed;
+        }
+        
+        .edit-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        .edit-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .edit-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        
+        .loading-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .profile-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-actions {
+                flex-direction: column;
+            }
+            
+            .profile-container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Modern Navigation -->
+    <nav class="modern-navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-brand">
+                <i class="bx bx-health"></i>
+                <span class="brand-text">MediCare+</span>
+            </a>
+            
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">
+                        <i class="bx bx-home-alt"></i>
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="bx bx-grid-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="schedule.html" class="nav-link">
+                        <i class="bx bx-calendar"></i>
+                        <span>Schedule</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="reminders.html" class="nav-link">
+                        <i class="bx bx-bell"></i>
+                        <span>Reminders</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="appointments.html" class="nav-link">
+                        <i class="bx bx-calendar-check"></i>
+                        <span>Appointments</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="profile.html" class="nav-link active">
+                        <i class="bx bx-user"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="navbar-auth">
+                <a href="auth.html" class="google-sign-btn">
+                    <i class="bx bx-user"></i>
+                    <span>Get Started</span>
+                </a>
+            </div>
+            
+            <button class="mobile-toggle" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Backdrop -->
+    <div class="mobile-menu-backdrop" id="mobileMenuBackdrop" onclick="toggleMobileMenu()"></div>
+    
+    <!-- Mobile Side Menu - RIGHT SIDE -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+        <div class="mobile-menu-content">
+            <div class="mobile-menu-header">
+                <div class="mobile-menu-brand">
+                    <i class="bx bx-health"></i>
+                    <span>MediCare<span class="brand-accent">+</span></span>
+                </div>
+                <button class="mobile-close" onclick="toggleMobileMenu()">
+                    <i class="bx bx-x"></i>
+                </button>
+            </div>
+            
+            <div class="mobile-nav-links">
+                <a href="index.html" class="mobile-nav-link">
+                    <i class="bx bx-home-alt"></i>
+                    <span>Home</span>
+                </a>
+                <a href="dashboard.html" class="mobile-nav-link">
+                    <i class="bx bx-grid-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="schedule.html" class="mobile-nav-link">
+                    <i class="bx bx-calendar"></i>
+                    <span>Schedule</span>
+                </a>
+                <a href="reminders.html" class="mobile-nav-link">
+                    <i class="bx bx-bell"></i>
+                    <span>Reminders</span>
+                </a>
+                <a href="appointments.html" class="mobile-nav-link">
+                    <i class="bx bx-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+                <a href="profile.html" class="mobile-nav-link active">
+                    <i class="bx bx-user"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="blog.html" class="mobile-nav-link">
+                    <i class="bx bx-book-open"></i>
+                    <span>Health Blog</span>
+                </a>
+            </div>
+            
+            <div class="mobile-auth-section">
+                <a href="auth.html" class="mobile-auth-btn">
+                    <i class="bx bx-user"></i>
+                    <span>Get Started</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-avatar" onclick="profileManager.changeProfilePicture()">
+                <img id="profile-avatar-img" src="" alt="Profile" style="display: none;">
+                <i class="bx bx-user" id="avatar-placeholder"></i>
+                <div class="avatar-overlay">
+                    <i class="bx bx-camera" style="color: white; font-size: 24px;"></i>
+                </div>
+            </div>
+            
+            <h1 class="profile-name" id="profile-name">Loading...</h1>
+            <p class="profile-email" id="profile-email">Loading...</p>
+            
+            <div class="profile-actions">
+                <button class="btn btn-primary" onclick="profileManager.toggleEditMode()">
+                    <i class="bx bx-edit"></i>
+                    <span id="edit-btn-text">Edit Profile</span>
+                </button>
+                <a href="/html/dashboard.html" class="btn btn-secondary">
+                    <i class="bx bx-dashboard"></i>
+                    Dashboard
+                </a>
+                <button class="btn btn-danger" onclick="profileManager.signOut()">
+                    <i class="bx bx-log-out"></i>
+                    Sign Out
+                </button>
+            </div>
+        </div>
+        
+        <!-- Profile Content -->
+        <div class="profile-content">
+            <!-- Personal Information -->
+            <div class="profile-section">
+                <h2 class="section-title">
+                    <i class="bx bx-user-circle"></i>
+                    Personal Information
+                </h2>
+                
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="bx bx-user"></i>
+                        Full Name
+                    </div>
+                    <div class="info-value" id="display-name">-</div>
+                    <input type="text" class="edit-input hidden" id="edit-name" placeholder="Enter your full name">
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="bx bx-phone"></i>
+                        Phone Number
+                    </div>
+                    <div class="info-value" id="display-phone">-</div>
+                    <input type="tel" class="edit-input hidden" id="edit-phone" placeholder="Enter your phone number">
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="bx bx-info-circle"></i>
+                        Bio
+                    </div>
+                    <div class="info-value" id="display-bio">-</div>
+                    <textarea class="edit-input edit-textarea hidden" id="edit-bio" placeholder="Tell us about yourself..."></textarea>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="bx bx-map"></i>
+                        Address
+                    </div>
+                    <div class="info-value" id="display-address">-</div>
+                    <input type="text" class="edit-input hidden" id="edit-address" placeholder="Enter your address">
+                </div>
+            </div>
+            
+            <!-- Professional Information -->
+            <div class="profile-section">
+                <h2 class="section-title">
+                    <i class="bx bx-briefcase"></i>
+                    Professional Information
+                </h2>
+                
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="bx bx-work"></i>
+                        Occupation
+                    </div>
+                    <div class="info-value" id="display-occupation">-</div>
+                    <input type="text" class="edit-input hidden" id="edit-occupation" placeholder="Enter your occupation">
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="bx bx-star"></i>
+                        Skills & Interests
+                    </div>
+                    <div class="info-value">
+                        <div class="skills-container" id="display-skills"></div>
+                    </div>
+                    <div class="hidden" id="edit-skills-container">
+                        <input type="text" class="edit-input" id="edit-skills" placeholder="Type a skill and press Enter...">
+                        <div class="skills-container" id="edit-skills-tags"></div>
+                    </div>
+                </div>
+                
+                <!-- Account Information -->
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="bx bx-calendar"></i>
+                        Member Since
+                    </div>
+                    <div class="info-value" id="display-joined">-</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="bx bx-time"></i>
+                        Last Active
+                    </div>
+                    <div class="info-value" id="display-active">-</div>
+                </div>
+            </div>
+
+            <!-- Medications Database -->
+            <div class="profile-section">
+                <h2 class="section-title">
+                    <i class="bx bx-capsule"></i>
+                    Medications Database
+                </h2>
+                
+                <div class="search-container" style="margin-bottom: 20px;">
+                    <input type="text" id="med-search" placeholder="Search medications..." 
+                           style="width: 100%; padding: 12px; border: 2px solid #e1e8ed; border-radius: 8px; font-size: 16px;">
+                </div>
+                
+                <div id="medications-results" style="max-height: 400px; overflow-y: auto;">
+                    <div style="text-align: center; color: #666; padding: 20px;">
+                        Search for medications to view details...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nearby Pharmacies -->
+            <div class="profile-section">
+                <h2 class="section-title">
+                    <i class="bx bx-store"></i>
+                    Nearby Pharmacies
+                </h2>
+                
+                <div id="pharmacies-list" style="max-height: 400px; overflow-y: auto;">
+                    <div style="text-align: center; color: #666; padding: 20px;">
+                        Loading pharmacies...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay hidden" id="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p id="loading-text">Loading...</p>
+        </div>
+    </div>
+    
+    <!-- Hidden file input for profile picture -->
+    <input type="file" id="profile-picture-input" accept="image/*" style="display: none;">
+
+    <!-- Supabase JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.4/dist/umd/supabase.min.js"></script>
+    
+    <!-- Our JS modules -->
+    <script src="/js/db.js"></script>
+    <script src="/js/mobile-menu.js"></script>
+    <script src="/js/supabaseClient.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/profile.js"></script>
+    
+    <script>
+        // Google Sign In function
+        function signInWithGoogle() {
+            if (window.authManager) {
+                window.authManager.signInWithGoogle();
+            } else {
+                console.error('Auth manager not initialized');
+                alert('Authentication system is loading. Please try again in a moment.');
+            }
+        }
+
+        // Wait for DOM to load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize profile manager
+            if (window.ProfileManager) {
+                window.profileManager = new ProfileManager()
+            }
+        })
+    </script>
+</body>
+</html> 
