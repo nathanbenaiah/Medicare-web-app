@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard - Medicare+</title>
+    <link rel="stylesheet" href="../css/user-dashboard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.29.3/index.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.8.0/Recharts.js"></script>
+    <style>
+        /* Mobile-first responsive design */
+        @media (max-width: 768px) {
+            .dashboard-container { 
+                flex-direction: column; 
+                padding: 10px; 
+            }
+            .sidebar { 
+                width: 100%; 
+                height: auto; 
+                position: relative;
+                order: 2;
+            }
+            .main-content { 
+                width: 100%; 
+                margin-left: 0;
+                order: 1;
+            }
+            .dashboard-grid { 
+                grid-template-columns: 1fr; 
+                gap: 15px; 
+            }
+            .card { 
+                margin: 10px 0; 
+            }
+            .nav-item {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+            .vital-input {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+        
+        /* Loading states */
+        .loading { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 200px; 
+        }
+        .spinner { 
+            border: 3px solid #f3f3f3; 
+            border-top: 3px solid #3498db; 
+            border-radius: 50%; 
+            width: 40px; 
+            height: 40px; 
+            animation: spin 1s linear infinite; 
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* Error states */
+        .error-message { 
+            background: #fef2f2; 
+            color: #dc2626; 
+            padding: 12px; 
+            border-radius: 8px; 
+            margin: 10px 0;
+            border: 1px solid #fecaca;
+        }
+        
+        /* Success states */
+        .success-message { 
+            background: #f0fdf4; 
+            color: #166534; 
+            padding: 12px; 
+            border-radius: 8px; 
+            margin: 10px 0;
+            border: 1px solid #bbf7d0;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useContext, createContext, useCallback, useMemo } = React;
+        const { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar } = Recharts;
+
+        // Supabase configuration
+        const supabaseUrl = 'https://gcggnrwqilylyykppizb.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjaGducndxaWx5bHl5a3BwaXpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTIyNDI1MzgsImV4cCI6MjAyNzgxODUzOH0.GtHQVOl7NSmNWE6u6wqYSN8EZwrBw4yyJ5fK4Lr0n2k';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Context for authentication and global state
+        const AuthContext = createContext();
+        const DataContext = createContext();
+
+        // Authentication Provider with improved error handling
+        const AuthProvider = ({ children }) => {
+            const [user, setUser] = useState(null);
+            const [session, setSession] = useState(null);
+            const [loading, setLoading] = useState(true);
+            const [error, setError] = useState(null);
+
+            useEffect(() => {
+                // Get initial session
+                supabase.auth.getSession().then(({ data: { session } }) => {
+                    setSession(session);
+                    setUser(session?.user ?? null);
+                    setLoading(false);
+                }).catch(err => {
+                    console.error('Error getting session:', err);
+                    setError('Failed to connect to authentication service');
+                    setLoading(false);
+                });
+
+                // Listen for auth changes
+                const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+                    setSession(session);
+                    setUser(session?.user ?? null);
+                    setError(null);
+                    setLoading(false);
+                });
+
+                return () => subscription.unsubscribe();
+            }, []);
+
+            const signIn = async (email, password) => {
+                try {
+                    setError(null);
+                    const { data, error } = await supabase.auth.signInWithPassword({
+                        email,
+                        password,
+                    });
+                    if (error) setError(error.message);
+                    return { data, error };
+                } catch (err) {
+                    setError('Failed to sign in');
+                    return { data: null, error: err };
+                }
+            };
+
+            const signUp = async (email, password, userData) => {
+                try {
+                    setError(null);
+                    const { data, error } = await supabase.auth.signUp({
+                        email,
+                        password,
+                        options: {
+                            data: userData
+                        }
+                    });
+                    if (error) setError(error.message);
+                    return { data, error };
+                } catch (err) {
+                    setError('Failed to sign up');
+                    return { data: null, error: err };
+                }
+            };
+
+            const signOut = async () => {
+                try {
+                    setError(null);
+                    const { error } = await supabase.auth.signOut();
+                    if (error) setError(error.message);
+                    return { error };
+                } catch (err) {
+                    setError('Failed to sign out');
+                    return { error: err };
+                }
+            };
+
+            const value = {
+                user,
+                session,
+                loading,
+                error,
+                signIn,
+                signUp,
+                signOut,
+                clearError: () => setError(null)
+            };
+
+            return (
+                <AuthContext.Provider value={value}>
+                    {children}
+                </AuthContext.Provider>
+            );
+        };
+
+        // Data Provider with improved error handling and fallbacks
+        const DataProvider = ({ children }) => {
+            const { user } = useContext(AuthContext);
+            const [patientData, setPatientData] = useState({
+                profile: null,
+                medications: [],
+                appointments: [],
+                vitals: [],
+                insights: [],
+                notifications: []
+            });
+            const [loading, setLoading] = useState(false);
+            const [error, setError] = useState(null);
+
+            // Improved error handling function
+            const handleError = (error, context) => {
+                console.error(`Error in ${context}:`, error);
+                setError(`${context}: ${error.message || 'Unknown error occurred'}`);
+            };
+
+            // Fetch patient profile with fallbacks
+            const fetchProfile = useCallback(async () => {
+                if (!user) return;
+                
+                try {
+                    setError(null);
+                    const { data, error } = await supabase
+                        .from('user_profiles')
+                        .select('*')
+                        .eq('id', user.id)
+                        .single();
+                    
+                    if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+                        throw error;
+                    }
+                    
+                    setPatientData(prev => ({ 
+                        ...prev, 
+                        profile: data || {
+                            id: user.id,
+                            first_name: user.user_metadata?.first_name || 'Patient',
+                            last_name: user.user_metadata?.last_name || 'User',
+                            email: user.email
+                        }
+                    }));
+                } catch (error) {
+                    handleError(error, 'Profile loading');
+                }
+            }, [user]);
+
+            // Fetch medications with simplified query
+            const fetchMedications = useCallback(async () => {
+                if (!user) return;
+                
+                try {
+                    setError(null);
+                    const { data, error } = await supabase
+                        .from('patient_medications')
+                        .select('*, medications(*)')
+                        .eq('user_id', user.id)
+                        .eq('status', 'active');
+                    
+                    if (error) throw error;
+                    setPatientData(prev => ({ ...prev, medications: data || [] }));
+                } catch (error) {
+                    handleError(error, 'Medications loading');
+                    // Fallback: set empty array
+                    setPatientData(prev => ({ ...prev, medications: [] }));
+                }
+            }, [user]);
+
+            // Fetch appointments with simplified query
+            const fetchAppointments = useCallback(async () => {
+                if (!user) return;
+                
+                try {
+                    setError(null);
+                    const { data, error } = await supabase
+                        .from('appointments')
+                        .select('*')
+                        .eq('user_id', user.id)
+                        .order('scheduled_date', { ascending: true });
+                    
+                    if (error) throw error;
+                    setPatientData(prev => ({ ...prev, appointments: data || [] }));
+                } catch (error) {
+                    handleError(error, 'Appointments loading');
+                    setPatientData(prev => ({ ...prev, appointments: [] }));
+                }
+            }, [user]);
+
+            // Fetch vital signs
+            const fetchVitals = useCallback(async () => {
+                if (!user) return;
+                
+                try {
+                    setError(null);
+                    const { data, error } = await supabase
+                        .from('vital_signs')
+                        .select('*')
+                        .eq('user_id', user.id)
+                        .order('recorded_at', { ascending: false })
+                        .limit(30);
+                    
+                    if (error) throw error;
+                    setPatientData(prev => ({ ...prev, vitals: data || [] }));
+                } catch (error) {
+                    handleError(error, 'Vital signs loading');
+                    setPatientData(prev => ({ ...prev, vitals: [] }));
+                }
+            }, [user]);
+
+            // Fetch AI insights
+            const fetchInsights = useCallback(async () => {
+                if (!user) return;
+                
+                try {
+                    setError(null);
+                    const { data, error } = await supabase
+                        .from('ai_insights')
+                        .select('*')
+                        .eq('user_id', user.id)
+                        .order('created_at', { ascending: false });
+                    
+                    if (error) throw error;
+                    setPatientData(prev => ({ ...prev, insights: data || [] }));
+                } catch (error) {
+                    handleError(error, 'AI insights loading');
+                    setPatientData(prev => ({ ...prev, insights: [] }));
+                }
+            }, [user]);
+
+            // Add vital signs with validation
+            const addVitalSigns = async (vitals) => {
+                if (!user) return { success: false, error: 'User not authenticated' };
+                
+                try {
+                    setError(null);
+                    const { data, error } = await supabase
+                        .from('vital_signs')
+                        .insert([{
+                            user_id: user.id,
+                            recorded_by: user.id,
+                            recorded_at: new Date().toISOString(),
+                            ...vitals
+                        }]);
+                    
+                    if (error) throw error;
+                    await fetchVitals(); // Refresh data
+                    return { success: true };
+                } catch (error) {
+                    handleError(error, 'Adding vital signs');
+                    return { success: false, error: error.message };
+                }
+            };
+
+            // Initialize data when user changes
+            useEffect(() => {
+                if (user) {
+                    setLoading(true);
+                    Promise.all([
+                        fetchProfile(),
+                        fetchMedications(),
+                        fetchAppointments(),
+                        fetchVitals(),
+                        fetchInsights()
+                    ]).finally(() => {
+                        setLoading(false);
+                    });
+                }
+            }, [user, fetchProfile, fetchMedications, fetchAppointments, fetchVitals, fetchInsights]);
+
+            const value = {
+                patientData,
+                loading,
+                error,
+                addVitalSigns,
+                fetchProfile,
+                fetchMedications,
+                fetchAppointments,
+                fetchVitals,
+                fetchInsights,
+                clearError: () => setError(null)
+            };
+
+            return (
+                <DataContext.Provider value={value}>
+                    {children}
+                </DataContext.Provider>
+            );
+        };
+
+        // Improved Login Component
+        const LoginForm = () => {
+            const [email, setEmail] = useState('');
+            const [password, setPassword] = useState('');
+            const [isLogin, setIsLogin] = useState(true);
+            const [loading, setLoading] = useState(false);
+            const [localError, setLocalError] = useState('');
+            const { signIn, signUp, error, clearError } = useContext(AuthContext);
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setLoading(true);
+                setLocalError('');
+                clearError();
+
+                try {
+                    const result = isLogin 
+                        ? await signIn(email, password)
+                        : await signUp(email, password, {
+                            first_name: 'New',
+                            last_name: 'Patient'
+                        });
+
+                    if (result.error) {
+                        setLocalError(result.error.message);
+                    }
+                } catch (err) {
+                    setLocalError('An unexpected error occurred');
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            return (
+                <div className="login-container">
+                    <div className="login-card">
+                        <div className="login-header">
+                            <h1>🏥 Medicare+ Patient Portal</h1>
+                            <p>{isLogin ? 'Welcome back!' : 'Create your account'}</p>
+                        </div>
+                        
+                        <form onSubmit={handleSubmit} className="login-form">
+                            <div className="form-group">
+                                <label>Email</label>
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                    placeholder="Enter your email"
+                                />
+                            </div>
+                            
+                            <div className="form-group">
+                                <label>Password</label>
+                                <input
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                    placeholder="Enter your password"
+                                />
+                            </div>
+                            
+                            {(error || localError) && (
+                                <div className="error-message">
+                                    {error || localError}
+                                </div>
+                            )}
+                            
+                            <button type="submit" disabled={loading} className="login-btn">
+                                {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Sign Up')}
+                            </button>
+                        </form>
+
+                        <div className="login-footer">
+                            <button 
+                                onClick={() => setIsLogin(!isLogin)}
+                                className="link-btn"
+                            >
+                                {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
+                            </button>
+                        </div>
+
+                        <div className="demo-accounts">
+                            <h4>Demo Accounts</h4>
+                            <p><strong>Patient:</strong> patient@demo.com / password123</p>
+                            <p><strong>Provider:</strong> doctor@demo.com / password123</p>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Main Dashboard Component
+        const Dashboard = () => {
+            const { user, signOut } = useContext(AuthContext);
+            const { patientData, loading, error, clearError } = useContext(DataContext);
+            const [activeTab, setActiveTab] = useState('overview');
+
+            if (!user) {
+                return <LoginForm />;
+            }
+
+            return (
+                <div className="dashboard-container">
+                    <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+                    <main className="main-content" style={{
+                        marginLeft: window.innerWidth <= 768 ? 0 : '280px',
+                        width: window.innerWidth <= 768 ? '100%' : 'calc(100% - 280px)',
+                        padding: window.innerWidth <= 768 ? '10px' : '20px',
+                        paddingTop: window.innerWidth <= 768 ? '60px' : '20px'
+                    }}>
+                        <Header user={user} signOut={signOut} />
+                        
+                        {error && (
+                            <div className="error-message">
+                                {error}
+                                <button onClick={clearError} style={{marginLeft: '10px'}}>✕</button>
+                            </div>
+                        )}
+                        
+                        {loading ? (
+                            <div className="loading">
+                                <div className="spinner"></div>
+                                <p>Loading your health data...</p>
+                            </div>
+                        ) : (
+                            <DashboardContent activeTab={activeTab} patientData={patientData} />
+                        )}
+                    </main>
+                </div>
+            );
+        };
+
+        // Responsive Sidebar
+        const Sidebar = ({ activeTab, setActiveTab }) => {
+            const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+            const menuItems = [
+                { id: 'overview', label: 'Overview', icon: 'fas fa-home' },
+                { id: 'medications', label: 'Medications', icon: 'fas fa-pills' },
+                { id: 'appointments', label: 'Appointments', icon: 'fas fa-calendar' },
+                { id: 'vitals', label: 'Vital Signs', icon: 'fas fa-heartbeat' },
+                { id: 'insights', label: 'Health Insights', icon: 'fas fa-brain' },
+                { id: 'profile', label: 'Profile', icon: 'fas fa-user' }
+            ];
+
+            return (
+                <>
+                    <button 
+                        className="mobile-menu-toggle"
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        style={{
+                            display: window.innerWidth <= 768 ? 'block' : 'none',
+                            position: 'fixed',
+                            top: '10px',
+                            right: '10px',
+                            zIndex: 1001,
+                            padding: '10px 15px',
+                            background: '#3b82f6',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '8px',
+                            boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        <i className="fas fa-bars"></i> Menu
+                    </button>
+                    
+                    <nav className="sidebar" style={{
+                        position: window.innerWidth <= 768 ? (isMobileMenuOpen ? 'fixed' : 'none') : 'fixed',
+                        display: window.innerWidth <= 768 ? (isMobileMenuOpen ? 'block' : 'none') : 'block',
+                        top: 0,
+                        left: 0,
+                        right: window.innerWidth <= 768 ? 0 : 'auto',
+                        bottom: window.innerWidth <= 768 ? 0 : 'auto',
+                        width: window.innerWidth <= 768 ? '100%' : '280px',
+                        height: '100vh',
+                        background: 'white',
+                        zIndex: 1000,
+                        borderRight: '1px solid #e2e8f0',
+                        padding: '20px 0',
+                        overflowY: 'auto'
+                    }}>
+                        <div style={{ 
+                            padding: '0 20px 20px 20px', 
+                            borderBottom: '1px solid #e2e8f0',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center'
+                        }}>
+                            <h2 style={{ color: '#1f2937', margin: 0 }}>Medicare+</h2>
+                            {window.innerWidth <= 768 && (
+                                <button 
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    style={{ 
+                                        background: 'none', 
+                                        border: 'none', 
+                                        fontSize: '24px', 
+                                        cursor: 'pointer',
+                                        color: '#6b7280'
+                                    }}
+                                >
+                                    ✕
+                                </button>
+                            )}
+                        </div>
+                        
+                        <ul style={{ listStyle: 'none', padding: 0, margin: '20px 0' }}>
+                            {menuItems.map(item => (
+                                <li key={item.id}>
+                                    <button
+                                        className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
+                                        onClick={() => {
+                                            setActiveTab(item.id);
+                                            setIsMobileMenuOpen(false);
+                                        }}
+                                        style={{
+                                            width: '100%',
+                                            padding: window.innerWidth <= 768 ? '15px 20px' : '12px 20px',
+                                            border: 'none',
+                                            background: activeTab === item.id ? '#eff6ff' : 'transparent',
+                                            color: activeTab === item.id ? '#3b82f6' : '#6b7280',
+                                            textAlign: 'left',
+                                            cursor: 'pointer',
+                                            borderLeft: activeTab === item.id ? '3px solid #3b82f6' : '3px solid transparent',
+                                            transition: 'all 0.2s',
+                                            fontSize: window.innerWidth <= 768 ? '16px' : '14px',
+                                            borderBottom: window.innerWidth <= 768 ? '1px solid #e2e8f0' : 'none'
+                                        }}
+                                    >
+                                        <i className={item.icon} style={{ marginRight: '10px' }}></i>
+                                        <span>{item.label}</span>
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+                </>
+            );
+        };
+
+        // Header Component
+        const Header = ({ user, signOut }) => (
+            <header className="header">
+                <div className="header-content">
+                    <h1>Patient Dashboard</h1>
+                    <div className="header-actions">
+                        <span>Welcome, {user.email}</span>
+                        <button onClick={signOut} className="sign-out-btn">
+                            <i className="fas fa-sign-out-alt"></i> Sign Out
+                        </button>
+                    </div>
+                </div>
+            </header>
+        );
+
+        // Dashboard Content with improved mobile layout
+        const DashboardContent = ({ activeTab, patientData }) => {
+            const { addVitalSigns } = useContext(DataContext);
+            const [message, setMessage] = useState('');
+
+            const showMessage = (text, type = 'success') => {
+                setMessage({ text, type });
+                setTimeout(() => setMessage(''), 3000);
+            };
+
+            switch (activeTab) {
+                case 'overview':
+                    return <OverviewTab patientData={patientData} />;
+                case 'medications':
+                    return <MedicationsTab medications={patientData.medications} />;
+                case 'appointments':
+                    return <AppointmentsTab appointments={patientData.appointments} />;
+                case 'vitals':
+                    return <VitalsTab vitals={patientData.vitals} addVitalSigns={addVitalSigns} showMessage={showMessage} />;
+                case 'insights':
+                    return <InsightsTab insights={patientData.insights} />;
+                case 'profile':
+                    return <ProfileTab profile={patientData.profile} />;
+                default:
+                    return <OverviewTab patientData={patientData} />;
+            }
+        };
+
+        // Overview Tab with responsive cards
+        const OverviewTab = ({ patientData }) => (
+            <div className="dashboard-grid">
+                {message && (
+                    <div className={`${message.type}-message`} style={{gridColumn: '1 / -1'}}>
+                        {message.text}
+                    </div>
+                )}
+                
+                <div className="card">
+                    <h3><i className="fas fa-pills"></i> Active Medications</h3>
+                    <div className="stat-number">{patientData.medications?.length || 0}</div>
+                    <p>Current prescriptions</p>
+                </div>
+
+                <div className="card">
+                    <h3><i className="fas fa-calendar"></i> Upcoming Appointments</h3>
+                    <div className="stat-number">
+                        {patientData.appointments?.filter(apt => new Date(apt.scheduled_date) > new Date()).length || 0}
+                    </div>
+                    <p>Scheduled visits</p>
+                </div>
+
+                <div className="card">
+                    <h3><i className="fas fa-heartbeat"></i> Latest Vitals</h3>
+                    <div className="vitals-summary">
+                        {patientData.vitals?.[0] ? (
+                            <>
+                                <p>BP: {patientData.vitals[0].blood_pressure_systolic || 'N/A'}/{patientData.vitals[0].blood_pressure_diastolic || 'N/A'}</p>
+                                <p>HR: {patientData.vitals[0].heart_rate || 'N/A'} bpm</p>
+                            </>
+                        ) : (
+                            <p>No data available</p>
+                        )}
+                    </div>
+                </div>
+
+                <div className="card">
+                    <h3><i className="fas fa-brain"></i> Health Insights</h3>
+                    <div className="stat-number">{patientData.insights?.length || 0}</div>
+                    <p>AI recommendations</p>
+                </div>
+            </div>
+        );
+
+        // Medications Tab
+        const MedicationsTab = ({ medications = [] }) => (
+            <div className="medications-content">
+                <h2>Your Medications</h2>
+                {medications.length === 0 ? (
+                    <div className="empty-state">
+                        <i className="fas fa-pills fa-3x"></i>
+                        <h3>No medications found</h3>
+                        <p>Contact your healthcare provider to add medications</p>
+                    </div>
+                ) : (
+                    <div className="medications-grid">
+                        {medications.map(med => (
+                            <div key={med.id} className="medication-card">
+                                <h4>{med.medications?.name || 'Unknown Medication'}</h4>
+                                <p><strong>Dosage:</strong> {med.dosage}</p>
+                                <p><strong>Frequency:</strong> {med.frequency}</p>
+                                <p><strong>Status:</strong> <span className={`status ${med.status}`}>{med.status}</span></p>
+                                {med.notes && <p><strong>Notes:</strong> {med.notes}</p>}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        );
+
+        // Appointments Tab
+        const AppointmentsTab = ({ appointments = [] }) => (
+            <div className="appointments-content">
+                <h2>Your Appointments</h2>
+                {appointments.length === 0 ? (
+                    <div className="empty-state">
+                        <i className="fas fa-calendar fa-3x"></i>
+                        <h3>No appointments scheduled</h3>
+                        <p>Contact your healthcare provider to schedule an appointment</p>
+                    </div>
+                ) : (
+                    <div className="appointments-list">
+                        {appointments.map(apt => (
+                            <div key={apt.id} className="appointment-card">
+                                <div className="appointment-date">
+                                    <strong>{new Date(apt.scheduled_date).toLocaleDateString()}</strong>
+                                    <span>{new Date(apt.scheduled_date).toLocaleTimeString()}</span>
+                                </div>
+                                <div className="appointment-details">
+                                    <h4>{apt.appointment_type || 'Consultation'}</h4>
+                                    <p><strong>Status:</strong> <span className={`status ${apt.status}`}>{apt.status}</span></p>
+                                    {apt.notes && <p><strong>Notes:</strong> {apt.notes}</p>}
+                                    {apt.location && <p><strong>Location:</strong> {apt.location}</p>}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        );
+
+        // Vitals Tab with mobile-responsive input
+        const VitalsTab = ({ vitals = [], addVitalSigns, showMessage }) => {
+            const [newVitals, setNewVitals] = useState({
+                blood_pressure_systolic: '',
+                blood_pressure_diastolic: '',
+                heart_rate: '',
+                weight: '',
+                temperature: ''
+            });
+            const [saving, setSaving] = useState(false);
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setSaving(true);
+
+                try {
+                    const result = await addVitalSigns(newVitals);
+                    if (result.success) {
+                        showMessage('Vital signs added successfully!');
+                        setNewVitals({
+                            blood_pressure_systolic: '',
+                            blood_pressure_diastolic: '',
+                            heart_rate: '',
+                            weight: '',
+                            temperature: ''
+                        });
+                    } else {
+                        showMessage(result.error || 'Failed to save vital signs', 'error');
+                    }
+                } catch (error) {
+                    showMessage('Error saving vital signs', 'error');
+                } finally {
+                    setSaving(false);
+                }
+            };
+
+            return (
+                <div className="vitals-content">
+                    <h2>Vital Signs</h2>
+                    
+                    <div className="vitals-input-section">
+                        <h3>Add New Reading</h3>
+                        <form onSubmit={handleSubmit} className="vitals-form">
+                            <div className="form-row">
+                                <input
+                                    type="number"
+                                    placeholder="Systolic BP"
+                                    value={newVitals.blood_pressure_systolic}
+                                    onChange={(e) => setNewVitals(prev => ({...prev, blood_pressure_systolic: e.target.value}))}
+                                    className="vital-input"
+                                />
+                                <input
+                                    type="number"
+                                    placeholder="Diastolic BP"
+                                    value={newVitals.blood_pressure_diastolic}
+                                    onChange={(e) => setNewVitals(prev => ({...prev, blood_pressure_diastolic: e.target.value}))}
+                                    className="vital-input"
+                                />
+                            </div>
+                            <div className="form-row">
+                                <input
+                                    type="number"
+                                    placeholder="Heart Rate (bpm)"
+                                    value={newVitals.heart_rate}
+                                    onChange={(e) => setNewVitals(prev => ({...prev, heart_rate: e.target.value}))}
+                                    className="vital-input"
+                                />
+                                <input
+                                    type="number"
+                                    step="0.1"
+                                    placeholder="Weight (kg)"
+                                    value={newVitals.weight}
+                                    onChange={(e) => setNewVitals(prev => ({...prev, weight: e.target.value}))}
+                                    className="vital-input"
+                                />
+                            </div>
+                            <button type="submit" disabled={saving} className="save-vitals-btn">
+                                {saving ? 'Saving...' : 'Save Vitals'}
+                            </button>
+                        </form>
+                    </div>
+
+                    <div className="vitals-history">
+                        <h3>Recent Readings</h3>
+                        {vitals.length === 0 ? (
+                            <div className="empty-state">
+                                <i className="fas fa-heartbeat fa-3x"></i>
+                                <h3>No vital signs recorded</h3>
+                                <p>Add your first reading using the form above</p>
+                            </div>
+                        ) : (
+                            <div className="vitals-list">
+                                {vitals.map(vital => (
+                                    <div key={vital.id} className="vital-record">
+                                        <div className="vital-date">
+                                            {new Date(vital.recorded_at).toLocaleDateString()}
+                                        </div>
+                                        <div className="vital-values">
+                                            {vital.blood_pressure_systolic && (
+                                                <span>BP: {vital.blood_pressure_systolic}/{vital.blood_pressure_diastolic}</span>
+                                            )}
+                                            {vital.heart_rate && <span>HR: {vital.heart_rate} bpm</span>}
+                                            {vital.weight && <span>Weight: {vital.weight} kg</span>}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        // Insights Tab
+        const InsightsTab = ({ insights = [] }) => (
+            <div className="insights-content">
+                <h2>Health Insights</h2>
+                {insights.length === 0 ? (
+                    <div className="empty-state">
+                        <i className="fas fa-brain fa-3x"></i>
+                        <h3>No insights available</h3>
+                        <p>AI insights will appear here as you add more health data</p>
+                    </div>
+                ) : (
+                    <div className="insights-list">
+                        {insights.map(insight => (
+                            <div key={insight.id} className="insight-card">
+                                <h4>{insight.title}</h4>
+                                <p>{insight.description}</p>
+                                <div className="insight-recommendation">
+                                    <strong>Recommendation:</strong> {insight.recommendation}
+                                </div>
+                                <div className="insight-meta">
+                                    <span>Generated: {new Date(insight.created_at).toLocaleDateString()}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        );
+
+        // Profile Tab
+        const ProfileTab = ({ profile }) => (
+            <div className="profile-content">
+                <h2>Your Profile</h2>
+                <div className="profile-card">
+                    <div className="profile-avatar">
+                        <i className="fas fa-user-circle fa-5x"></i>
+                    </div>
+                    <div className="profile-details">
+                        <h3>{profile?.first_name || 'Patient'} {profile?.last_name || 'User'}</h3>
+                        <p><strong>Email:</strong> {profile?.email}</p>
+                        {profile?.phone && <p><strong>Phone:</strong> {profile.phone}</p>}
+                        {profile?.date_of_birth && <p><strong>Date of Birth:</strong> {profile.date_of_birth}</p>}
+                        {profile?.blood_type && <p><strong>Blood Type:</strong> {profile.blood_type}</p>}
+                        {profile?.height_cm && <p><strong>Height:</strong> {profile.height_cm} cm</p>}
+                        {profile?.weight_kg && <p><strong>Weight:</strong> {profile.weight_kg} kg</p>}
+                    </div>
+                </div>
+            </div>
+        );
+
+        // Main App Component
+        const App = () => (
+            <AuthProvider>
+                <DataProvider>
+                    <Dashboard />
+                </DataProvider>
+            </AuthProvider>
+        );
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html> 

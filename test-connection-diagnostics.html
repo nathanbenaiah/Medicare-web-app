@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicare+ Connection Diagnostics</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .test-section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f8fafc;
+            border-radius: 15px;
+            border-left: 5px solid #3b82f6;
+        }
+
+        .test-section h2 {
+            color: #1f2937;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .test-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .test-name {
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .test-status {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-error {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .test-details {
+            margin-top: 10px;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            color: #475569;
+            white-space: pre-wrap;
+        }
+
+        .btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background 0.2s;
+            margin: 10px 10px 10px 0;
+        }
+
+        .btn:hover {
+            background: #2563eb;
+        }
+
+        .btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .config-section {
+            background: #1f2937;
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .config-item {
+            margin: 15px 0;
+        }
+
+        .config-label {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .config-value {
+            font-family: 'Courier New', monospace;
+            background: #374151;
+            padding: 10px;
+            border-radius: 6px;
+            word-break: break-all;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px;
+            }
+            .header h1 {
+                font-size: 2rem;
+            }
+            .content {
+                padding: 20px;
+            }
+            .test-section {
+                padding: 20px;
+            }
+            .test-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 Medicare+ Diagnostics</h1>
+            <p>Comprehensive Backend Connection Testing</p>
+        </div>
+
+        <div class="content">
+            <div class="config-section">
+                <h2>📋 Configuration</h2>
+                <div class="config-item">
+                    <div class="config-label">Supabase URL:</div>
+                    <div class="config-value" id="supabase-url">Loading...</div>
+                </div>
+                <div class="config-item">
+                    <div class="config-label">API Key (First 20 chars):</div>
+                    <div class="config-value" id="api-key">Loading...</div>
+                </div>
+            </div>
+
+            <div class="test-section">
+                <h2>🔐 Authentication Tests</h2>
+                <div class="test-item">
+                    <div class="test-name">Supabase Client Initialization</div>
+                    <div class="test-status status-pending" id="init-status">PENDING</div>
+                </div>
+                <div class="test-details" id="init-details" style="display: none;"></div>
+
+                <div class="test-item">
+                    <div class="test-name">Authentication Service Connection</div>
+                    <div class="test-status status-pending" id="auth-status">PENDING</div>
+                </div>
+                <div class="test-details" id="auth-details" style="display: none;"></div>
+            </div>
+
+            <div class="test-section">
+                <h2>📊 Database Tests</h2>
+                <div class="test-item">
+                    <div class="test-name">User Profiles Table</div>
+                    <div class="test-status status-pending" id="profiles-status">PENDING</div>
+                </div>
+                <div class="test-details" id="profiles-details" style="display: none;"></div>
+
+                <div class="test-item">
+                    <div class="test-name">Appointments Table</div>
+                    <div class="test-status status-pending" id="appointments-status">PENDING</div>
+                </div>
+                <div class="test-details" id="appointments-details" style="display: none;"></div>
+
+                <div class="test-item">
+                    <div class="test-name">Patient Medications Table</div>
+                    <div class="test-status status-pending" id="medications-status">PENDING</div>
+                </div>
+                <div class="test-details" id="medications-details" style="display: none;"></div>
+
+                <div class="test-item">
+                    <div class="test-name">Vital Signs Table</div>
+                    <div class="test-status status-pending" id="vitals-status">PENDING</div>
+                </div>
+                <div class="test-details" id="vitals-details" style="display: none;"></div>
+
+                <div class="test-item">
+                    <div class="test-name">AI Insights Table</div>
+                    <div class="test-status status-pending" id="insights-status">PENDING</div>
+                </div>
+                <div class="test-details" id="insights-details" style="display: none;"></div>
+            </div>
+
+            <div class="test-section">
+                <h2>🔄 Real-time Tests</h2>
+                <div class="test-item">
+                    <div class="test-name">Real-time Subscriptions</div>
+                    <div class="test-status status-pending" id="realtime-status">PENDING</div>
+                </div>
+                <div class="test-details" id="realtime-details" style="display: none;"></div>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <button class="btn" onclick="runAllTests()">🚀 Run All Tests</button>
+                <button class="btn" onclick="runQuickTests()">⚡ Quick Test</button>
+                <button class="btn" onclick="clearResults()">🧹 Clear Results</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Supabase configuration
+        const supabaseUrl = 'https://gcggnrwqilylyykppizb.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjaGducndxaWx5bHl5a3BwaXpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTIyNDI1MzgsImV4cCI6MjAyNzgxODUzOH0.GtHQVOl7NSmNWE6u6wqYSN8EZwrBw4yyJ5fK4Lr0n2k';
+        
+        let supabase;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('supabase-url').textContent = supabaseUrl;
+            document.getElementById('api-key').textContent = supabaseKey.substring(0, 20) + '...';
+        });
+
+        function updateTestStatus(testId, status, details = '') {
+            const statusElement = document.getElementById(`${testId}-status`);
+            const detailsElement = document.getElementById(`${testId}-details`);
+            
+            statusElement.className = `test-status status-${status}`;
+            statusElement.textContent = status.toUpperCase();
+            
+            if (details) {
+                detailsElement.textContent = details;
+                detailsElement.style.display = 'block';
+            }
+        }
+
+        async function testSupabaseInit() {
+            try {
+                supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+                updateTestStatus('init', 'success', 'Supabase client initialized successfully');
+                return true;
+            } catch (error) {
+                updateTestStatus('init', 'error', `Failed to initialize: ${error.message}`);
+                return false;
+            }
+        }
+
+        async function testAuthentication() {
+            try {
+                const { data, error } = await supabase.auth.getSession();
+                if (error) throw error;
+                
+                updateTestStatus('auth', 'success', `Authentication service connected. Current session: ${data.session ? 'Active' : 'None'}`);
+                return true;
+            } catch (error) {
+                updateTestStatus('auth', 'error', `Auth test failed: ${error.message}`);
+                return false;
+            }
+        }
+
+        async function testTable(tableName, testId) {
+            try {
+                const { data, error, count } = await supabase
+                    .from(tableName)
+                    .select('*', { count: 'exact', head: true })
+                    .limit(1);
+                
+                if (error) {
+                    if (error.code === '42P01') {
+                        updateTestStatus(testId, 'error', `Table '${tableName}' does not exist`);
+                    } else {
+                        updateTestStatus(testId, 'error', `Error: ${error.message}`);
+                    }
+                    return false;
+                }
+                
+                updateTestStatus(testId, 'success', `Table '${tableName}' accessible. Total records: ${count !== null ? count : 'Unknown'}`);
+                return true;
+            } catch (error) {
+                updateTestStatus(testId, 'error', `Unexpected error: ${error.message}`);
+                return false;
+            }
+        }
+
+        async function testRealtime() {
+            try {
+                const channel = supabase
+                    .channel('test-channel')
+                    .on('presence', { event: 'sync' }, () => {
+                        updateTestStatus('realtime', 'success', 'Real-time connection established and working');
+                    })
+                    .subscribe();
+
+                // Wait a bit for connection
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                if (channel.state === 'SUBSCRIBED') {
+                    updateTestStatus('realtime', 'success', 'Real-time subscriptions working');
+                    channel.unsubscribe();
+                    return true;
+                } else {
+                    updateTestStatus('realtime', 'error', `Real-time connection failed. State: ${channel.state}`);
+                    return false;
+                }
+            } catch (error) {
+                updateTestStatus('realtime', 'error', `Real-time test failed: ${error.message}`);
+                return false;
+            }
+        }
+
+        async function runAllTests() {
+            console.log('🚀 Starting comprehensive diagnostics...');
+            
+            // Reset all statuses
+            clearResults();
+            
+            // Test 1: Supabase initialization
+            const initSuccess = await testSupabaseInit();
+            if (!initSuccess) return;
+            
+            // Test 2: Authentication
+            await testAuthentication();
+            
+            // Test 3: Database tables
+            await testTable('user_profiles', 'profiles');
+            await testTable('appointments', 'appointments');
+            await testTable('patient_medications', 'medications');
+            await testTable('vital_signs', 'vitals');
+            await testTable('ai_insights', 'insights');
+            
+            // Test 4: Real-time
+            await testRealtime();
+            
+            console.log('✅ All tests completed');
+        }
+
+        async function runQuickTests() {
+            console.log('⚡ Starting quick diagnostics...');
+            
+            // Reset statuses
+            const quickTests = ['init', 'auth', 'profiles'];
+            quickTests.forEach(test => {
+                updateTestStatus(test, 'pending');
+                const details = document.getElementById(`${test}-details`);
+                if (details) details.style.display = 'none';
+            });
+            
+            // Run essential tests only
+            const initSuccess = await testSupabaseInit();
+            if (!initSuccess) return;
+            
+            await testAuthentication();
+            await testTable('user_profiles', 'profiles');
+            
+            console.log('✅ Quick tests completed');
+        }
+
+        function clearResults() {
+            const testIds = ['init', 'auth', 'profiles', 'appointments', 'medications', 'vitals', 'insights', 'realtime'];
+            
+            testIds.forEach(testId => {
+                const statusElement = document.getElementById(`${testId}-status`);
+                const detailsElement = document.getElementById(`${testId}-details`);
+                
+                if (statusElement) {
+                    statusElement.className = 'test-status status-pending';
+                    statusElement.textContent = 'PENDING';
+                }
+                
+                if (detailsElement) {
+                    detailsElement.style.display = 'none';
+                    detailsElement.textContent = '';
+                }
+            });
+            
+            console.log('🧹 Results cleared');
+        }
+
+        // Auto-run quick tests on page load
+        setTimeout(runQuickTests, 1000);
+    </script>
+</body>
+</html>

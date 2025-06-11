@@ -76,9 +76,9 @@ app.get('/api/health', (req, res) => {
 app.get('/api/auth/profile', authenticateUser, async (req, res) => {
     try {
         const { data, error } = await supabaseClient
-            .from('user_profiles')
+            .from('medicare.user_profiles')
             .select('*')
-            .eq('user_id', req.user.id)
+            .eq('id', req.user.id)
             .single()
 
         if (error && error.code !== 'PGRST116') {
@@ -98,7 +98,7 @@ app.put('/api/auth/profile', authenticateUser, async (req, res) => {
         const { full_name, phone_number, bio, address, occupation, skills } = req.body
 
         const profileData = {
-            user_id: req.user.id,
+            id: req.user.id,
             email: req.user.email,
             full_name,
             phone_number,
@@ -109,7 +109,7 @@ app.put('/api/auth/profile', authenticateUser, async (req, res) => {
         }
 
         const { data, error } = await supabaseClient
-            .from('user_profiles')
+            .from('medicare.user_profiles')
             .upsert(profileData)
             .select()
             .single()
@@ -129,9 +129,10 @@ app.put('/api/auth/profile', authenticateUser, async (req, res) => {
 app.get('/api/medications', authenticateUser, async (req, res) => {
     try {
         const { data, error } = await supabaseClient
-            .from('medications')
+            .from('medicare.medication_reminders')
             .select('*')
             .eq('user_id', req.user.id)
+            .eq('is_active', true)
             .order('created_at', { ascending: false })
 
         if (error) throw error
@@ -148,11 +149,12 @@ app.post('/api/medications', authenticateUser, async (req, res) => {
     try {
         const medicationData = {
             ...req.body,
-            user_id: req.user.id
+            user_id: req.user.id,
+            is_active: true
         }
 
         const { data, error } = await supabaseClient
-            .from('medications')
+            .from('medicare.medication_reminders')
             .insert(medicationData)
             .select()
             .single()
@@ -173,7 +175,7 @@ app.put('/api/medications/:id', authenticateUser, async (req, res) => {
         const updates = req.body
 
         const { data, error } = await supabaseClient
-            .from('medications')
+            .from('medicare.medication_reminders')
             .update(updates)
             .eq('id', id)
             .eq('user_id', req.user.id)
@@ -195,8 +197,8 @@ app.delete('/api/medications/:id', authenticateUser, async (req, res) => {
         const { id } = req.params
 
         const { error } = await supabaseClient
-            .from('medications')
-            .delete()
+            .from('medicare.medication_reminders')
+            .update({ is_active: false })
             .eq('id', id)
             .eq('user_id', req.user.id)
 
@@ -209,23 +211,85 @@ app.delete('/api/medications/:id', authenticateUser, async (req, res) => {
     }
 })
 
+// ========== APPOINTMENTS ROUTES ==========
+
+// Get user appointments
+app.get('/api/appointments', authenticateUser, async (req, res) => {
+    try {
+        const { data, error } = await supabaseClient
+            .from('medicare.medical_appointments')
+            .select('*')
+            .eq('user_id', req.user.id)
+            .gte('appointment_date', new Date().toISOString().split('T')[0])
+            .order('appointment_date', { ascending: true })
+            .order('appointment_time', { ascending: true })
+
+        if (error) throw error
+
+        res.json({ appointments: data || [] })
+    } catch (error) {
+        console.error('Appointments fetch error:', error)
+        res.status(500).json({ error: 'Failed to fetch appointments' })
+    }
+})
+
+// Add appointment
+app.post('/api/appointments', authenticateUser, async (req, res) => {
+    try {
+        const appointmentData = {
+            ...req.body,
+            user_id: req.user.id
+        }
+
+        const { data, error } = await supabaseClient
+            .from('medicare.medical_appointments')
+            .insert(appointmentData)
+            .select()
+            .single()
+
+        if (error) throw error
+
+        res.json({ success: true, appointment: data })
+    } catch (error) {
+        console.error('Appointment add error:', error)
+        res.status(500).json({ error: 'Failed to add appointment' })
+    }
+})
+
+// Update appointment
+app.put('/api/appointments/:id', authenticateUser, async (req, res) => {
+    try {
+        const { id } = req.params
+        const updates = req.body
+
+        const { data, error } = await supabaseClient
+            .from('medicare.medical_appointments')
+            .update(updates)
+            .eq('id', id)
+            .eq('user_id', req.user.id)
+            .select()
+            .single()
+
+        if (error) throw error
+
+        res.json({ success: true, appointment: data })
+    } catch (error) {
+        console.error('Appointment update error:', error)
+        res.status(500).json({ error: 'Failed to update appointment' })
+    }
+})
+
 // ========== REMINDER ROUTES ==========
 
 // Get medication reminders
 app.get('/api/reminders', authenticateUser, async (req, res) => {
     try {
         const { data, error } = await supabaseClient
-            .from('medication_reminders')
-            .select(`
-                *,
-                medications (
-                    name,
-                    dosage,
-                    medication_type
-                )
-            `)
+            .from('medicare.medication_reminders')
+            .select('*')
             .eq('user_id', req.user.id)
-            .order('reminder_time', { ascending: true })
+            .eq('is_active', true)
+            .order('time', { ascending: true })
 
         if (error) throw error
 
@@ -307,30 +371,44 @@ app.get('/api/notifications', authenticateUser, async (req, res) => {
     try {
         const { limit = 10 } = req.query
 
-        // Mock notifications for now
-        const mockNotifications = [
-            {
-                id: 1,
-                title: "Medication Reminder",
-                message: "Time to take your morning medication",
-                type: "reminder",
-                is_read: false,
-                created_at: new Date().toISOString()
-            },
-            {
-                id: 2,
-                title: "Appointment Reminder",
-                message: "Doctor appointment tomorrow at 2:00 PM",
-                type: "appointment",
-                is_read: false,
-                created_at: new Date(Date.now() - 3600000).toISOString()
-            }
-        ]
+        const { data, error } = await supabaseClient
+            .from('medicare.system_notifications')
+            .select('*')
+            .or(`user_id.eq.${req.user.id},user_id.is.null`)
+            .order('created_at', { ascending: false })
+            .limit(limit)
 
-        res.json({ notifications: mockNotifications.slice(0, limit) })
+        if (error) throw error
+
+        res.json({ notifications: data || [] })
     } catch (error) {
         console.error('Notifications fetch error:', error)
         res.status(500).json({ error: 'Failed to fetch notifications' })
+    }
+})
+
+// Mark notification as read
+app.put('/api/notifications/:id/read', authenticateUser, async (req, res) => {
+    try {
+        const { id } = req.params
+
+        const { data, error } = await supabaseClient
+            .from('medicare.system_notifications')
+            .update({ 
+                is_read: true,
+                read_at: new Date().toISOString()
+            })
+            .eq('id', id)
+            .eq('user_id', req.user.id)
+            .select()
+            .single()
+
+        if (error) throw error
+
+        res.json({ success: true, notification: data })
+    } catch (error) {
+        console.error('Notification update error:', error)
+        res.status(500).json({ error: 'Failed to update notification' })
     }
 })
 

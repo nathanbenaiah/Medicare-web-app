@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard - Medicare+</title>
+    <link rel="stylesheet" href="../css/user-dashboard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.29.3/index.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.8.0/Recharts.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useContext, createContext, useCallback, useMemo } = React;
+        const { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar } = Recharts;
+
+        // Supabase configuration
+        const supabaseUrl = 'https://gcggnrwqilylyykppizb.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjaGducndxaWx5bHl5a3BwaXpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTIyNDI1MzgsImV4cCI6MjAyNzgxODUzOH0.GtHQVOl7NSmNWE6u6wqYSN8EZwrBw4yyJ5fK4Lr0n2k';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Context for authentication and global state
+        const AuthContext = createContext();
+        const DataContext = createContext();
+
+        // Authentication Provider
+        const AuthProvider = ({ children }) => {
+            const [user, setUser] = useState(null);
+            const [session, setSession] = useState(null);
+            const [loading, setLoading] = useState(true);
+
+            useEffect(() => {
+                // Get initial session
+                supabase.auth.getSession().then(({ data: { session } }) => {
+                    setSession(session);
+                    setUser(session?.user ?? null);
+                    setLoading(false);
+                });
+
+                // Listen for auth changes
+                const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+                    setSession(session);
+                    setUser(session?.user ?? null);
+                    setLoading(false);
+                });
+
+                return () => subscription.unsubscribe();
+            }, []);
+
+            const signIn = async (email, password) => {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email,
+                    password,
+                });
+                return { data, error };
+            };
+
+            const signUp = async (email, password, userData) => {
+                const { data, error } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: userData
+                    }
+                });
+                return { data, error };
+            };
+
+            const signOut = async () => {
+                const { error } = await supabase.auth.signOut();
+                return { error };
+            };
+
+            const value = {
+                user,
+                session,
+                loading,
+                signIn,
+                signUp,
+                signOut
+            };
+
+            return (
+                <AuthContext.Provider value={value}>
+                    {children}
+                </AuthContext.Provider>
+            );
+        };
+
+        // Data Provider for patient data
+        const DataProvider = ({ children }) => {
+            const { user } = useContext(AuthContext);
+            const [patientData, setPatientData] = useState({
+                profile: null,
+                medications: [],
+                appointments: [],
+                healthRecords: [],
+                vitals: [],
+                insights: [],
+                notifications: []
+            });
+            const [loading, setLoading] = useState(false);
+
+            // Fetch patient profile
+            const fetchProfile = useCallback(async () => {
+                if (!user) return;
+                
+                setLoading(true);
+                try {
+                    const { data, error } = await supabase
+                        .from('user_profiles')
+                        .select('*')
+                        .eq('id', user.id)
+                        .single();
+                    
+                    if (error) throw error;
+                    setPatientData(prev => ({ ...prev, profile: data }));
+                } catch (error) {
+                    console.error('Error fetching profile:', error);
+                } finally {
+                    setLoading(false);
+                }
+            }, [user]);
+
+            // Fetch medications
+            const fetchMedications = useCallback(async () => {
+                if (!user) return;
+                
+                try {
+                    const { data, error } = await supabase
+                        .from('patient_medications')
+                        .select(`
+                            *,
+                            medications (name, generic_name, side_effects),
+                            provider_profiles (first_name, last_name)
+                        `)
+                        .eq('user_id', user.id)
+                        .eq('status', 'active');
+                    
+                    if (error) throw error;
+                    setPatientData(prev => ({ ...prev, medications: data || [] }));
+                } catch (error) {
+                    console.error('Error fetching medications:', error);
+                }
+            }, [user]);
+
+            // Fetch appointments
+            const fetchAppointments = useCallback(async () => {
+                if (!user) return;
+                
+                try {
+                    const { data, error } = await supabase
+                        .from('appointments')
+                        .select(`
+                            *,
+                            provider_profiles (first_name, last_name, specialties),
+                            organizations (name, type)
+                        `)
+                        .eq('user_id', user.id)
+                        .order('scheduled_date', { ascending: true });
+                    
+                    if (error) throw error;
+                    setPatientData(prev => ({ ...prev, appointments: data || [] }));
+                } catch (error) {
+                    console.error('Error fetching appointments:', error);
+                }
+            }, [user]);
+
+            // Fetch vital signs
+            const fetchVitals = useCallback(async () => {
+                if (!user) return;
+                
+                try {
+                    const { data, error } = await supabase
+                        .from('vital_signs')
+                        .select('*')
+                        .eq('user_id', user.id)
+                        .order('recorded_at', { ascending: false })
+                        .limit(30);
+                    
+                    if (error) throw error;
+                    setPatientData(prev => ({ ...prev, vitals: data || [] }));
+                } catch (error) {
+                    console.error('Error fetching vitals:', error);
+                }
+            }, [user]);
+
+            // Fetch AI insights
+            const fetchInsights = useCallback(async () => {
+                if (!user) return;
+                
+                try {
+                    const { data, error } = await supabase
+                        .from('ai_insights')
+                        .select('*')
+                        .eq('user_id', user.id)
+                        .eq('status', 'new')
+                        .order('created_at', { ascending: false });
+                    
+                    if (error) throw error;
+                    setPatientData(prev => ({ ...prev, insights: data || [] }));
+                } catch (error) {
+                    console.error('Error fetching insights:', error);
+                }
+            }, [user]);
+
+            // Log medication
+            const logMedication = async (medicationId, status, notes = '') => {
+                if (!user) return;
+                
+                try {
+                    const { data, error } = await supabase
+                        .from('medication_logs')
+                        .insert([{
+                            patient_medication_id: medicationId,
+                            user_id: user.id,
+                            scheduled_time: new Date().toISOString(),
+                            actual_time: new Date().toISOString(),
+                            status: status,
+                            method: 'manual',
+                            notes: notes
+                        }]);
+                    
+                    if (error) throw error;
+                    await fetchMedications(); // Refresh data
+                    return { success: true };
+                } catch (error) {
+                    console.error('Error logging medication:', error);
+                    return { success: false, error };
+                }
+            };
+
+            // Add vital signs
+            const addVitalSigns = async (vitals) => {
+                if (!user) return;
+                
+                try {
+                    const { data, error } = await supabase
+                        .from('vital_signs')
+                        .insert([{
+                            user_id: user.id,
+                            recorded_by: user.id,
+                            ...vitals
+                        }]);
+                    
+                    if (error) throw error;
+                    await fetchVitals(); // Refresh data
+                    return { success: true };
+                } catch (error) {
+                    console.error('Error adding vitals:', error);
+                    return { success: false, error };
+                }
+            };
+
+            // Initialize data when user changes
+            useEffect(() => {
+                if (user) {
+                    fetchProfile();
+                    fetchMedications();
+                    fetchAppointments();
+                    fetchVitals();
+                    fetchInsights();
+                }
+            }, [user, fetchProfile, fetchMedications, fetchAppointments, fetchVitals, fetchInsights]);
+
+            // Set up real-time subscriptions
+            useEffect(() => {
+                if (!user) return;
+
+                const subscriptions = [];
+
+                // Medication logs subscription
+                const medicationSub = supabase
+                    .channel('medication_logs')
+                    .on('postgres_changes', 
+                        { event: '*', schema: 'public', table: 'medication_logs', filter: `user_id=eq.${user.id}` },
+                        fetchMedications
+                    )
+                    .subscribe();
+
+                // Appointments subscription
+                const appointmentSub = supabase
+                    .channel('appointments')
+                    .on('postgres_changes', 
+                        { event: '*', schema: 'public', table: 'appointments', filter: `user_id=eq.${user.id}` },
+                        fetchAppointments
+                    )
+                    .subscribe();
+
+                subscriptions.push(medicationSub, appointmentSub);
+
+                return () => {
+                    subscriptions.forEach(sub => sub.unsubscribe());
+                };
+            }, [user, fetchMedications, fetchAppointments]);
+
+            const value = {
+                patientData,
+                loading,
+                logMedication,
+                addVitalSigns,
+                fetchProfile,
+                fetchMedications,
+                fetchAppointments,
+                fetchVitals,
+                fetchInsights
+            };
+
+            return (
+                <DataContext.Provider value={value}>
+                    {children}
+                </DataContext.Provider>
+            );
+        };
+
+        // Login Component
+        const LoginForm = () => {
+            const [email, setEmail] = useState('');
+            const [password, setPassword] = useState('');
+            const [isLogin, setIsLogin] = useState(true);
+            const [loading, setLoading] = useState(false);
+            const [error, setError] = useState('');
+            const { signIn, signUp } = useContext(AuthContext);
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setLoading(true);
+                setError('');
+
+                try {
+                    let result;
+                    if (isLogin) {
+                        result = await signIn(email, password);
+                    } else {
+                        result = await signUp(email, password, { role: 'patient' });
+                    }
+
+                    if (result.error) {
+                        setError(result.error.message);
+                    }
+                } catch (err) {
+                    setError(err.message);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            return (
+                <div className="login-container">
+                    <div className="login-card">
+                        <div className="login-header">
+                            <h1>Medicare+</h1>
+                            <p>Your Personal Health Dashboard</p>
+                        </div>
+                        
+                        <form onSubmit={handleSubmit} className="login-form">
+                            <div className="form-group">
+                                <label>Email</label>
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            
+                            <div className="form-group">
+                                <label>Password</label>
+                                <input
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            
+                            {error && <div className="error-message">{error}</div>}
+                            
+                            <button type="submit" disabled={loading} className="login-btn">
+                                {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Sign Up')}
+                            </button>
+                        </form>
+                        
+                        <div className="login-footer">
+                            <button 
+                                type="button" 
+                                onClick={() => setIsLogin(!isLogin)}
+                                className="toggle-btn"
+                            >
+                                {isLogin ? 'Need an account? Sign up' : 'Have an account? Sign in'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Navigation Component
+        const Navigation = () => {
+            const [activeTab, setActiveTab] = useState('dashboard');
+            const { signOut } = useContext(AuthContext);
+
+            const navItems = [
+                { id: 'dashboard', label: 'Dashboard', icon: 'fas fa-home' },
+                { id: 'medications', label: 'Medications', icon: 'fas fa-pills' },
+                { id: 'appointments', label: 'Appointments', icon: 'fas fa-calendar-check' },
+                { id: 'health', label: 'Health Records', icon: 'fas fa-file-medical' },
+                { id: 'vitals', label: 'Vital Signs', icon: 'fas fa-heartbeat' },
+                { id: 'insights', label: 'AI Insights', icon: 'fas fa-brain' },
+                { id: 'messages', label: 'Messages', icon: 'fas fa-comments' },
+                { id: 'profile', label: 'Profile', icon: 'fas fa-user' }
+            ];
+
+            return (
+                <nav className="navigation">
+                    <div className="nav-header">
+                        <h2>Medicare+</h2>
+                        <p>Patient Portal</p>
+                    </div>
+                    
+                    <ul className="nav-menu">
+                        {navItems.map(item => (
+                            <li key={item.id}>
+                                <button
+                                    className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
+                                    onClick={() => setActiveTab(item.id)}
+                                >
+                                    <i className={item.icon}></i>
+                                    <span>{item.label}</span>
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                    
+                    <div className="nav-footer">
+                        <button onClick={signOut} className="logout-btn">
+                            <i className="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </button>
+                    </div>
+                </nav>
+            );
+        };
+
+        // Dashboard Overview Component
+        const DashboardOverview = () => {
+            const { patientData } = useContext(DataContext);
+            const { profile, medications, appointments, vitals, insights } = patientData;
+
+            const todaysMedications = medications.filter(med => {
+                // Simplified check for today's medications
+                return med.status === 'active';
+            });
+
+            const upcomingAppointments = appointments.filter(apt => {
+                const aptDate = new Date(apt.scheduled_date);
+                const today = new Date();
+                return aptDate > today;
+            }).slice(0, 3);
+
+            const recentVitals = vitals.slice(0, 5);
+
+            return (
+                <div className="dashboard-overview">
+                    <div className="welcome-section">
+                        <h1>Welcome back, {profile?.first_name || 'Patient'}!</h1>
+                        <p>Here's your health overview for today</p>
+                    </div>
+
+                    <div className="stats-grid">
+                        <div className="stat-card">
+                            <div className="stat-icon">
+                                <i className="fas fa-pills"></i>
+                            </div>
+                            <div className="stat-content">
+                                <h3>{todaysMedications.length}</h3>
+                                <p>Active Medications</p>
+                            </div>
+                        </div>
+
+                        <div className="stat-card">
+                            <div className="stat-icon">
+                                <i className="fas fa-calendar-check"></i>
+                            </div>
+                            <div className="stat-content">
+                                <h3>{upcomingAppointments.length}</h3>
+                                <p>Upcoming Appointments</p>
+                            </div>
+                        </div>
+
+                        <div className="stat-card">
+                            <div className="stat-icon">
+                                <i className="fas fa-heartbeat"></i>
+                            </div>
+                            <div className="stat-content">
+                                <h3>{recentVitals.length}</h3>
+                                <p>Recent Vitals</p>
+                            </div>
+                        </div>
+
+                        <div className="stat-card">
+                            <div className="stat-icon">
+                                <i className="fas fa-brain"></i>
+                            </div>
+                            <div className="stat-content">
+                                <h3>{insights.length}</h3>
+                                <p>AI Insights</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="dashboard-grid">
+                        <div className="dashboard-card">
+                            <h3>Today's Medications</h3>
+                            <div className="medications-today">
+                                {todaysMedications.length > 0 ? (
+                                    todaysMedications.map(med => (
+                                        <div key={med.id} className="medication-item">
+                                            <div className="med-info">
+                                                <h4>{med.medications?.name}</h4>
+                                                <p>{med.dosage} - {med.frequency}</p>
+                                            </div>
+                                            <div className="med-actions">
+                                                <button className="btn-taken">
+                                                    <i className="fas fa-check"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p>No medications for today</p>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="dashboard-card">
+                            <h3>Upcoming Appointments</h3>
+                            <div className="appointments-upcoming">
+                                {upcomingAppointments.length > 0 ? (
+                                    upcomingAppointments.map(apt => (
+                                        <div key={apt.id} className="appointment-item">
+                                            <div className="apt-date">
+                                                <span className="date">
+                                                    {new Date(apt.scheduled_date).toLocaleDateString()}
+                                                </span>
+                                                <span className="time">
+                                                    {new Date(apt.scheduled_date).toLocaleTimeString()}
+                                                </span>
+                                            </div>
+                                            <div className="apt-info">
+                                                <h4>{apt.provider_profiles?.first_name} {apt.provider_profiles?.last_name}</h4>
+                                                <p>{apt.reason}</p>
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p>No upcoming appointments</p>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="dashboard-card">
+                            <h3>Recent Vitals</h3>
+                            <div className="vitals-recent">
+                                {recentVitals.length > 0 ? (
+                                    recentVitals.map(vital => (
+                                        <div key={vital.id} className="vital-item">
+                                            <div className="vital-date">
+                                                {new Date(vital.recorded_at).toLocaleDateString()}
+                                            </div>
+                                            <div className="vital-values">
+                                                {vital.blood_pressure_systolic && (
+                                                    <span>BP: {vital.blood_pressure_systolic}/{vital.blood_pressure_diastolic}</span>
+                                                )}
+                                                {vital.heart_rate && (
+                                                    <span>HR: {vital.heart_rate}</span>
+                                                )}
+                                                {vital.weight && (
+                                                    <span>Weight: {vital.weight}kg</span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p>No recent vitals recorded</p>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="dashboard-card">
+                            <h3>AI Health Insights</h3>
+                            <div className="insights-recent">
+                                {insights.length > 0 ? (
+                                    insights.slice(0, 3).map(insight => (
+                                        <div key={insight.id} className="insight-item">
+                                            <div className="insight-header">
+                                                <h4>{insight.title}</h4>
+                                                <span className={`priority-${insight.impact_level}`}>
+                                                    {insight.impact_level}
+                                                </span>
+                                            </div>
+                                            <p>{insight.description}</p>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p>No new insights available</p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Medications Component
+        const MedicationsPage = () => {
+            const { patientData, logMedication } = useContext(DataContext);
+            const { medications } = patientData;
+            const [selectedMed, setSelectedMed] = useState(null);
+
+            const handleLogMedication = async (medicationId, status) => {
+                const result = await logMedication(medicationId, status);
+                if (result.success) {
+                    // Show success message
+                    console.log('Medication logged successfully');
+                }
+            };
+
+            return (
+                <div className="medications-page">
+                    <div className="page-header">
+                        <h1>My Medications</h1>
+                        <p>Track and manage your medications</p>
+                    </div>
+
+                    <div className="medications-grid">
+                        {medications.map(med => (
+                            <div key={med.id} className="medication-card">
+                                <div className="med-header">
+                                    <h3>{med.medications?.name}</h3>
+                                    <span className={`status ${med.status}`}>{med.status}</span>
+                                </div>
+                                
+                                <div className="med-details">
+                                    <p><strong>Dosage:</strong> {med.dosage}</p>
+                                    <p><strong>Frequency:</strong> {med.frequency}</p>
+                                    <p><strong>Route:</strong> {med.route}</p>
+                                    {med.start_date && (
+                                        <p><strong>Started:</strong> {new Date(med.start_date).toLocaleDateString()}</p>
+                                    )}
+                                </div>
+
+                                <div className="med-actions">
+                                    <button 
+                                        className="btn-primary"
+                                        onClick={() => handleLogMedication(med.id, 'taken')}
+                                    >
+                                        <i className="fas fa-check"></i> Mark Taken
+                                    </button>
+                                    <button 
+                                        className="btn-secondary"
+                                        onClick={() => handleLogMedication(med.id, 'missed')}
+                                    >
+                                        <i className="fas fa-times"></i> Mark Missed
+                                    </button>
+                                    <button 
+                                        className="btn-info"
+                                        onClick={() => setSelectedMed(med)}
+                                    >
+                                        <i className="fas fa-info-circle"></i> Details
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {selectedMed && (
+                        <div className="modal-overlay" onClick={() => setSelectedMed(null)}>
+                            <div className="modal-content" onClick={e => e.stopPropagation()}>
+                                <div className="modal-header">
+                                    <h2>{selectedMed.medications?.name}</h2>
+                                    <button onClick={() => setSelectedMed(null)}>
+                                        <i className="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <div className="modal-body">
+                                    <div className="med-full-details">
+                                        <p><strong>Generic Name:</strong> {selectedMed.medications?.generic_name}</p>
+                                        <p><strong>Dosage:</strong> {selectedMed.dosage}</p>
+                                        <p><strong>Frequency:</strong> {selectedMed.frequency}</p>
+                                        <p><strong>Instructions:</strong> {selectedMed.instructions}</p>
+                                        
+                                        {selectedMed.medications?.side_effects && (
+                                            <div className="side-effects">
+                                                <h4>Possible Side Effects:</h4>
+                                                <ul>
+                                                    {selectedMed.medications.side_effects.map((effect, index) => (
+                                                        <li key={index}>{effect}</li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        // Main App Component
+        const App = () => {
+            const { user, loading } = useContext(AuthContext);
+            const [activeTab, setActiveTab] = useState('dashboard');
+
+            if (loading) {
+                return (
+                    <div className="loading-container">
+                        <div className="loading-spinner"></div>
+                        <p>Loading...</p>
+                    </div>
+                );
+            }
+
+            if (!user) {
+                return <LoginForm />;
+            }
+
+            const renderContent = () => {
+                switch (activeTab) {
+                    case 'dashboard':
+                        return <DashboardOverview />;
+                    case 'medications':
+                        return <MedicationsPage />;
+                    default:
+                        return <DashboardOverview />;
+                }
+            };
+
+            return (
+                <div className="app-container">
+                    <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
+                    <main className="main-content">
+                        <DataProvider>
+                            {renderContent()}
+                        </DataProvider>
+                    </main>
+                </div>
+            );
+        };
+
+        // Root App with Providers
+        const RootApp = () => {
+            return (
+                <AuthProvider>
+                    <App />
+                </AuthProvider>
+            );
+        };
+
+        // Render the app
+        ReactDOM.render(<RootApp />, document.getElementById('root'));
+    </script>
+</body>
+</html> 
