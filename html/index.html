@@ -591,53 +591,132 @@
             z-index: 1;
         }
 
-        /* Floating Background Elements */
+        /* Enhanced Floating Background Elements */
         .floating-elements {
             position: absolute;
             width: 100%;
             height: 100%;
             pointer-events: none;
+            overflow: hidden;
         }
 
-        .floating-pill, .floating-heart, .floating-cross, .floating-stethoscope {
+        .floating-pill, .floating-heart, .floating-cross, .floating-stethoscope, 
+        .floating-capsule, .floating-thermometer, .floating-syringe, .floating-chart {
             position: absolute;
             font-size: 2rem;
-            opacity: 0.1;
-            animation: float 6s ease-in-out infinite;
+            opacity: 0.08;
+            animation: float 8s ease-in-out infinite;
+            transform-origin: center;
+            filter: blur(0.5px);
         }
 
         .floating-pill {
-            top: 10%;
-            left: 10%;
+            top: 8%;
+            left: 8%;
             animation-delay: 0s;
+            animation-duration: 7s;
         }
 
         .floating-heart {
-            top: 20%;
-            right: 15%;
+            top: 15%;
+            right: 12%;
             animation-delay: 2s;
+            animation-duration: 9s;
         }
 
         .floating-cross {
-            bottom: 30%;
-            left: 20%;
+            bottom: 25%;
+            left: 15%;
             animation-delay: 4s;
+            animation-duration: 8s;
         }
 
         .floating-stethoscope {
-            bottom: 20%;
-            right: 10%;
+            bottom: 15%;
+            right: 8%;
             animation-delay: 1s;
+            animation-duration: 10s;
+        }
+
+        .floating-capsule {
+            top: 35%;
+            left: 5%;
+            animation-delay: 3s;
+            animation-duration: 11s;
+            font-size: 1.8rem;
+        }
+
+        .floating-thermometer {
+            top: 60%;
+            right: 5%;
+            animation-delay: 5s;
+            animation-duration: 9s;
+            font-size: 1.6rem;
+        }
+
+        .floating-syringe {
+            top: 45%;
+            left: 85%;
+            animation-delay: 6s;
+            animation-duration: 12s;
+            font-size: 1.4rem;
+        }
+
+        .floating-chart {
+            bottom: 40%;
+            right: 20%;
+            animation-delay: 2.5s;
+            animation-duration: 8.5s;
+            font-size: 1.7rem;
         }
 
         .floating-pill::before { content: '💊'; }
         .floating-heart::before { content: '❤️'; }
         .floating-cross::before { content: '⚕️'; }
         .floating-stethoscope::before { content: '🩺'; }
+        .floating-capsule::before { content: '💉'; }
+        .floating-thermometer::before { content: '🌡️'; }
+        .floating-syringe::before { content: '💊'; }
+        .floating-chart::before { content: '📊'; }
 
-                @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(10deg); }
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(0px) translateX(0px) rotate(0deg) scale(1); 
+                opacity: 0.08;
+            }
+            25% { 
+                transform: translateY(-15px) translateX(10px) rotate(5deg) scale(1.1); 
+                opacity: 0.12;
+            }
+            50% { 
+                transform: translateY(-25px) translateX(-5px) rotate(-3deg) scale(0.9); 
+                opacity: 0.15;
+            }
+            75% { 
+                transform: translateY(-10px) translateX(-15px) rotate(8deg) scale(1.05); 
+                opacity: 0.1;
+            }
+        }
+
+        /* Mobile-specific floating elements */
+        @media (max-width: 768px) {
+            .floating-pill, .floating-heart, .floating-cross, .floating-stethoscope, 
+            .floating-capsule, .floating-thermometer, .floating-syringe, .floating-chart {
+                font-size: 1.5rem;
+                opacity: 0.06;
+                animation-duration: 6s;
+            }
+
+            @keyframes float {
+                0%, 100% { 
+                    transform: translateY(0px) translateX(0px) rotate(0deg) scale(1); 
+                    opacity: 0.06;
+                }
+                50% { 
+                    transform: translateY(-15px) translateX(5px) rotate(5deg) scale(1.1); 
+                    opacity: 0.1;
+                }
+            }
         }
 
         .mobile-toggle {
@@ -1106,6 +1185,112 @@
             gap: 2rem;
         }
 
+        /* Mobile-specific hero enhancements */
+        @media (max-width: 768px) {
+            .enhanced-hero {
+                min-height: 100vh;
+                padding: 1rem 0;
+                background: linear-gradient(135deg, #f8fafc 0%, #e7f3ff 30%, #f1f5f9 60%, #e0f2fe 100%);
+                animation: mobileGradientShift 8s ease-in-out infinite;
+            }
+
+            @keyframes mobileGradientShift {
+                0%, 100% {
+                    background: linear-gradient(135deg, #f8fafc 0%, #e7f3ff 30%, #f1f5f9 60%, #e0f2fe 100%);
+                }
+                50% {
+                    background: linear-gradient(135deg, #e0f2fe 0%, #f1f5f9 30%, #e7f3ff 60%, #f8fafc 100%);
+                }
+            }
+
+            .hero-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                text-align: center;
+                padding: 0 1rem;
+                min-height: 90vh;
+            }
+
+            .hero-visual {
+                order: -1;
+                margin-bottom: 1rem;
+            }
+
+            .phone-mockup {
+                width: 240px;
+                height: 480px;
+                animation: mobilePhoneFloat 4s ease-in-out infinite;
+            }
+
+            @keyframes mobilePhoneFloat {
+                0%, 100% { 
+                    transform: translateY(0px) scale(1) rotateZ(0deg); 
+                    box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+                }
+                50% { 
+                    transform: translateY(-10px) scale(1.05) rotateZ(1deg); 
+                    box-shadow: 0 30px 60px rgba(59, 130, 246, 0.3);
+                }
+            }
+
+            .hero-main-title {
+                font-size: clamp(2rem, 8vw, 3rem);
+                animation: slideInUp 1s ease-out;
+                margin-bottom: 1rem;
+            }
+
+            .hero-description {
+                animation: slideInUp 1s ease-out 0.2s both;
+                font-size: 1.1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .hero-cta-buttons {
+                animation: slideInUp 1s ease-out 0.4s both;
+                justify-content: center;
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .primary-cta-btn, .secondary-cta-btn {
+                width: 100%;
+                max-width: 280px;
+                justify-content: center;
+            }
+
+            .hero-badge {
+                animation: slideInUp 1s ease-out 0.1s both;
+                margin: 0 auto 1rem;
+                transform: scale(0.9);
+            }
+
+            @keyframes slideInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* Enhanced mobile floating elements */
+            .floating-pill, .floating-heart, .floating-cross, .floating-stethoscope, 
+            .floating-capsule, .floating-thermometer, .floating-syringe, .floating-chart {
+                font-size: 1.2rem;
+                opacity: 0.05;
+                animation-duration: 4s;
+            }
+
+            /* Mobile tap animation for CTA buttons */
+            .primary-cta-btn:active, .secondary-cta-btn:active {
+                transform: scale(0.98);
+                transition: transform 0.1s ease;
+            }
+        }
+
         /* Enhanced Hero Badge */
         .hero-badge {
             display: inline-flex;
@@ -1204,6 +1389,64 @@
             overflow: hidden;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Mobile-specific CTA enhancements */
+        @media (max-width: 768px) {
+            .primary-cta-btn {
+                background: linear-gradient(135deg, #3b82f6, #1d4ed8, #8b5cf6);
+                background-size: 200% 200%;
+                animation: gradientFlow 3s ease-in-out infinite;
+                box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+            }
+
+            @keyframes gradientFlow {
+                0%, 100% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+            }
+
+            .primary-cta-btn:hover {
+                transform: translateY(-3px) scale(1.02);
+                box-shadow: 0 10px 30px rgba(59, 130, 246, 0.6);
+                animation-duration: 1.5s;
+            }
+
+            .secondary-cta-btn {
+                border: 2px solid transparent;
+                background: linear-gradient(white, white) padding-box,
+                           linear-gradient(135deg, #3b82f6, #8b5cf6) border-box;
+                animation: borderGlow 3s ease-in-out infinite;
+            }
+
+            @keyframes borderGlow {
+                0%, 100% { 
+                    box-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
+                }
+                50% { 
+                    box-shadow: 0 0 15px rgba(59, 130, 246, 0.6), 
+                                0 0 25px rgba(139, 92, 246, 0.3);
+                }
+            }
+
+            .btn-content {
+                position: relative;
+            }
+
+            .btn-content::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+                animation: shimmer 2s infinite;
+            }
+
+            @keyframes shimmer {
+                0% { left: -100%; }
+                100% { left: 100%; }
+            }
         }
 
         .btn-content {
@@ -1320,10 +1563,22 @@
         }
 
         @keyframes phoneFloat {
-            0%, 100% { transform: translateY(0px) rotateY(0deg); }
-            25% { transform: translateY(-5px) rotateY(2deg); }
-            50% { transform: translateY(-10px) rotateY(0deg); }
-            75% { transform: translateY(-5px) rotateY(-2deg); }
+            0%, 100% { 
+                transform: translateY(0px) rotateY(0deg) rotateX(0deg) scale(1); 
+                filter: brightness(1) drop-shadow(0 25px 50px rgba(0, 0, 0, 0.25));
+            }
+            25% { 
+                transform: translateY(-8px) rotateY(3deg) rotateX(2deg) scale(1.02); 
+                filter: brightness(1.05) drop-shadow(0 30px 60px rgba(0, 0, 0, 0.3));
+            }
+            50% { 
+                transform: translateY(-15px) rotateY(0deg) rotateX(0deg) scale(1.03); 
+                filter: brightness(1.1) drop-shadow(0 35px 70px rgba(0, 0, 0, 0.35));
+            }
+            75% { 
+                transform: translateY(-8px) rotateY(-3deg) rotateX(-2deg) scale(1.02); 
+                filter: brightness(1.05) drop-shadow(0 30px 60px rgba(0, 0, 0, 0.3));
+            }
         }
 
         .phone-screen {
@@ -14486,9 +14741,14 @@
                         </div>
                         
                         <div class="floating-elements">
-                            <div class="floating-pill">💊</div>
-                            <div class="floating-pill">💊</div>
-                            <div class="floating-pill">💊</div>
+                            <div class="floating-pill"></div>
+                            <div class="floating-heart"></div>
+                            <div class="floating-cross"></div>
+                            <div class="floating-stethoscope"></div>
+                            <div class="floating-capsule"></div>
+                            <div class="floating-thermometer"></div>
+                            <div class="floating-syringe"></div>
+                            <div class="floating-chart"></div>
                         </div>
                     </div>
                 </div>
