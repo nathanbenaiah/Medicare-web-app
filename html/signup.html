@@ -3,18 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Complete Your Profile - Medicare Web App</title>
+    <title>Create Account - MediCare+</title>
     
     <!-- Boxicons CSS -->
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/forms.css">
-    <link rel="stylesheet" href="/css/mobile-responsive.css">
     
     <style>
         * {
@@ -45,8 +40,7 @@
             padding: 48px;
             max-width: 720px;
             width: 100%;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08), 
-                        0 0 0 1px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
             border: 1px solid #e2e8f0;
             position: relative;
             overflow: hidden;
@@ -81,6 +75,19 @@
             font-weight: 400;
         }
         
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
         .form-group {
             margin-bottom: 28px;
         }
@@ -91,12 +98,9 @@
             color: #374151;
             font-weight: 500;
             font-size: 0.875rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
         }
         
-        .form-group input,
-        .form-group textarea {
+        .form-group input {
             width: 100%;
             padding: 16px 20px;
             border: 1px solid #d1d5db;
@@ -107,165 +111,78 @@
             background: #ffffff;
         }
         
-        .form-group input:focus,
-        .form-group textarea:focus {
+        .form-group input:focus {
             outline: none;
             border-color: #3b82f6;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
             transform: translateY(-1px);
         }
         
-        .form-group input::placeholder,
-        .form-group textarea::placeholder {
+        .form-group input::placeholder {
             color: #9ca3af;
         }
         
-        .form-group textarea {
-            resize: vertical;
-            min-height: 120px;
-            font-family: inherit;
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
         }
-        
-        .form-group input[readonly] {
-            background: #f9fafb;
-            color: #6b7280;
-            cursor: not-allowed;
-            border-color: #e5e7eb;
-        }
-        
-        .skills-input {
-            position: relative;
-        }
-        
-        .skills-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 12px;
-        }
-        
-        .skill-tag {
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 50px;
-            font-size: 14px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s ease;
-        }
-        
-        .skill-tag:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
-        
-        .skill-tag .remove-skill {
-            cursor: pointer;
-            font-size: 16px;
-            opacity: 0.8;
-            transition: opacity 0.2s ease;
-        }
-        
-        .skill-tag .remove-skill:hover {
-            opacity: 1;
-        }
-        
-        .profile-upload {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-        
-        .profile-preview {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            border: 3px solid #e5e7eb;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: #f9fafb;
-            position: relative;
-        }
-        
-        .profile-preview:hover {
-            border-color: #3b82f6;
-            transform: scale(1.05);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
-        }
-        
-        .profile-preview img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .profile-preview i {
-            font-size: 48px;
-            color: #d1d5db;
-        }
-        
-        .upload-label {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            color: white;
-            padding: 12px 24px;
+
+        .auth-section {
+            background: #f8fafc;
+            padding: 1.5rem;
             border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            font-weight: 500;
-            font-size: 14px;
-            border: none;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
         }
-        
-        .upload-label:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.25);
+
+        .password-strength {
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
         }
-        
-        .upload-label input {
-            display: none;
+
+        .strength-indicator {
+            height: 4px;
+            border-radius: 2px;
+            background: #e5e7eb;
+            margin-top: 0.25rem;
+            overflow: hidden;
         }
+
+        .strength-fill {
+            height: 100%;
+            transition: all 0.3s ease;
+            background: #ef4444;
+        }
+
+        .strength-fill.weak { background: #ef4444; width: 25%; }
+        .strength-fill.fair { background: #f59e0b; width: 50%; }
+        .strength-fill.good { background: #10b981; width: 75%; }
+        .strength-fill.strong { background: #059669; width: 100%; }
         
         .submit-btn {
             width: 100%;
-            background: linear-gradient(135deg, #0f172a, #374151);
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
             color: white;
             border: none;
             padding: 20px 32px;
             border-radius: 16px;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            margin-top: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            letter-spacing: 0.025em;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
         }
         
         .submit-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(15, 23, 42, 0.3);
-            background: linear-gradient(135deg, #1e293b, #475569);
-        }
-        
-        .submit-btn:active {
-            transform: translateY(0);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
         }
         
         .submit-btn:disabled {
-            opacity: 0.5;
+            background: #9ca3af;
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
@@ -279,93 +196,50 @@
             border-top: 2px solid #ffffff;
             border-radius: 50%;
             animation: spin 1s linear infinite;
+            margin-right: 10px;
         }
         
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
+
+        .sign-in-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #6b7280;
         }
-        
-        /* Floating labels effect */
-        .form-group {
-            position: relative;
-        }
-        
-        .form-group input:focus + label,
-        .form-group input:not(:placeholder-shown) + label,
-        .form-group textarea:focus + label,
-        .form-group textarea:not(:placeholder-shown) + label {
-            transform: translateY(-12px) scale(0.8);
+
+        .sign-in-link a {
             color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
         }
-        
-        /* Custom scrollbar for textarea */
-        .form-group textarea::-webkit-scrollbar {
-            width: 6px;
+
+        .error-message, .success-message {
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            text-align: center;
         }
-        
-        .form-group textarea::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            border-radius: 3px;
+
+        .error-message {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
         }
-        
-        .form-group textarea::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 3px;
-        }
-        
-        .form-group textarea::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+
+        .success-message {
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
         }
         
         @media (max-width: 768px) {
-            .signup-container {
-                padding: 16px;
-            }
-            
-            .signup-card {
-                padding: 32px 24px;
-                border-radius: 16px;
-            }
-            
-            .signup-header h1 {
-                font-size: 2rem;
-            }
-            
-            .form-row {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            
-            .profile-preview {
-                width: 120px;
-                height: 120px;
-            }
-            
-            .profile-preview i {
-                font-size: 40px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .signup-card {
-                padding: 24px 16px;
-            }
-            
-            .signup-header h1 {
-                font-size: 1.75rem;
-            }
-            
-            .form-group input,
-            .form-group textarea {
-                padding: 14px 16px;
-            }
+            .signup-container { padding: 16px; }
+            .signup-card { padding: 32px 24px; }
+            .signup-header h1 { font-size: 2rem; }
+            .form-row { grid-template-columns: 1fr; gap: 20px; }
         }
     </style>
 </head>
@@ -373,101 +247,347 @@
     <div class="signup-container">
         <div class="signup-card">
             <div class="signup-header">
-                <h1>🏥 Complete Your Profile</h1>
-                <p>Help us personalize your medication reminder experience</p>
+                <h1>🏥 Create Your Account</h1>
+                <p>Join MediCare+ to manage your health and medications</p>
             </div>
             
-            <form id="signup-form">
-                <!-- Profile Picture Upload -->
-                <div class="profile-upload">
-                    <div class="profile-preview" onclick="document.getElementById('profile-upload').click()">
-                        <img id="profile-image" src="" alt="Profile" style="display: none;">
-                        <i class="bx bx-user" id="profile-placeholder"></i>
+            <form id="signupForm">
+                <!-- Authentication Section -->
+                <div class="form-section">
+                    <div class="section-title">Account Information</div>
+                    
+                    <div class="auth-section">
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" required placeholder="your@email.com">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password">Password *</label>
+                            <input type="password" id="password" required placeholder="Create a strong password">
+                            <div class="password-strength">
+                                <span id="strengthText">Password strength</span>
+                                <div class="strength-indicator">
+                                    <div class="strength-fill" id="strengthFill"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password *</label>
+                            <input type="password" id="confirmPassword" required placeholder="Confirm your password">
+                        </div>
                     </div>
-                    <label for="profile-upload" class="upload-label">
-                        <input type="file" id="profile-upload" accept="image/*">
-                        <i class="bx bx-cloud-upload"></i> Upload Profile Picture
-                    </label>
                 </div>
-                
-                <!-- Email (Pre-filled, readonly) -->
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" readonly 
-                           placeholder="your@email.com">
-                </div>
-                
-                <!-- Name and Phone -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="full_name">Full Name *</label>
-                        <input type="text" id="full_name" name="full_name" required 
-                               placeholder="Enter your full name">
+
+                <!-- Profile Information Section -->
+                <div class="form-section">
+                    <div class="section-title">Personal Information</div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">First Name *</label>
+                            <input type="text" id="firstName" required placeholder="Your first name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="lastName">Last Name *</label>
+                            <input type="text" id="lastName" required placeholder="Your last name">
+                        </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="phone_number">Phone Number</label>
-                        <input type="tel" id="phone_number" name="phone_number" 
-                               placeholder="+1 (555) 123-4567">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phoneNumber">Phone Number *</label>
+                            <input type="tel" id="phoneNumber" required placeholder="+1 (555) 123-4567">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="dateOfBirth">Date of Birth</label>
+                            <input type="date" id="dateOfBirth">
+                        </div>
                     </div>
                 </div>
-                
-                <!-- Bio -->
-                <div class="form-group">
-                    <label for="bio">Bio</label>
-                    <textarea id="bio" name="bio" 
-                              placeholder="Tell us a little about yourself..."></textarea>
-                </div>
-                
-                <!-- Address and Occupation -->
-                <div class="form-row">
+
+                <!-- Additional Information Section -->
+                <div class="form-section">
+                    <div class="section-title">Additional Information (Optional)</div>
+                    
                     <div class="form-group">
                         <label for="address">Address</label>
-                        <input type="text" id="address" name="address" 
-                               placeholder="Your address">
+                        <input type="text" id="address" placeholder="Your address">
                     </div>
                     
-                    <div class="form-group">
-                        <label for="occupation">Occupation</label>
-                        <input type="text" id="occupation" name="occupation" 
-                               placeholder="Your job title">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="emergencyContact">Emergency Contact Name</label>
+                            <input type="text" id="emergencyContact" placeholder="Emergency contact name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="emergencyPhone">Emergency Contact Phone</label>
+                            <input type="tel" id="emergencyPhone" placeholder="Emergency contact phone">
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Skills -->
-                <div class="form-group">
-                    <label for="skills">Skills & Interests</label>
-                    <div class="skills-input">
-                        <input type="text" id="skills" name="skills" 
-                               placeholder="Type a skill and press Enter...">
-                        <div class="skills-tags" id="skills-tags"></div>
-                    </div>
-                </div>
-                
-                <button type="submit" class="submit-btn" id="submit-profile">
-                    <div class="loading-spinner" id="loading-spinner"></div>
-                    <span id="btn-text">Complete Profile</span>
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <div class="loading-spinner" id="loadingSpinner"></div>
+                    <span id="btnText">Create Account</span>
                 </button>
             </form>
+
+            <div class="sign-in-link">
+                Already have an account? <a href="login.html">Sign In</a>
+            </div>
         </div>
     </div>
 
-    <!-- Supabase JS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.4/dist/umd/supabase.min.js"></script>
-    
-    <!-- Our JS modules -->
-    <script src="/js/db.js"></script>
-    <script src="/js/auth.js"></script>
-    <script src="/js/form.js"></script>
-    
+
     <script>
-        // Wait for DOM to load
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize form handler
-            if (window.FormHandler) {
-                window.formHandler = new FormHandler()
+        const supabaseUrl = 'https://gcggnrwqilylyykppizb.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjaGducndxaWx5bHl5a3BwaXpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTIyNDI1MzgsImV4cCI6MjAyNzgxODUzOH0.GtHQVOl7NSmNWE6u6wqYSN8EZwrBw4yyJ5fK4Lr0n2k';
+        
+        let supabase;
+        if (typeof window.supabase !== 'undefined') {
+            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        }
+
+        class SignupHandler {
+            constructor() {
+                this.init();
             }
-        })
+
+            init() {
+                this.setupEventListeners();
+                this.setupPasswordStrength();
+            }
+
+            setupEventListeners() {
+                document.getElementById('signupForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleSignup();
+                });
+            }
+
+            setupPasswordStrength() {
+                const passwordInput = document.getElementById('password');
+                const strengthText = document.getElementById('strengthText');
+                const strengthFill = document.getElementById('strengthFill');
+
+                passwordInput.addEventListener('input', (e) => {
+                    const password = e.target.value;
+                    const strength = this.calculatePasswordStrength(password);
+                    
+                    strengthFill.className = `strength-fill ${strength.level}`;
+                    strengthText.textContent = strength.text;
+                });
+            }
+
+            calculatePasswordStrength(password) {
+                let score = 0;
+                let feedback = [];
+
+                if (password.length >= 8) score += 1;
+                else feedback.push('at least 8 characters');
+
+                if (/[a-z]/.test(password)) score += 1;
+                if (/[A-Z]/.test(password)) score += 1;
+                if (/[0-9]/.test(password)) score += 1;
+                if (/[^A-Za-z0-9]/.test(password)) score += 1;
+
+                const levels = ['weak', 'weak', 'fair', 'good', 'strong'];
+                const texts = ['Very weak', 'Weak', 'Fair', 'Good', 'Strong'];
+
+                return {
+                    level: levels[score] || 'weak',
+                    text: texts[score] || 'Very weak'
+                };
+            }
+
+            async handleSignup() {
+                const formData = this.getFormData();
+                
+                const validation = this.validateForm(formData);
+                if (!validation.isValid) {
+                    this.showError(validation.message);
+                    return;
+                }
+
+                this.showLoading();
+
+                try {
+                    const userResult = await this.createUserAccount(formData);
+                    
+                    if (userResult.success) {
+                        await this.saveUserProfile(userResult.user, formData);
+                        this.showSuccess('Account created successfully! Redirecting to dashboard...');
+                        
+                        setTimeout(() => {
+                            this.redirectToDashboard();
+                        }, 2000);
+                    } else {
+                        throw new Error(userResult.error || 'Failed to create account');
+                    }
+                } catch (error) {
+                    console.error('Signup error:', error);
+                    this.showError(error.message || 'Failed to create account. Please try again.');
+                } finally {
+                    this.hideLoading();
+                }
+            }
+
+            getFormData() {
+                return {
+                    email: document.getElementById('email').value.trim(),
+                    password: document.getElementById('password').value,
+                    confirmPassword: document.getElementById('confirmPassword').value,
+                    firstName: document.getElementById('firstName').value.trim(),
+                    lastName: document.getElementById('lastName').value.trim(),
+                    phoneNumber: document.getElementById('phoneNumber').value.trim(),
+                    dateOfBirth: document.getElementById('dateOfBirth').value,
+                    address: document.getElementById('address').value.trim(),
+                    emergencyContact: document.getElementById('emergencyContact').value.trim(),
+                    emergencyPhone: document.getElementById('emergencyPhone').value.trim()
+                };
+            }
+
+            validateForm(data) {
+                if (!data.email || !data.password || !data.firstName || !data.lastName || !data.phoneNumber) {
+                    return { isValid: false, message: 'Please fill in all required fields' };
+                }
+
+                if (data.password !== data.confirmPassword) {
+                    return { isValid: false, message: 'Passwords do not match' };
+                }
+
+                if (data.password.length < 8) {
+                    return { isValid: false, message: 'Password must be at least 8 characters long' };
+                }
+
+                if (!/\S+@\S+\.\S+/.test(data.email)) {
+                    return { isValid: false, message: 'Please enter a valid email address' };
+                }
+
+                return { isValid: true };
+            }
+
+            async createUserAccount(formData) {
+                if (supabase) {
+                    try {
+                        const { data, error } = await supabase.auth.signUp({
+                            email: formData.email,
+                            password: formData.password,
+                            options: {
+                                data: {
+                                    first_name: formData.firstName,
+                                    last_name: formData.lastName,
+                                    full_name: `${formData.firstName} ${formData.lastName}`,
+                                    phone: formData.phoneNumber
+                                }
+                            }
+                        });
+
+                        if (error) throw error;
+                        return { success: true, user: data.user };
+                    } catch (error) {
+                        return { success: false, error: error.message };
+                    }
+                } else {
+                    // Demo mode
+                    const user = {
+                        id: 'demo-' + Date.now(),
+                        email: formData.email,
+                        user_metadata: {
+                            first_name: formData.firstName,
+                            last_name: formData.lastName,
+                            full_name: `${formData.firstName} ${formData.lastName}`,
+                            phone: formData.phoneNumber
+                        }
+                    };
+                    return { success: true, user };
+                }
+            }
+
+            async saveUserProfile(user, formData) {
+                const profile = {
+                    user_id: user.id,
+                    email: user.email,
+                    first_name: formData.firstName,
+                    last_name: formData.lastName,
+                    full_name: `${formData.firstName} ${formData.lastName}`,
+                    phone: formData.phoneNumber,
+                    date_of_birth: formData.dateOfBirth,
+                    address: formData.address,
+                    emergency_contact: formData.emergencyContact,
+                    emergency_phone: formData.emergencyPhone,
+                    isComplete: true,
+                    created_at: new Date().toISOString()
+                };
+
+                localStorage.setItem(`user_profile_${user.id}`, JSON.stringify(profile));
+                localStorage.setItem('medicare_user', JSON.stringify(user));
+            }
+
+            redirectToDashboard() {
+                window.location.href = 'user-dashboard-improved.html';
+            }
+
+            showLoading() {
+                const btn = document.getElementById('submitBtn');
+                const spinner = document.getElementById('loadingSpinner');
+                const btnText = document.getElementById('btnText');
+                
+                btn.disabled = true;
+                spinner.style.display = 'inline-block';
+                btnText.textContent = 'Creating Account...';
+            }
+
+            hideLoading() {
+                const btn = document.getElementById('submitBtn');
+                const spinner = document.getElementById('loadingSpinner');
+                const btnText = document.getElementById('btnText');
+                
+                btn.disabled = false;
+                spinner.style.display = 'none';
+                btnText.textContent = 'Create Account';
+            }
+
+            showError(message) {
+                this.showMessage(message, 'error');
+            }
+
+            showSuccess(message) {
+                this.showMessage(message, 'success');
+            }
+
+            showMessage(message, type) {
+                const existingMessage = document.querySelector('.error-message, .success-message');
+                if (existingMessage) {
+                    existingMessage.remove();
+                }
+
+                const messageDiv = document.createElement('div');
+                messageDiv.className = type === 'error' ? 'error-message' : 'success-message';
+                messageDiv.textContent = message;
+
+                const form = document.getElementById('signupForm');
+                form.parentNode.insertBefore(messageDiv, form);
+
+                if (type === 'error') {
+                    setTimeout(() => {
+                        if (messageDiv.parentNode) {
+                            messageDiv.remove();
+                        }
+                    }, 5000);
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            new SignupHandler();
+        });
     </script>
 </body>
 </html> 

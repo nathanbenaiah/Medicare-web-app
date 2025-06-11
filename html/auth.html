@@ -548,7 +548,7 @@
                         console.log('✅ Sign in successful:', data);
                         showMessage('✨ Sign in successful! Redirecting to dashboard...', 'success');
                         setTimeout(() => {
-                            window.location.href = '/html/dashboard.html';
+                            window.location.href = 'user-dashboard-improved.html';
                         }, 1500);
                     }
                 } catch (error) {
@@ -598,7 +598,7 @@
                         console.log('✅ Sign up successful:', data);
                         showMessage('🎉 Account created! Redirecting to dashboard...', 'success');
                         setTimeout(() => {
-                            window.location.href = '/html/dashboard.html';
+                            window.location.href = 'user-dashboard-improved.html';
                         }, 1500);
                     }
                 } catch (error) {
@@ -684,7 +684,7 @@
                         console.log('✅ OTP verification successful:', data);
                         showMessage('🎉 Verification successful! Redirecting to dashboard...', 'success');
                         setTimeout(() => {
-                            window.location.href = '/html/dashboard.html';
+                            window.location.href = 'user-dashboard-improved.html';
                         }, 1500);
                     }
                 } catch (error) {
@@ -704,7 +704,7 @@
                     const { data, error } = await window.supabase.auth.signInWithOAuth({
                         provider: 'google',
                         options: {
-                            redirectTo: `${window.location.origin}/html/dashboard.html`,
+                            redirectTo: `${window.location.origin}/auth-callback`,
                             queryParams: {
                                 access_type: 'offline',
                                 prompt: 'consent',

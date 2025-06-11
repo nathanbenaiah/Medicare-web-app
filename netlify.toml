@@ -4,11 +4,39 @@
   command = "echo 'No build step required for static site'"
 
 [[redirects]]
-  # Handle client-side routing
-  from = "/*"
-  to = "/index.html"
+  # Handle specific auth callback route
+  from = "/auth-callback"
+  to = "/html/auth-callback.html"
   status = 200
-  conditions = {Role = ["admin"], Country = ["US"]}
+
+# Handle HTML file routing - map root requests to html folder
+[[redirects]]
+  from = "/login"
+  to = "/html/login.html"
+  status = 200
+
+[[redirects]]
+  from = "/signup"
+  to = "/html/signup.html"
+  status = 200
+
+[[redirects]]
+  from = "/dashboard"
+  to = "/html/user-dashboard-improved.html"
+  status = 200
+
+# Main redirects for all other pages
+[[redirects]]
+  from = "/*"
+  to = "/html/:splat"
+  status = 200
+  force = false
+
+# Fallback to index.html for SPA behavior
+[[redirects]]
+  from = "/*"
+  to = "/html/index.html"
+  status = 200
 
 # Environment variables (set in Netlify dashboard)
 [build.environment]

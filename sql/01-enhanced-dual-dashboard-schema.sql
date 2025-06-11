@@ -1,5 +1,7 @@
--- Final fix for all schema issues
--- This works with existing table structures
+-- Enhanced Medicare+ Dual Dashboard Schema
+
+-- Simple fix that avoids constraint issues
+-- This creates the essential tables without touching existing problematic ones
 
 -- Enable extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -22,41 +24,8 @@ CREATE TABLE IF NOT EXISTS organizations (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Step 3: Handle medications table - check existing structure and add missing columns
-DO $$ 
-BEGIN
-    -- Add missing columns to medications if they don't exist
-    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'medications') THEN
-        -- Add columns that might be missing
-        BEGIN
-            ALTER TABLE medications ADD COLUMN IF NOT EXISTS generic_name TEXT;
-        EXCEPTION
-            WHEN OTHERS THEN NULL;
-        END;
-        
-        BEGIN
-            ALTER TABLE medications ADD COLUMN IF NOT EXISTS drug_class TEXT;
-        EXCEPTION
-            WHEN OTHERS THEN NULL;
-        END;
-        
-        BEGIN
-            ALTER TABLE medications ADD COLUMN IF NOT EXISTS description TEXT;
-        EXCEPTION
-            WHEN OTHERS THEN NULL;
-        END;
-    ELSE
-        -- Create medications table if it doesn't exist
-        CREATE TABLE medications (
-            id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-            name TEXT NOT NULL,
-            generic_name TEXT,
-            drug_class TEXT,
-            description TEXT,
-            created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-        );
-    END IF;
-END $$;
+-- Step 3: Don't modify medications table - use it as is
+-- We'll work with whatever structure exists
 
 -- Step 4: Create patient_medications table
 CREATE TABLE IF NOT EXISTS patient_medications (
@@ -160,7 +129,7 @@ FOR ALL USING (auth.uid() = sender_id OR auth.uid() = recipient_id);
 CREATE POLICY "Users can access own notifications" ON notifications
 FOR ALL USING (auth.uid() = user_id);
 
--- Step 13: Insert sample data safely (only using basic columns)
+-- Step 13: Insert sample data (avoid medications table)
 INSERT INTO organizations (name, type, address, contact_info, specialties) 
 VALUES (
     'Medicare+ Clinic', 
@@ -170,27 +139,7 @@ VALUES (
     ARRAY['General Medicine']
 ) ON CONFLICT DO NOTHING;
 
--- Insert medications using only columns that definitely exist
-DO $$
-BEGIN
-    -- Check if generic_name column exists before using it
-    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'medications' AND column_name = 'generic_name') THEN
-        -- Use all columns if they exist
-        INSERT INTO medications (name, generic_name, drug_class, description)
-        VALUES 
-        ('Aspirin', 'aspirin', 'NSAID', 'Pain relief and heart protection'),
-        ('Lisinopril', 'lisinopril', 'ACE Inhibitor', 'Blood pressure medication'),
-        ('Metformin', 'metformin', 'Biguanide', 'Diabetes medication')
-        ON CONFLICT DO NOTHING;
-    ELSE
-        -- Use only name column if others don't exist
-        INSERT INTO medications (name)
-        VALUES 
-        ('Aspirin'),
-        ('Lisinopril'),
-        ('Metformin')
-        ON CONFLICT DO NOTHING;
-    END IF;
-END $$;
+-- Don't insert into medications table - it has complex constraints
+-- The dashboards will work with whatever medications already exist
 
-SELECT 'Final schema fix completed! All issues resolved.' AS result; 
+SELECT 'Simple schema fix completed! All essential tables created without constraint conflicts.' AS result; 

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Completing Sign In - Medicare+</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .callback-container {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .success-icon {
+            font-size: 48px;
+            color: #10b981;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #3b82f6;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+        .error {
+            color: #dc2626;
+            background: #fef2f2;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #fecaca;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="callback-container">
+        <div id="loading" style="display: block;">
+            <div class="spinner"></div>
+            <h2>Completing your sign in...</h2>
+            <p>Please wait while we verify your authentication.</p>
+        </div>
+        
+        <div id="success" style="display: none;">
+            <div class="success-icon">✓</div>
+            <h2>Sign in successful!</h2>
+            <p>Redirecting to your dashboard...</p>
+        </div>
+        
+        <div id="error" style="display: none;">
+            <h2>Sign in failed</h2>
+            <p>There was an issue completing your sign in.</p>
+            <div class="error" id="errorMessage"></div>
+            <button onclick="redirectToLogin()" style="background: #3b82f6; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; margin-top: 20px;">
+                Try Again
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Supabase configuration
+        const supabaseUrl = 'https://gcggnrwqilylyykppizb.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjaGducndxaWx5bHl5a3BwaXpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTIyNDI1MzgsImV4cCI6MjAyNzgxODUzOH0.GtHQVOl7NSmNWE6u6wqYSN8EZwrBw4yyJ5fK4Lr0n2k';
+        
+        let supabase = null;
+        try {
+            if (window.supabase && window.supabase.createClient) {
+                supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+            }
+        } catch (error) {
+            console.error('Failed to initialize Supabase client:', error);
+        }
+
+        async function handleAuthCallback() {
+            console.log('Handling OAuth callback...');
+            
+            try {
+                if (!supabase) {
+                    throw new Error('Supabase client not available');
+                }
+
+                // Get the current session after OAuth callback
+                const { data: { session }, error } = await supabase.auth.getSession();
+                
+                if (error) {
+                    console.error('Session error:', error);
+                    throw error;
+                }
+
+                if (session && session.user) {
+                    console.log('OAuth authentication successful:', session.user.email);
+                    
+                    // Store user session
+                    localStorage.setItem('medicare_user', JSON.stringify(session.user));
+                    
+                    // Show success message
+                    showSuccess();
+                    
+                    // Redirect to dashboard after a short delay
+                    setTimeout(() => {
+                        window.location.href = 'user-dashboard-improved.html';
+                    }, 2000);
+                    
+                } else {
+                    throw new Error('No valid session found after OAuth callback');
+                }
+                
+            } catch (error) {
+                console.error('OAuth callback error:', error);
+                showError(error.message || 'Authentication failed');
+            }
+        }
+
+        function showSuccess() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('success').style.display = 'block';
+            document.getElementById('error').style.display = 'none';
+        }
+
+        function showError(message) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('success').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+            document.getElementById('errorMessage').textContent = message;
+        }
+
+        function redirectToLogin() {
+            window.location.href = 'login.html';
+        }
+
+        // Start the callback handling when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('OAuth callback page loaded');
+            console.log('Current URL:', window.location.href);
+            console.log('URL hash:', window.location.hash);
+            console.log('URL search params:', window.location.search);
+            
+            // Check if we have auth tokens in the URL
+            const hasAuthTokens = window.location.hash.includes('access_token') || 
+                                 window.location.search.includes('access_token') ||
+                                 window.location.hash.includes('code');
+            
+            console.log('Has auth tokens:', hasAuthTokens);
+            
+            if (!hasAuthTokens) {
+                console.warn('No auth tokens found in URL - this might be a direct access');
+                showError('No authentication tokens found. Please try signing in again.');
+                return;
+            }
+            
+            // Small delay to ensure everything is loaded
+            setTimeout(handleAuthCallback, 500);
+        });
+    </script>
+</body>
+</html> 
