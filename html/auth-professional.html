@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - Medicare+</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
+    <style>
+        /* Modern Healthcare Authentication Design */
+        :root {
+            /* Healthcare Brand Colors */
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --primary-50: #eff6ff;
+            --primary-100: #dbeafe;
+            
+            /* Accent Colors */
+            --success: #10b981;
+            --success-50: #ecfdf5;
+            --warning: #f59e0b;
+            --warning-50: #fffbeb;
+            --error: #ef4444;
+            --error-50: #fef2f2;
+            
+            /* Neutrals */
+            --white: #ffffff;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            
+            /* Spacing */
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-5: 1.25rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            --space-12: 3rem;
+            --space-16: 4rem;
+            
+            /* Border Radius */
+            --radius-sm: 0.375rem;
+            --radius: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --radius-2xl: 1.5rem;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            
+            /* Typography */
+            --text-xs: 0.75rem;
+            --text-sm: 0.875rem;
+            --text-base: 1rem;
+            --text-lg: 1.125rem;
+            --text-xl: 1.25rem;
+            --text-2xl: 1.5rem;
+            --text-3xl: 1.875rem;
+            --text-4xl: 2.25rem;
+            --text-5xl: 3rem;
+            
+            /* Transitions */
+            --transition: all 0.2s ease-out;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--primary-50) 0%, var(--gray-50) 50%, var(--success-50) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-4);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .auth-container {
+            background: var(--white);
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--shadow-xl);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+            border: 1px solid var(--gray-200);
+            position: relative;
+        }
+
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--success), var(--primary));
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { background-position: 200% 0; }
+            50% { background-position: -200% 0; }
+        }
+
+        .auth-header {
+            text-align: center;
+            padding: var(--space-8) var(--space-6) var(--space-6);
+            border-bottom: 1px solid var(--gray-100);
+            background: linear-gradient(135deg, var(--primary-50) 0%, var(--white) 100%);
+        }
+
+        .auth-logo {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-4);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+        }
+
+        .auth-logo::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--success));
+            z-index: -1;
+            opacity: 0;
+            transition: opacity var(--transition);
+        }
+
+        .auth-logo:hover::before {
+            opacity: 1;
+        }
+
+        .auth-logo i {
+            color: var(--white);
+            font-size: var(--text-2xl);
+        }
+
+        .auth-title {
+            font-size: var(--text-3xl);
+            font-weight: 800;
+            color: var(--gray-900);
+            margin-bottom: var(--space-2);
+            letter-spacing: -0.025em;
+        }
+
+        .auth-subtitle {
+            color: var(--gray-600);
+            font-size: var(--text-base);
+            font-weight: 500;
+        }
+
+        .tab-navigation {
+            display: flex;
+            border-bottom: 1px solid var(--gray-200);
+            background: var(--gray-50);
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: var(--space-4) var(--space-6);
+            border: none;
+            background: transparent;
+            color: var(--gray-600);
+            font-weight: 600;
+            font-size: var(--text-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .tab-button.active {
+            color: var(--primary);
+            background: var(--white);
+        }
+
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary);
+        }
+
+        .tab-button:hover:not(.active) {
+            color: var(--gray-800);
+            background: var(--gray-100);
+        }
+
+        .tab-content {
+            padding: var(--space-8) var(--space-6);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-6);
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: var(--space-2);
+            font-size: var(--text-sm);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: var(--space-4);
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            font-size: var(--text-base);
+            transition: var(--transition);
+            background: var(--white);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-50);
+        }
+
+        .form-input:invalid {
+            border-color: var(--error);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            padding: var(--space-4) var(--space-6);
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            font-size: var(--text-base);
+            text-decoration: none;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: var(--white);
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        .btn-google {
+            background: var(--white);
+            color: var(--gray-700);
+            border: 2px solid var(--gray-200);
+            width: 100%;
+        }
+
+        .btn-google:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-300);
+        }
+
+        .btn-demo {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: var(--white);
+            width: 100%;
+        }
+
+        .btn-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: var(--space-6) 0;
+            color: var(--gray-500);
+            font-size: var(--text-sm);
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--gray-200);
+        }
+
+        .divider span {
+            padding: 0 var(--space-4);
+            background: var(--white);
+        }
+
+        .demo-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-4);
+            margin-top: var(--space-6);
+        }
+
+        .demo-card {
+            padding: var(--space-6);
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-xl);
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--white);
+        }
+
+        .demo-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .demo-card.selected {
+            border-color: var(--primary);
+            background: var(--primary-50);
+        }
+
+        .demo-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-3);
+            font-size: var(--text-xl);
+        }
+
+        .demo-card.patient .demo-icon {
+            background: linear-gradient(135deg, var(--primary-50), var(--primary-100));
+            color: var(--primary);
+        }
+
+        .demo-card.provider .demo-icon {
+            background: linear-gradient(135deg, var(--success-50), #d1fae5);
+            color: var(--success);
+        }
+
+        .demo-title {
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: var(--space-1);
+        }
+
+        .demo-description {
+            font-size: var(--text-sm);
+            color: var(--gray-600);
+        }
+
+        .message {
+            padding: var(--space-4);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-4);
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            font-weight: 500;
+            border-left: 4px solid;
+        }
+
+        .message.success {
+            background: var(--success-50);
+            color: var(--success);
+            border-left-color: var(--success);
+        }
+
+        .message.error {
+            background: var(--error-50);
+            color: var(--error);
+            border-left-color: var(--error);
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .footer-links {
+            text-align: center;
+            padding: var(--space-6);
+            border-top: 1px solid var(--gray-100);
+            background: var(--gray-50);
+        }
+
+        .footer-links a {
+            color: var(--gray-600);
+            text-decoration: none;
+            font-size: var(--text-sm);
+            margin: 0 var(--space-3);
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 640px) {
+            body {
+                padding: var(--space-2);
+            }
+
+            .auth-container {
+                max-width: 100%;
+            }
+
+            .tab-content {
+                padding: var(--space-6) var(--space-4);
+            }
+
+            .demo-options {
+                grid-template-columns: 1fr;
+            }
+
+            .auth-title {
+                font-size: var(--text-2xl);
+            }
+        }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        *:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-header">
+            <div class="auth-logo">
+                <i class="fas fa-heartbeat"></i>
+            </div>
+            <h1 class="auth-title">Medicare+</h1>
+            <p class="auth-subtitle">Your comprehensive healthcare companion</p>
+        </div>
+
+        <div class="tab-navigation">
+            <button class="tab-button active" onclick="switchTab('signin')">Sign In</button>
+            <button class="tab-button" onclick="switchTab('signup')">Sign Up</button>
+            <button class="tab-button" onclick="switchTab('demo')">Demo</button>
+        </div>
+
+        <div class="tab-content">
+            <div id="message-container"></div>
+
+            <!-- Sign In Tab -->
+            <div id="signin-tab" class="tab-panel active">
+                <form id="signin-form">
+                    <div class="form-group">
+                        <label class="form-label" for="signin-email">
+                            <i class="fas fa-envelope"></i> Email Address
+                        </label>
+                        <input 
+                            type="email" 
+                            id="signin-email" 
+                            class="form-input" 
+                            placeholder="Enter your email address"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="signin-btn">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>Send Magic Link</span>
+                    </button>
+                </form>
+
+                <div class="divider">
+                    <span>or continue with</span>
+                </div>
+
+                <button class="btn btn-google" onclick="signInWithGoogle()">
+                    <i class="fab fa-google"></i>
+                    <span>Continue with Google</span>
+                </button>
+            </div>
+
+            <!-- Sign Up Tab -->
+            <div id="signup-tab" class="tab-panel" style="display: none;">
+                <form id="signup-form">
+                    <div class="form-group">
+                        <label class="form-label" for="signup-name">
+                            <i class="fas fa-user"></i> Full Name
+                        </label>
+                        <input 
+                            type="text" 
+                            id="signup-name" 
+                            class="form-input" 
+                            placeholder="Enter your full name"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="signup-email">
+                            <i class="fas fa-envelope"></i> Email Address
+                        </label>
+                        <input 
+                            type="email" 
+                            id="signup-email" 
+                            class="form-input" 
+                            placeholder="Enter your email address"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="signup-btn">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Create Account</span>
+                    </button>
+                </form>
+
+                <div class="divider">
+                    <span>or sign up with</span>
+                </div>
+
+                <button class="btn btn-google" onclick="signUpWithGoogle()">
+                    <i class="fab fa-google"></i>
+                    <span>Sign up with Google</span>
+                </button>
+            </div>
+
+            <!-- Demo Tab -->
+            <div id="demo-tab" class="tab-panel" style="display: none;">
+                <p style="text-align: center; color: var(--gray-600); margin-bottom: var(--space-6);">
+                    Explore Medicare+ with demo data. Choose your role:
+                </p>
+                
+                <div class="demo-options">
+                    <div class="demo-card patient" onclick="selectDemo('patient')">
+                        <div class="demo-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="demo-title">Patient</div>
+                        <div class="demo-description">View health records, medications, and appointments</div>
+                    </div>
+                    
+                    <div class="demo-card provider" onclick="selectDemo('provider')">
+                        <div class="demo-icon">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="demo-title">Provider</div>
+                        <div class="demo-description">Manage patients, prescriptions, and clinical data</div>
+                    </div>
+                </div>
+
+                <button class="btn btn-demo" onclick="startDemo()" id="demo-btn" style="margin-top: var(--space-6);" disabled>
+                    <i class="fas fa-play"></i>
+                    <span>Start Demo Experience</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="footer-links">
+            <a href="../index.html">← Back to Home</a>
+            <a href="#" onclick="showPrivacyPolicy()">Privacy Policy</a>
+            <a href="#" onclick="showTerms()">Terms of Service</a>
+        </div>
+    </div>
+
+    <script>
+        // Supabase configuration
+        const supabaseUrl = 'https://gcggnrwqilylyykppizb.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjaGducndxaWx5bHl5a3BwaXpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTIyNDI1MzgsImV4cCI6MjAyNzgxODUzOH0.GtHQVOl7NSmNWE6u6wqYSN8EZwrBw4yyJ5fK4Lr0n2k';
+        
+        let supabase = null;
+        try {
+            if (window.supabase && window.supabase.createClient) {
+                supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+                console.log('Supabase client initialized successfully');
+            } else {
+                console.warn('Supabase client not available');
+            }
+        } catch (error) {
+            console.error('Failed to initialize Supabase client:', error);
+        }
+
+        let selectedDemoType = null;
+
+        // Tab Management
+        function switchTab(tabName) {
+            // Remove active class from all tabs and panels
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(panel => panel.style.display = 'none');
+            
+            // Add active class to selected tab and show panel
+            event.target.classList.add('active');
+            document.getElementById(tabName + '-tab').style.display = 'block';
+            
+            // Clear any messages
+            clearMessages();
+        }
+
+        // Demo Selection
+        function selectDemo(type) {
+            selectedDemoType = type;
+            
+            // Remove selected class from all demo cards
+            document.querySelectorAll('.demo-card').forEach(card => card.classList.remove('selected'));
+            
+            // Add selected class to clicked card
+            event.target.closest('.demo-card').classList.add('selected');
+            
+            // Enable demo button
+            document.getElementById('demo-btn').disabled = false;
+        }
+
+        // Start Demo
+        function startDemo() {
+            if (!selectedDemoType) return;
+            
+            const demoBtn = document.getElementById('demo-btn');
+            demoBtn.disabled = true;
+            demoBtn.innerHTML = '<div class="loading-spinner"></div> <span>Starting Demo...</span>';
+            
+            // Create demo user based on type
+            const demoUser = {
+                id: `demo-${selectedDemoType}-${Date.now()}`,
+                email: `${selectedDemoType}@demo.medicare.com`,
+                user_metadata: {
+                    full_name: selectedDemoType === 'patient' ? 'Demo Patient' : 'Dr. Demo Provider',
+                    provider: `demo-${selectedDemoType}`,
+                    demo_type: selectedDemoType
+                }
+            };
+            
+            // Store user in localStorage
+            localStorage.setItem('medicare_user', JSON.stringify(demoUser));
+            
+            // Show success message
+            showMessage('Demo started successfully! Redirecting to dashboard...', 'success');
+            
+            // Redirect to appropriate dashboard
+            setTimeout(() => {
+                if (selectedDemoType === 'patient') {
+                    window.location.href = 'user-dashboard-improved.html';
+                } else {
+                    window.location.href = 'provider-dashboard.html'; // Create this later
+                }
+            }, 2000);
+        }
+
+        // Sign In with Magic Link
+        document.getElementById('signin-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('signin-email').value;
+            const submitBtn = document.getElementById('signin-btn');
+            
+            if (!email) {
+                showMessage('Please enter your email address', 'error');
+                return;
+            }
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<div class="loading-spinner"></div> <span>Sending Magic Link...</span>';
+            
+            try {
+                if (supabase) {
+                    const { error } = await supabase.auth.signInWithOtp({
+                        email: email,
+                        options: {
+                            emailRedirectTo: window.location.origin + '/html/user-dashboard-improved.html'
+                        }
+                    });
+                    
+                    if (error) throw error;
+                    
+                    showMessage('Magic link sent! Check your email and click the link to sign in.', 'success');
+                } else {
+                    // Fallback demo user creation
+                    const demoUser = {
+                        id: 'signin-demo-' + Date.now(),
+                        email: email,
+                        user_metadata: {
+                            full_name: email.split('@')[0],
+                            provider: 'magic-link-demo'
+                        }
+                    };
+                    
+                    localStorage.setItem('medicare_user', JSON.stringify(demoUser));
+                    showMessage('Demo sign-in successful! Redirecting...', 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = 'user-dashboard-improved.html';
+                    }, 2000);
+                }
+                
+            } catch (error) {
+                console.error('Sign in error:', error);
+                showMessage('Failed to send magic link. Please try again.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> <span>Send Magic Link</span>';
+            }
+        });
+
+        // Sign Up
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const submitBtn = document.getElementById('signup-btn');
+            
+            if (!name || !email) {
+                showMessage('Please fill in all fields', 'error');
+                return;
+            }
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<div class="loading-spinner"></div> <span>Creating Account...</span>';
+            
+            try {
+                if (supabase) {
+                    const { error } = await supabase.auth.signUp({
+                        email: email,
+                        password: Math.random().toString(36), // Random password since we're using magic links
+                        options: {
+                            data: {
+                                full_name: name
+                            },
+                            emailRedirectTo: window.location.origin + '/html/user-dashboard-improved.html'
+                        }
+                    });
+                    
+                    if (error) throw error;
+                    
+                    showMessage('Account created! Check your email for verification link.', 'success');
+                } else {
+                    // Fallback demo user creation
+                    const demoUser = {
+                        id: 'signup-demo-' + Date.now(),
+                        email: email,
+                        user_metadata: {
+                            full_name: name,
+                            provider: 'signup-demo'
+                        }
+                    };
+                    
+                    localStorage.setItem('medicare_user', JSON.stringify(demoUser));
+                    showMessage('Demo account created! Redirecting...', 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = 'user-dashboard-improved.html';
+                    }, 2000);
+                }
+                
+            } catch (error) {
+                console.error('Sign up error:', error);
+                showMessage('Failed to create account. Please try again.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> <span>Create Account</span>';
+            }
+        });
+
+        // Google OAuth
+        async function signInWithGoogle() {
+            try {
+                if (supabase) {
+                    const { error } = await supabase.auth.signInWithOAuth({
+                        provider: 'google',
+                        options: {
+                            redirectTo: window.location.origin + '/html/user-dashboard-improved.html'
+                        }
+                    });
+                    
+                    if (error) throw error;
+                } else {
+                    // Fallback demo
+                    const demoUser = {
+                        id: 'google-demo-' + Date.now(),
+                        email: 'user@gmail.com',
+                        user_metadata: {
+                            full_name: 'Google Demo User',
+                            provider: 'google-demo'
+                        }
+                    };
+                    
+                    localStorage.setItem('medicare_user', JSON.stringify(demoUser));
+                    showMessage('Demo Google sign-in successful! Redirecting...', 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = 'user-dashboard-improved.html';
+                    }, 2000);
+                }
+            } catch (error) {
+                console.error('Google sign in error:', error);
+                showMessage('Google sign-in failed. Please try again.', 'error');
+            }
+        }
+
+        async function signUpWithGoogle() {
+            // Same as sign in for OAuth
+            await signInWithGoogle();
+        }
+
+        // Utility Functions
+        function showMessage(text, type) {
+            const container = document.getElementById('message-container');
+            const message = document.createElement('div');
+            message.className = `message ${type}`;
+            message.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                <span>${text}</span>
+            `;
+            
+            container.innerHTML = '';
+            container.appendChild(message);
+            
+            setTimeout(() => {
+                message.remove();
+            }, 5000);
+        }
+
+        function clearMessages() {
+            document.getElementById('message-container').innerHTML = '';
+        }
+
+        function showPrivacyPolicy() {
+            alert('Privacy Policy: Medicare+ is committed to protecting your privacy and health data in accordance with HIPAA regulations.');
+        }
+
+        function showTerms() {
+            alert('Terms of Service: By using Medicare+, you agree to our terms of service and privacy policy.');
+        }
+
+        // Check for existing session on load
+        window.addEventListener('load', async () => {
+            if (supabase) {
+                try {
+                    const { data: { session } } = await supabase.auth.getSession();
+                    if (session) {
+                        window.location.href = 'user-dashboard-improved.html';
+                    }
+                } catch (error) {
+                    console.error('Session check error:', error);
+                }
+            }
+        });
+    </script>
+</body>
+</html> 
