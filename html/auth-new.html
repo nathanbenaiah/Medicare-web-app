@@ -453,7 +453,7 @@
                     const { error } = await supabase.auth.signInWithOtp({
                         email: email,
                         options: {
-                            emailRedirectTo: window.location.origin + '/html/user-dashboard-improved.html'
+                            emailRedirectTo: window.location.origin + '/html/dashboard-router.html'
                         }
                     });
 
@@ -500,7 +500,7 @@
                             data: {
                                 full_name: name
                             },
-                            emailRedirectTo: window.location.origin + '/html/user-dashboard-improved.html'
+                            emailRedirectTo: window.location.origin + '/html/dashboard-router.html'
                         }
                     });
 
@@ -530,7 +530,7 @@
                     const { error } = await supabase.auth.signInWithOAuth({
                         provider: 'google',
                         options: {
-                            redirectTo: window.location.origin + '/html/user-dashboard-improved.html'
+                            redirectTo: window.location.origin + '/html/dashboard-router.html'
                         }
                     });
 
@@ -559,12 +559,12 @@
                 user: {
                     email: 'patient@demo.com',
                     name: 'Demo Patient',
-                    dashboard: 'user-dashboard-improved.html'
+                    dashboard: 'dashboard-router.html?type=patient'
                 },
                 provider: {
                     email: 'doctor@demo.com',
                     name: 'Dr. Demo',
-                    dashboard: 'provider-dashboard-improved.html'
+                    dashboard: 'dashboard-router.html?type=provider'
                 }
             };
 
@@ -577,7 +577,7 @@
         }
 
         // Create user and redirect
-        function createUser(email, name, provider, dashboard = 'user-dashboard-improved.html') {
+        function createUser(email, name, provider, dashboard = 'dashboard-router.html') {
             const user = {
                 id: `${provider}-${Date.now()}`,
                 email: email,
