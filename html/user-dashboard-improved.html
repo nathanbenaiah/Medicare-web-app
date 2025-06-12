@@ -1317,30 +1317,30 @@
 
                 // 5. Default to demo mode if no authentication found
                 console.log('🎭 No authentication found, defaulting to demo mode');
-                currentUser = {
+                    currentUser = {
                     id: 'auto-demo-' + Date.now(),
                     email: 'demo@medicare.com',
-                    user_metadata: {
+                        user_metadata: {
                         full_name: 'Demo User',
                         provider: 'auto-demo'
-                    }
-                };
-                localStorage.setItem('medicare_user', JSON.stringify(currentUser));
-                return;
+                        }
+                    };
+                    localStorage.setItem('medicare_user', JSON.stringify(currentUser));
+                    return;
                 
             } catch (error) {
                 console.error('Authentication check error:', error);
                 // Always create demo user on error
-                currentUser = {
+                        currentUser = {
                     id: 'fallback-demo-' + Date.now(),
                     email: 'demo@medicare.com',
-                    user_metadata: {
+                            user_metadata: {
                         full_name: 'Demo User',
                         provider: 'fallback'
-                    }
-                };
-                localStorage.setItem('medicare_user', JSON.stringify(currentUser));
-                return;
+                            }
+                        };
+                        localStorage.setItem('medicare_user', JSON.stringify(currentUser));
+                        return;
             }
         }
 
@@ -1620,7 +1620,7 @@
                     <main class="main-content">
                         <header class="header">
                             <div class="header-content">
-                                <h1>Patient Dashboard</h1>
+                            <h1>Patient Dashboard</h1>
                                 <div class="header-subtitle">Your personalized health overview</div>
                             </div>
                             <div class="header-actions">
@@ -1720,8 +1720,8 @@
                                 <span>2 hours ago</span>
                             </p>
                         </div>
+                        </div>
                     </div>
-                </div>
 
                 <div class="dashboard-grid" style="grid-template-columns: 2fr 1fr; margin-top: var(--space-xl);">
                     <div class="card">
@@ -1737,8 +1737,8 @@
                                 <i class="fas fa-chart-area" style="font-size: var(--font-size-2xl); opacity: 0.5;"></i>
                                 <span style="margin-left: var(--space-md);">Chart visualization would appear here</span>
                             </div>
-                        </div>
                     </div>
+                </div>
 
                     <div class="card">
                         <h3><i class="fas fa-lightbulb"></i> Health Insights</h3>

@@ -731,31 +731,43 @@
             signInWithGoogle(); // Same process for OAuth
         }
 
-        // Demo Login
+        // Demo Login - IMPROVED VERSION
         function demoLogin(type) {
+            console.log('🎭 Demo login requested for:', type);
+            
             const users = {
                 user: {
                     email: 'patient@demo.com',
                     name: 'Demo Patient',
-                    dashboard: 'dashboard-router.html?type=patient'
+                    dashboard: 'user-dashboard-improved.html'
                 },
                 provider: {
                     email: 'doctor@demo.com',
-                    name: 'Dr. Demo',
-                    dashboard: 'dashboard-router.html?type=provider'
+                    name: 'Dr. Demo Provider',
+                    dashboard: 'provider-dashboard-improved.html'
                 }
             };
 
             const userData = users[type];
+            if (!userData) {
+                showMessage('Invalid demo type selected', 'error');
+                return;
+            }
+
             showMessage(`🎭 Loading ${type} dashboard...`, 'success');
+            
+            // Disable all buttons to prevent double-clicks
+            document.querySelectorAll('.btn').forEach(btn => btn.disabled = true);
             
             setTimeout(() => {
                 createUser(userData.email, userData.name, `demo-${type}`, userData.dashboard);
             }, 1000);
         }
 
-        // Create user and redirect
-        function createUser(email, name, provider, dashboard = 'dashboard-router.html') {
+        // Create user and redirect - IMPROVED VERSION
+        function createUser(email, name, provider, dashboard = null) {
+            console.log('🔄 Creating user and redirecting...', { email, name, provider });
+            
             const user = {
                 id: `${provider}-${Date.now()}`,
                 email: email,
@@ -767,6 +779,7 @@
 
             // Save user
             localStorage.setItem('medicare_user', JSON.stringify(user));
+            console.log('✅ User saved to localStorage');
             
             // Create profile
             const profile = {
@@ -777,9 +790,43 @@
                 created_at: new Date().toISOString()
             };
             localStorage.setItem(`user_profile_${user.id}`, JSON.stringify(profile));
+            console.log('✅ Profile saved to localStorage');
 
-            // Redirect
-            window.location.href = dashboard;
+            // Determine redirect URL
+            let redirectUrl;
+            if (dashboard) {
+                redirectUrl = dashboard;
+            } else if (provider.includes('patient') || provider.includes('user')) {
+                redirectUrl = 'user-dashboard-improved.html';
+            } else if (provider.includes('provider') || provider.includes('doctor')) {
+                redirectUrl = 'provider-dashboard-improved.html';
+            } else {
+                redirectUrl = 'dashboard-router.html';
+            }
+
+            console.log('🎯 Redirecting to:', redirectUrl);
+            
+            // Show loading message
+            showMessage(`🚀 Redirecting to dashboard...`, 'success');
+            
+            // Multiple redirect attempts for reliability
+            setTimeout(() => {
+                try {
+                    window.location.href = redirectUrl;
+                } catch (error) {
+                    console.error('Redirect failed, trying alternative:', error);
+                    // Fallback redirect
+                    window.location.replace(redirectUrl);
+                }
+            }, 1000);
+            
+            // Backup redirect
+            setTimeout(() => {
+                if (window.location.pathname.includes('auth-new.html')) {
+                    console.log('🔄 Backup redirect triggered');
+                    window.location.assign(redirectUrl);
+                }
+            }, 3000);
         }
 
         // Initialize
