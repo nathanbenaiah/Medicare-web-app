@@ -704,7 +704,7 @@
                     const { data, error } = await window.supabase.auth.signInWithOAuth({
                         provider: 'google',
                         options: {
-                            redirectTo: `${window.location.origin}/auth-callback`,
+                            redirectTo: 'https://medicarewebapp.netlify.app/html/auth-callback.html',
                             queryParams: {
                                 access_type: 'offline',
                                 prompt: 'consent',

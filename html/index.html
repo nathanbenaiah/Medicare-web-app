@@ -14826,9 +14826,9 @@
 
             <!-- Auth Section -->
             <div class="navbar-auth">
-                <a href="auth.html" class="auth-sign-btn">
+                <a href="simple-login.html" class="auth-sign-btn">
                     <i class="bx bx-health"></i>
-                    <span>Sign In / Sign Up</span>
+                    <span>Quick Login</span>
                 </a>
             </div>
 
@@ -14876,52 +14876,14 @@
                 </a>
             </div>
             
-            <a href="auth.html" class="mobile-auth-btn">
+            <a href="simple-login.html" class="mobile-auth-btn">
                 <i class="bx bx-health"></i>
-                <span>Sign In / Sign Up</span>
+                <span>Quick Login</span>
             </a>
         </div>
     </div>
 
-    <!-- Sign In Modal -->
-    <div id="signInModal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Welcome to MediCare+</h2>
-                <p>Are you already a member?</p>
-                <button class="modal-close" onclick="closeSignInModal()">
-                    <i class="bx bx-x"></i>
-                </button>
-            </div>
-            
-            <div class="modal-body">
-                <div class="auth-options">
-                    <button class="auth-option google-auth" onclick="signInWithGoogle()">
-                        <i class="bx bxl-google"></i>
-                        <span>Continue with Google</span>
-                    </button>
-                    
-                    <button class="auth-option email-auth" onclick="signInWithEmail()">
-                        <i class="bx bx-envelope"></i>
-                        <span>Continue with Email</span>
-                    </button>
-                    
-                    <button class="auth-option phone-auth" onclick="signInWithPhone()">
-                        <i class="bx bx-phone"></i>
-                        <span>Continue with Phone</span>
-                    </button>
-                </div>
-                
-                <div class="auth-divider">
-                    <span>New to MediCare+?</span>
-                </div>
-                
-                <button class="create-account-btn" onclick="createAccount()">
-                    Create New Account
-                </button>
-            </div>
-        </div>
-    </div>
+    <!-- Removed Sign In Modal - Authentication now handled through auth.html -->
 
     <!-- Perfected Hero Section -->
     <section class="perfected-hero">
@@ -15116,21 +15078,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Tomorrow Appointment Card -->
-                                <div class="tomorrow-card">
-                                    <div class="tomorrow-badge">TOMORROW</div>
-                                    <div class="appt-info">
-                                        <div class="appt-title">Dr. Silva - Cardiology</div>
-                                        <div class="appt-details">
-                                            <span class="appt-time">3:00 PM</span>
-                                            <span class="appt-separator">•</span>
-                                            <span class="appt-location">Colombo General</span>
-                                        </div>
-                                    </div>
-                                    <div class="appt-icon-circle">
-                                        <i class="fas fa-stethoscope"></i>
-                                    </div>
-                                </div>
+
 
                                 <!-- Pharmacy Finder Section -->
                                 <div class="pharmacy-finder">
@@ -16313,14 +16261,12 @@
             }
         }
 
-        // Google Sign In function
+        // Google Sign In function - redirects to auth.html
         function signInWithGoogle() {
-            if (window.authManager) {
-                window.authManager.signInWithGoogle();
-            } else {
-                console.error('Auth manager not initialized');
-                alert('Authentication system is loading. Please try again in a moment.');
-            }
+            showNotification('Redirecting to authentication...', 'info');
+            setTimeout(() => {
+                window.location.href = 'auth.html';
+            }, 1000);
         }
 
         // Add active class to current page
@@ -16908,7 +16854,7 @@
         function startHealthJourney() {
             showNotification('Welcome to MediCare+! Redirecting to sign up...', 'success');
             setTimeout(() => {
-                window.location.href = 'signup.html';
+                window.location.href = 'auth.html';
             }, 2000);
         }
 
@@ -16958,7 +16904,7 @@
         function handleGetStarted() {
             showNotification('Let\'s get you started with MediCare+!', 'success');
             setTimeout(() => {
-                window.location.href = 'signup.html';
+                window.location.href = 'auth.html';
             }, 1500);
         }
 
@@ -17006,7 +16952,7 @@
         function joinNetwork() {
             showNotification('Joining Sri Lanka\'s largest healthcare network...', 'success');
             setTimeout(() => {
-                window.location.href = 'signup.html';
+                window.location.href = 'auth.html';
             }, 1500);
         }
 
@@ -17356,23 +17302,128 @@
     <!-- Supabase JS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.4/dist/umd/supabase.min.js"></script>
     
+    <!-- Session Detection Script -->
+    <script>
+        // Initialize Supabase client
+        const supabaseUrl = 'https://gcggnrwqilylyykppizb.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjaGducndxaWx5bHl5a3BwaXpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTIyNDI1MzgsImV4cCI6MjAyNzgxODUzOH0.GtHQVOl7NSmNWE6u6wqYSN8EZwrBw4yyJ5fK4Lr0n2k';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        
+        // Check if user is authenticated and redirect to dashboard
+        async function checkAuthAndRedirect() {
+            try {
+                console.log('🔍 Checking authentication status...');
+                console.log('Current URL:', window.location.href);
+                console.log('URL Hash:', window.location.hash);
+                
+                // Check URL for OAuth tokens (after successful Google login)
+                const hash = window.location.hash;
+                const urlParams = new URLSearchParams(window.location.search);
+                
+                if (hash.includes('access_token') || hash.includes('refresh_token') || urlParams.get('code')) {
+                    console.log('🎯 OAuth tokens detected in URL, processing authentication...');
+                    
+                    // Show loading message
+                    const authButton = document.querySelector('.auth-sign-btn');
+                    if (authButton) {
+                        authButton.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Completing sign in...';
+                        authButton.style.pointerEvents = 'none';
+                        authButton.style.opacity = '0.8';
+                    }
+                    
+                    // Show page-wide loading notification
+                    showNotification('🔐 Completing your sign in...', 'info');
+                    
+                    // Wait longer for Supabase to process tokens
+                    await new Promise(resolve => setTimeout(resolve, 3000));
+                    
+                    // Get session after OAuth
+                    const { data: { session }, error } = await supabase.auth.getSession();
+                    console.log('Session data:', session);
+                    console.log('Session error:', error);
+                    
+                    if (session && session.user) {
+                        console.log('✅ OAuth session established for:', session.user.email);
+                        localStorage.setItem('medicare_user', JSON.stringify(session.user));
+                        
+                        // Show success
+                        showNotification('✨ Sign in successful! Redirecting to dashboard...', 'success');
+                        if (authButton) {
+                            authButton.innerHTML = '<i class="bx bx-check-circle"></i> Sign in successful!';
+                            authButton.style.background = '#10b981';
+                        }
+                        
+                        // Clear the URL and redirect
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                        setTimeout(() => {
+                            console.log('🚀 Redirecting to dashboard...');
+                            window.location.href = 'html/user-dashboard-improved.html';
+                        }, 1500);
+                        return;
+                    } else {
+                        console.error('❌ No session found after OAuth tokens detected');
+                        console.log('🔄 Attempting direct redirect to dashboard as fallback...');
+                        
+                        // Extract user info from URL hash if possible
+                        const hashParams = new URLSearchParams(hash.substring(1));
+                        const accessToken = hashParams.get('access_token');
+                        
+                        if (accessToken) {
+                            console.log('📝 Access token found, attempting direct redirect...');
+                            showNotification('🔄 Redirecting to dashboard...', 'info');
+                            
+                            // Store a temporary flag
+                            localStorage.setItem('oauth_redirect', 'true');
+                            localStorage.setItem('access_token', accessToken);
+                            
+                            // Clear URL and redirect
+                            window.history.replaceState({}, document.title, window.location.pathname);
+                            setTimeout(() => {
+                                window.location.href = 'html/user-dashboard-improved.html';
+                            }, 1000);
+                            return;
+                        }
+                        
+                        showNotification('❌ Authentication failed. Please try again.', 'error');
+                        if (authButton) {
+                            authButton.innerHTML = '<i class="bx bx-error"></i> Authentication failed';
+                            authButton.style.background = '#ef4444';
+                            authButton.style.pointerEvents = 'auto';
+                            authButton.style.opacity = '1';
+                        }
+                    }
+                }
+                
+                // Check for existing session
+                const { data: { session }, error } = await supabase.auth.getSession();
+                if (session && session.user) {
+                    console.log('🔄 Active session found, redirecting to dashboard...');
+                    localStorage.setItem('medicare_user', JSON.stringify(session.user));
+                    showNotification('Welcome back! Redirecting to dashboard...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'html/user-dashboard-improved.html';
+                    }, 1000);
+                }
+            } catch (error) {
+                console.error('❌ Session check error:', error);
+                showNotification('❌ Error checking authentication. Please try again.', 'error');
+                const authButton = document.querySelector('.auth-sign-btn');
+                if (authButton) {
+                    authButton.innerHTML = '<i class="bx bx-error"></i> Error occurred';
+                    authButton.style.background = '#ef4444';
+                    authButton.style.pointerEvents = 'auto';
+                    authButton.style.opacity = '1';
+                }
+            }
+        }
+        
+        // Run session check when page loads
+        document.addEventListener('DOMContentLoaded', checkAuthAndRedirect);
+    </script>
+    
     <!-- Our JS modules -->
     <script src="/js/mobile-menu.js"></script>
-    <script src="/js/auth-manager.js"></script>
     <script src="/js/db.js"></script>
     <script src="/js/auth.js"></script>
-    
-    <!-- Initialize Auth Manager -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Wait for all modules to load, then initialize auth manager
-            if (window.supabaseClient && window.dbClient && !window.authManager) {
-                window.authManager = new AuthManager();
-                console.log('Auth manager initialized');
-            } else {
-                console.error('Required modules not loaded');
-            }
-        });
-    </script>
 </body>
 </html> 

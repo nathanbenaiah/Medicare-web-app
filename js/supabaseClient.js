@@ -44,7 +44,7 @@ supabase.auth.onAuthStateChange((event, session) => {
         // Only redirect to dashboard if not already there
         if (!window.location.pathname.includes('dashboard')) {
             console.log('🚀 Redirecting to dashboard...')
-            window.location.href = '/html/dashboard.html'
+            window.location.href = '/html/user-dashboard-improved.html'
         }
     } else if (event === 'SIGNED_OUT') {
         console.log('👋 User signed out')

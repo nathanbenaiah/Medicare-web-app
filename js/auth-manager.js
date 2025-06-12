@@ -1,10 +1,10 @@
-// Authentication Manager for MediCare+
+// Enhanced Authentication Manager with Profile System
 class AuthManager {
     constructor() {
-        this.currentUser = null;
         this.supabaseUrl = 'YOUR_SUPABASE_URL';
         this.supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
         this.supabase = null;
+        this.currentUser = null;
         this.init();
     }
 
@@ -14,7 +14,6 @@ class AuthManager {
             this.supabase = supabase.createClient(this.supabaseUrl, this.supabaseKey);
         }
         
-        // Check for existing session
         await this.checkSession();
         this.updateUI();
     }
@@ -25,13 +24,15 @@ class AuthManager {
                 const { data: { session } } = await this.supabase.auth.getSession();
                 if (session) {
                     this.currentUser = session.user;
+                    // Don't auto-redirect here, let the user navigate manually
+                    return;
                 }
-            } else {
-                // Fallback to localStorage for demo
-                const userData = localStorage.getItem('medicare_user');
-                if (userData) {
-                    this.currentUser = JSON.parse(userData);
-                }
+            }
+            
+            // Check for stored user (demo mode)
+            const storedUser = localStorage.getItem('medicare_user');
+            if (storedUser) {
+                this.currentUser = JSON.parse(storedUser);
             }
         } catch (error) {
             console.error('Session check failed:', error);
@@ -41,22 +42,23 @@ class AuthManager {
     updateUI() {
         const authNavText = document.getElementById('auth-nav-text');
         const mobileAuthText = document.getElementById('mobile-auth-text');
-        const authNavLink = document.querySelector('.auth-nav-link');
-        
+        const authNavLink = document.getElementById('auth-nav-link');
+        const mobileAuthLink = document.getElementById('mobile-auth-link');
+
         if (this.currentUser) {
             // User is signed in
-            if (authNavText) authNavText.textContent = 'Profile';
-            if (mobileAuthText) mobileAuthText.textContent = 'Profile';
-            if (authNavLink) {
-                authNavLink.onclick = () => this.goToProfile();
-            }
+            if (authNavText) authNavText.textContent = `Hello, ${this.currentUser.name || this.currentUser.email}`;
+            if (mobileAuthText) mobileAuthText.textContent = `Hello, ${this.currentUser.name || this.currentUser.email}`;
+            
+            if (authNavLink) authNavLink.onclick = () => this.goToProfile();
+            if (mobileAuthLink) mobileAuthLink.onclick = () => this.goToProfile();
         } else {
             // User is not signed in
             if (authNavText) authNavText.textContent = 'Sign In';
             if (mobileAuthText) mobileAuthText.textContent = 'Sign In';
-            if (authNavLink) {
-                authNavLink.onclick = () => showSignInModal();
-            }
+            
+            if (authNavLink) authNavLink.onclick = () => showSignInModal();
+            if (mobileAuthLink) mobileAuthLink.onclick = () => showSignInModal();
         }
     }
 
@@ -66,7 +68,7 @@ class AuthManager {
                 const { data, error } = await this.supabase.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
-                        redirectTo: window.location.origin + '/html/dashboard.html'
+                        redirectTo: window.location.origin + '/auth-callback'
                     }
                 });
                 
@@ -81,7 +83,7 @@ class AuthManager {
                     provider: 'google'
                 };
                 localStorage.setItem('medicare_user', JSON.stringify(this.currentUser));
-                window.location.href = 'dashboard.html';
+                window.location.href = '/html/user-dashboard-improved.html';
             }
         } catch (error) {
             console.error('Google sign-in failed:', error);
@@ -137,7 +139,7 @@ class AuthManager {
                 
                 this.currentUser = data.user;
                 await this.saveUserToDatabase(data.user);
-                window.location.href = 'dashboard.html';
+                window.location.href = '/html/user-dashboard-improved.html';
             } else {
                 // Demo authentication
                 this.currentUser = {
@@ -148,7 +150,7 @@ class AuthManager {
                     provider: 'email'
                 };
                 localStorage.setItem('medicare_user', JSON.stringify(this.currentUser));
-                window.location.href = 'dashboard.html';
+                window.location.href = '/html/user-dashboard-improved.html';
             }
         } catch (error) {
             console.error('Email sign-in failed:', error);
@@ -226,7 +228,7 @@ class AuthManager {
                 localStorage.setItem('medicare_user', JSON.stringify(this.currentUser));
                 this.showSuccess('Account created successfully!');
                 setTimeout(() => {
-                    window.location.href = 'dashboard.html';
+                    window.location.href = '/html/user-dashboard-improved.html';
                 }, 1500);
             }
         } catch (error) {
@@ -266,7 +268,7 @@ class AuthManager {
             this.currentUser = null;
             localStorage.removeItem('medicare_user');
             this.updateUI();
-            window.location.href = 'index.html';
+            window.location.href = '/html/index.html';
         } catch (error) {
             console.error('Sign out failed:', error);
         }
@@ -274,12 +276,11 @@ class AuthManager {
 
     goToProfile() {
         if (this.currentUser) {
-            window.location.href = 'profile.html';
-        } else {
-            showSignInModal();
+            window.location.href = '/html/profile.html';
         }
     }
 
+    // Notification methods
     showError(message) {
         this.showNotification(message, 'error');
     }
@@ -295,43 +296,64 @@ class AuthManager {
     showNotification(message, type = 'info') {
         // Create notification element
         const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.innerHTML = `
-            <div class="notification-content">
-                <i class="bx ${type === 'error' ? 'bx-error' : type === 'success' ? 'bx-check' : 'bx-info-circle'}"></i>
-                <span>${message}</span>
-            </div>
-        `;
-        
-        // Add styles
+        notification.className = `notification notification-${type}`;
         notification.style.cssText = `
             position: fixed;
             top: 20px;
             right: 20px;
-            background: ${type === 'error' ? '#f44336' : type === 'success' ? '#4caf50' : '#2196f3'};
-            color: white;
-            padding: 1rem 1.5rem;
+            padding: 15px 20px;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 10001;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
+            color: white;
+            font-weight: 500;
+            z-index: 10000;
+            max-width: 350px;
+            word-wrap: break-word;
+            animation: slideIn 0.3s ease-out;
         `;
-        
+
+        // Set background color based on type
+        switch(type) {
+            case 'error':
+                notification.style.backgroundColor = '#ef4444';
+                break;
+            case 'success':
+                notification.style.backgroundColor = '#10b981';
+                break;
+            case 'info':
+            default:
+                notification.style.backgroundColor = '#3b82f6';
+                break;
+        }
+
+        notification.textContent = message;
         document.body.appendChild(notification);
-        
-        // Animate in
+
+        // Auto remove after 5 seconds
         setTimeout(() => {
-            notification.style.transform = 'translateX(0)';
-        }, 100);
-        
-        // Remove after 5 seconds
-        setTimeout(() => {
-            notification.style.transform = 'translateX(100%)';
-            setTimeout(() => {
-                document.body.removeChild(notification);
-            }, 300);
+            if (notification.parentNode) {
+                notification.style.animation = 'slideOut 0.3s ease-in';
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }
         }, 5000);
+
+        // Add CSS animations if not already present
+        if (!document.getElementById('notification-styles')) {
+            const style = document.createElement('style');
+            style.id = 'notification-styles';
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
     }
 
     getCurrentUser() {
@@ -339,25 +361,21 @@ class AuthManager {
     }
 
     isSignedIn() {
-        return this.currentUser !== null;
+        return !!this.currentUser;
     }
 }
 
-// Global functions for backward compatibility
+// Initialize AuthManager
+window.authManager = new AuthManager();
+
 function showSignInModal() {
-    const modal = document.getElementById('signInModal');
-    if (modal) {
-        modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-    }
+    // Implementation for showing sign-in modal
+    console.log('Show sign-in modal');
 }
 
 function closeSignInModal() {
-    const modal = document.getElementById('signInModal');
-    if (modal) {
-        modal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-    }
+    // Implementation for closing sign-in modal
+    console.log('Close sign-in modal');
 }
 
 function signInWithGoogle() {
@@ -382,9 +400,4 @@ function createAccount() {
     if (window.authManager) {
         window.authManager.showCreateAccount();
     }
-}
-
-// Initialize AuthManager when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    window.authManager = new AuthManager();
-}); 
+} 

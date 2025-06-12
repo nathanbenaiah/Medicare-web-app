@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicare+ - Redirecting...</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #1f2937;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            max-width: 500px;
+        }
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 20px;
+        }
+        .loading {
+            margin: 20px 0;
+        }
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+        .btn-secondary {
+            background: #10b981;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">Medicare+</div>
+        <h2>Welcome to Medicare+</h2>
+        <p>Loading your healthcare platform...</p>
+        
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Redirecting to main site...</p>
+        </div>
+        
+        <div class="buttons">
+            <a href="/html/index.html" class="btn btn-primary">Go to Main Site</a>
+            <a href="/dashboard?demo=true" class="btn btn-secondary">Try Dashboard Demo</a>
+        </div>
+    </div>
+
+    <script>
+        // Auto-redirect to main site after 3 seconds
+        setTimeout(() => {
+            window.location.href = '/html/index.html';
+        }, 3000);
+    </script>
+</body>
+</html> 

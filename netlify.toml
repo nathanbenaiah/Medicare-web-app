@@ -9,6 +9,12 @@
   to = "/html/auth-callback.html"
   status = 200
 
+[[redirects]]
+  # Handle auth callback with params
+  from = "/auth-callback/*"
+  to = "/html/auth-callback.html"
+  status = 200
+
 # Handle HTML file routing - map root requests to html folder
 [[redirects]]
   from = "/login"
