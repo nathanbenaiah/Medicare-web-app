@@ -404,31 +404,57 @@
 
         // Initialize the app
         async function initApp() {
-            console.log('Initializing dashboard app...');
+            console.log('🚀 Initializing Medicare+ dashboard...');
             
             try {
+                // Show loading state
+                document.getElementById('app').innerHTML = `
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading your dashboard...</p>
+                    </div>
+                `;
+
                 // Check authentication
-                console.log('Checking authentication...');
+                console.log('🔐 Checking authentication...');
                 await checkAuthentication();
-                console.log('Authentication successful');
+                
+                if (!currentUser) {
+                    throw new Error('No user found after authentication check');
+                }
+                console.log('✅ Authentication successful for:', currentUser.email);
                 
                 // Load user profile
-                console.log('Loading user profile...');
+                console.log('👤 Loading user profile...');
                 await loadUserProfile();
-                console.log('User profile loaded:', userProfile);
+                
+                if (!userProfile) {
+                    throw new Error('Failed to load user profile');
+                }
+                console.log('✅ User profile loaded:', userProfile.full_name);
                 
                 // Check if profile needs completion
-                console.log('Checking profile completion...');
+                console.log('📋 Checking profile completion...');
                 checkProfileCompletion();
                 
                 // Render dashboard
-                console.log('Rendering dashboard...');
+                console.log('🎨 Rendering dashboard...');
                 renderDashboard();
-                console.log('Dashboard initialization complete');
+                
+                console.log('🎉 Dashboard initialization complete!');
+                
+                // Show welcome message
+                if (currentUser.user_metadata?.provider?.includes('demo')) {
+                    showMessage('Welcome to Medicare+ Demo! Explore all features with sample data.', 'success');
+                } else {
+                    showMessage(`Welcome back, ${userProfile.full_name}!`, 'success');
+                }
                 
             } catch (error) {
-                console.log('App initialization had an issue, loading with demo user...');
-                // Never block access - always create a demo user
+                console.error('❌ App initialization error:', error);
+                console.log('🛠️ Attempting recovery with demo user...');
+                
+                // Create emergency demo user
                 currentUser = {
                     id: 'emergency-demo-' + Date.now(),
                     email: 'demo@medicare.com',
@@ -439,32 +465,34 @@
                 };
                 localStorage.setItem('medicare_user', JSON.stringify(currentUser));
                 
-                // Load minimal profile
+                // Create minimal profile
                 userProfile = {
                     user_id: currentUser.id,
                     email: currentUser.email,
                     full_name: 'Demo User',
-                    isComplete: true
+                    isComplete: true,
+                    created_at: new Date().toISOString()
                 };
+                localStorage.setItem(`user_profile_${currentUser.id}`, JSON.stringify(userProfile));
                 
                 // Render dashboard anyway
                 renderDashboard();
-                showMessage('Welcome! You are using demo mode.', 'success');
+                showMessage('Dashboard loaded in demo mode. If you were trying to log in, please try again.', 'success');
             }
         }
 
         // Check if user is authenticated - SIMPLIFIED VERSION
         async function checkAuthentication() {
-            console.log('🔓 Simple authentication check...');
+            console.log('🔓 Dashboard authentication check...');
             
             try {
-                // 1. Check for demo mode or simple bypass
+                // 1. Check for demo mode or login parameters
                 const urlParams = new URLSearchParams(window.location.search);
                 const isDemoParam = urlParams.get('demo') === 'true';
                 const isEasyLogin = urlParams.get('login') === 'true';
                 
-                if (isDemoParam || isEasyLogin) {
-                    console.log('🎭 Demo/Easy login mode activated');
+                if (isDemoParam) {
+                    console.log('🎭 Demo mode activated via URL parameter');
                     currentUser = {
                         id: 'demo-user-' + Date.now(),
                         email: 'demo@medicare.com',
@@ -477,37 +505,64 @@
                     return;
                 }
 
-                // 2. Check localStorage for any stored user
+                // 2. Check localStorage for stored user (from new auth system)
                 const storedUser = localStorage.getItem('medicare_user');
                 if (storedUser) {
                     try {
                         currentUser = JSON.parse(storedUser);
-                        console.log('✅ User found:', currentUser.email);
-                        return;
+                        console.log('✅ User found from auth system:', currentUser.email);
+                        
+                        // Validate user object
+                        if (currentUser.id && currentUser.email) {
+                            return; // Valid user found
+                        } else {
+                            console.log('Invalid user data, clearing...');
+                            localStorage.removeItem('medicare_user');
+                        }
                     } catch (e) {
-                        console.log('Clearing invalid stored user');
+                        console.log('Error parsing stored user, clearing...');
                         localStorage.removeItem('medicare_user');
                     }
                 }
 
-                // 3. Simple email check - if any email provided, create user
-                const emailInput = prompt('Enter any email to access dashboard (or cancel for demo):');
-                if (emailInput && emailInput.includes('@')) {
-                    console.log('✅ Simple email login');
-                    currentUser = {
-                        id: 'simple-user-' + Date.now(),
-                        email: emailInput,
-                        user_metadata: {
-                            full_name: emailInput.split('@')[0],
-                            provider: 'simple'
+                // 3. Check for Supabase session (if available)
+                if (supabase) {
+                    try {
+                        const { data: { session }, error } = await supabase.auth.getSession();
+                        if (session && session.user) {
+                            console.log('✅ Supabase session found:', session.user.email);
+                            currentUser = session.user;
+                            localStorage.setItem('medicare_user', JSON.stringify(currentUser));
+                            return;
                         }
-                    };
-                    localStorage.setItem('medicare_user', JSON.stringify(currentUser));
-                    return;
+                    } catch (supabaseError) {
+                        console.log('Supabase check failed:', supabaseError.message);
+                    }
                 }
 
-                // 4. Default to demo user if nothing else works
-                console.log('🎭 Defaulting to demo mode');
+                // 4. Check for OAuth redirect parameters
+                const urlHash = window.location.hash;
+                if (urlHash && (urlHash.includes('access_token') || urlHash.includes('refresh_token'))) {
+                    console.log('🔗 OAuth tokens detected, processing...');
+                    // Let Supabase handle the tokens
+                    if (supabase) {
+                        try {
+                            const { data: { session }, error } = await supabase.auth.getSession();
+                            if (session && session.user) {
+                                currentUser = session.user;
+                                localStorage.setItem('medicare_user', JSON.stringify(currentUser));
+                                // Clean URL
+                                window.history.replaceState({}, document.title, window.location.pathname);
+                                return;
+                            }
+                        } catch (error) {
+                            console.log('OAuth processing failed:', error.message);
+                        }
+                    }
+                }
+
+                // 5. Default to demo mode if no authentication found
+                console.log('🎭 No authentication found, defaulting to demo mode');
                 currentUser = {
                     id: 'auto-demo-' + Date.now(),
                     email: 'demo@medicare.com',
@@ -520,8 +575,8 @@
                 return;
                 
             } catch (error) {
-                console.log('🎭 Authentication failed, using demo mode');
-                // Even if there's an error, create demo user
+                console.error('Authentication check error:', error);
+                // Always create demo user on error
                 currentUser = {
                     id: 'fallback-demo-' + Date.now(),
                     email: 'demo@medicare.com',
