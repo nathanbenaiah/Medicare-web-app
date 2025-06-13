@@ -1563,42 +1563,39 @@
     <!-- Modern Navigation -->
     <nav class="modern-navbar">
         <div class="navbar-container">
-            <a href="index.html" class="navbar-brand">
-                <i class="bx bx-health"></i>
-                <span>MediCare<span class="brand-accent">+</span></span>
+            <a href="/" class="navbar-brand">
+                <i class='bx bx-plus-medical'></i>
+                <span>Medi<span class="brand-accent">Care+</span></span>
             </a>
-
+            
             <div class="navbar-nav">
-                <a href="index.html" class="nav-link">
-                    <i class="bx bx-home-alt"></i>
+                <a href="/" class="nav-link">
+                    <i class='bx bx-home'></i>
                     <span>Home</span>
                 </a>
-                <a href="schedule.html" class="nav-link">
-                    <i class="bx bx-calendar"></i>
-                    <span>Schedule</span>
+                <a href="/about.html" class="nav-link">
+                    <i class='bx bx-info-circle'></i>
+                    <span>About</span>
                 </a>
-                <a href="reminders.html" class="nav-link">
-                    <i class="bx bx-bell"></i>
-                    <span>Reminders</span>
-                </a>
-                <a href="appointments.html" class="nav-link">
-                    <i class="bx bx-calendar-check"></i>
-                    <span>Appointments</span>
-                </a>
-                <a href="blog.html" class="nav-link active">
-                    <i class="bx bx-book-open"></i>
+                <a href="/blog.html" class="nav-link active">
+                    <i class='bx bx-news'></i>
                     <span>Blog</span>
                 </a>
+                <a href="/contact.html" class="nav-link">
+                    <i class='bx bx-phone'></i>
+                    <span>Contact</span>
+                </a>
             </div>
-
+            
             <div class="navbar-auth">
-                <a href="auth.html" class="google-sign-btn">
-                    <i class="bx bx-user"></i>
+                <a href="/auth-new.html" class="auth-sign-btn" id="authButton">
+                    <i class='bx bxl-google'></i>
                     <span>Get Started</span>
                 </a>
             </div>
 
-            <button class="mobile-toggle" onclick="toggleMobileMenu()">
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-toggle" id="mobileToggle">
                 <span></span>
                 <span></span>
                 <span></span>
