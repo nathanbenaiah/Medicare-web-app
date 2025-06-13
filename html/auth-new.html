@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicare+ Authentication</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.1) 0%, transparent 50%),
+                linear-gradient(135deg, #eff6ff 0%, #f9fafb 50%, #ecfdf5 100%);
+            background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+            animation: backgroundShift 20s ease-in-out infinite;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, rgba(37, 99, 235, 0.2), transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(16, 185, 129, 0.2), transparent),
+                radial-gradient(1px 1px at 90px 40px, rgba(245, 158, 11, 0.2), transparent);
+            background-repeat: repeat;
+            background-size: 200px 100px;
+            animation: floatParticles 25s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% { 
+                background-position: 0% 0%, 100% 100%, 50% 50%, 0% 0%; 
+            }
+            25% { 
+                background-position: 100% 0%, 0% 100%, 80% 20%, 0% 0%; 
+            }
+            50% { 
+                background-position: 100% 100%, 0% 0%, 20% 80%, 0% 0%; 
+            }
+            75% { 
+                background-position: 0% 100%, 100% 0%, 60% 40%, 0% 0%; 
+            }
+        }
+
+        @keyframes floatParticles {
+            0% { transform: translateY(0px) translateX(0px); }
+            33% { transform: translateY(-100px) translateX(100px); }
+            66% { transform: translateY(-200px) translateX(-100px); }
+            100% { transform: translateY(-300px) translateX(0px); }
+        }
+
+        .auth-container {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 
+                0 8px 32px 0 rgba(31, 38, 135, 0.37),
+                0 20px 60px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            position: relative;
+            overflow: hidden;
+            z-index: 10;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .auth-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                transparent 50%, 
+                rgba(255, 255, 255, 0.05) 100%);
+            pointer-events: none;
+        }
+
+        .auth-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 12px 40px 0 rgba(31, 38, 135, 0.4),
+                0 25px 80px rgba(0, 0, 0, 0.15);
+        }
+
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                #00d4ff, 
+                #2563eb, 
+                #39ff14, 
+                #2563eb, 
+                #00d4ff);
+            background-size: 300% 100%;
+            animation: shimmer 4s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+            z-index: 1;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { 
+                background-position: 300% 0; 
+                box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+            }
+            33% { 
+                background-position: 200% 0; 
+                box-shadow: 0 0 20px rgba(37, 99, 235, 0.5);
+            }
+            66% { 
+                background-position: 100% 0; 
+                box-shadow: 0 0 20px rgba(57, 255, 20, 0.5);
+            }
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, 
+                #00d4ff, 
+                #2563eb, 
+                #39ff14);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+            animation: gradientShift 3s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(37, 99, 235, 0.3);
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        /* Advanced Tab Navigation */
+        .tab-nav {
+            display: flex;
+            background: rgba(248, 249, 250, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 30px;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #666;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .tab-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(102, 126, 234, 0.1) 0%, 
+                rgba(118, 75, 162, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            border-radius: 8px;
+        }
+
+        .tab-btn:hover::before {
+            opacity: 1;
+        }
+
+        .tab-btn.active {
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+            box-shadow: 
+                0 2px 8px rgba(0, 0, 0, 0.1),
+                0 0 20px rgba(102, 126, 234, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .tab-btn.active::before {
+            opacity: 0;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 
+                0 0 0 3px rgba(102, 126, 234, 0.1),
+                0 4px 20px rgba(102, 126, 234, 0.15);
+            transform: translateY(-1px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        input:hover {
+            border-color: #c7d2fe;
+            transform: translateY(-1px);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.2) 50%, 
+                transparent 100%);
+            transition: left 0.5s;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:active {
+            transform: translateY(-1px) scale(1.01);
+            transition: all 0.1s;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-google {
+            background: #4285f4;
+        }
+
+        .btn-google:hover {
+            background: #3367d6;
+        }
+
+        .btn-demo-user {
+            background: #10b981;
+        }
+
+        .btn-demo-user:hover {
+            background: #059669;
+        }
+
+        .btn-demo-provider {
+            background: #f59e0b;
+        }
+
+        .btn-demo-provider:hover {
+            background: #d97706;
+        }
+
+        .divider {
+            margin: 20px 0;
+            color: #666;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e1e5e9;
+            z-index: 1;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 15px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .demo-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .success-message {
+            background: #f0fdf4;
+            color: #166534;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #10b981;
+        }
+
+        .error-message {
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ef4444;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .info-box {
+            background: #f0f9ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .info-box h4 {
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+
+        .info-box ul {
+            color: #1e40af;
+            font-size: 0.9rem;
+            margin-left: 20px;
+        }
+
+        .info-box li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="logo">Medicare+</div>
+        <p class="subtitle">Choose your access method</p>
+
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab('signin')">Sign In</button>
+            <button class="tab-btn" onclick="switchTab('signup')">Sign Up</button>
+            <button class="tab-btn" onclick="switchTab('demo')">Demo Login</button>
+        </div>
+
+        <!-- Messages -->
+        <div id="messageArea"></div>
+
+        <!-- Sign In Tab -->
+        <div id="signin-tab" class="tab-content active">
+            <h2 style="margin-bottom: 20px; color: #333;">Welcome Back</h2>
+            
+            <form id="signinForm">
+                <div class="form-group">
+                    <label for="signin-email">Email Address</label>
+                    <input type="email" id="signin-email" placeholder="Enter your email" required>
+                </div>
+                
+                <button type="submit" class="btn" id="signin-btn">
+                    <i class="fas fa-paper-plane"></i>
+                    Send Magic Link
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>or</span>
+            </div>
+
+            <button class="btn btn-google" onclick="signInWithGoogle()">
+                <i class="fab fa-google"></i>
+                Continue with Google
+            </button>
+
+            <div class="info-box">
+                <h4>Magic Link Login</h4>
+                <ul>
+                    <li>No password required</li>
+                    <li>Check your email for login link</li>
+                    <li>Secure and convenient</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sign Up Tab -->
+        <div id="signup-tab" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: #333;">Create Account</h2>
+            
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="signup-name">Full Name</label>
+                    <input type="text" id="signup-name" placeholder="Enter your full name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="signup-email">Email Address</label>
+                    <input type="email" id="signup-email" placeholder="Enter your email" required>
+                </div>
+                
+                <button type="submit" class="btn" id="signup-btn">
+                    <i class="fas fa-user-plus"></i>
+                    Create Account
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>or</span>
+            </div>
+
+            <button class="btn btn-google" onclick="signUpWithGoogle()">
+                <i class="fab fa-google"></i>
+                Sign Up with Google
+            </button>
+
+            <div class="info-box">
+                <h4>Quick Registration</h4>
+                <ul>
+                    <li>No password needed</li>
+                    <li>Instant email verification</li>
+                    <li>Start using immediately</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Demo Login Tab -->
+        <div id="demo-tab" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: #333;">Try Demo</h2>
+            <p style="margin-bottom: 20px; color: #666;">Explore the dashboards without creating an account</p>
+            
+            <div class="demo-options">
+                <button class="btn btn-demo-user" onclick="demoLogin('user')">
+                    <i class="fas fa-user"></i>
+                    Patient Dashboard
+                </button>
+                
+                <button class="btn btn-demo-provider" onclick="demoLogin('provider')">
+                    <i class="fas fa-user-md"></i>
+                    Provider Dashboard
+                </button>
+            </div>
+
+            <div class="info-box">
+                <h4>Demo Features</h4>
+                <ul>
+                    <li><strong>Patient:</strong> View appointments, medications, health records</li>
+                    <li><strong>Provider:</strong> Manage patients, appointments, prescriptions</li>
+                    <li>Full feature access with sample data</li>
+                    <li>No registration required</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Supabase configuration
+        const supabaseUrl = 'https://gcggnrwqilylyykppizb.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjaGducndxaWx5bHl5a3BwaXpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTIyNDI1MzgsImV4cCI6MjAyNzgxODUzOH0.GtHQVOl7NSmNWE6u6wqYSN8EZwrBw4yyJ5fK4Lr0n2k';
+        
+        let supabase = null;
+        try {
+            if (window.supabase && window.supabase.createClient) {
+                supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+                console.log('Supabase client initialized');
+            }
+        } catch (error) {
+            console.error('Supabase initialization failed:', error);
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            // Remove active class from all tabs and buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active class to selected tab and button
+            document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            // Clear messages
+            document.getElementById('messageArea').innerHTML = '';
+        }
+
+        // Message display
+        function showMessage(text, type = 'success') {
+            const messageArea = document.getElementById('messageArea');
+            messageArea.innerHTML = `
+                <div class="${type}-message">
+                    ${text}
+                </div>
+            `;
+        }
+
+        // Sign In with Magic Link
+        document.getElementById('signinForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('signin-email').value;
+            const btn = document.getElementById('signin-btn');
+            
+            if (!email) {
+                showMessage('Please enter your email address', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<div class="loading"></div> Sending...';
+
+            try {
+                if (supabase) {
+                    const { error } = await supabase.auth.signInWithOtp({
+                        email: email,
+                        options: {
+                            emailRedirectTo: window.location.origin + '/html/dashboard-router.html'
+                        }
+                    });
+
+                    if (error) throw error;
+
+                    showMessage('✨ Magic link sent! Check your email to sign in.', 'success');
+                } else {
+                    // Fallback for demo
+                    setTimeout(() => {
+                        createUser(email, email.split('@')[0], 'magic-link');
+                    }, 1500);
+                    showMessage('✨ Magic link sent! (Demo mode - auto logging in...)', 'success');
+                }
+            } catch (error) {
+                console.error('Sign in error:', error);
+                showMessage('Failed to send magic link. Please try again.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Magic Link';
+            }
+        });
+
+        // Sign Up
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const btn = document.getElementById('signup-btn');
+            
+            if (!name || !email) {
+                showMessage('Please fill in all fields', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<div class="loading"></div> Creating Account...';
+
+            try {
+                if (supabase) {
+                    const { error } = await supabase.auth.signInWithOtp({
+                        email: email,
+                        options: {
+                            data: {
+                                full_name: name
+                            },
+                            emailRedirectTo: window.location.origin + '/html/dashboard-router.html'
+                        }
+                    });
+
+                    if (error) throw error;
+
+                    showMessage('🎉 Account created! Check your email to get started.', 'success');
+                } else {
+                    // Fallback for demo
+                    setTimeout(() => {
+                        createUser(email, name, 'signup');
+                    }, 1500);
+                    showMessage('🎉 Account created! (Demo mode - auto logging in...)', 'success');
+                }
+            } catch (error) {
+                console.error('Sign up error:', error);
+                showMessage('Failed to create account. Please try again.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+            }
+        });
+
+        // Google Sign In
+        async function signInWithGoogle() {
+            try {
+                if (supabase) {
+                    const { error } = await supabase.auth.signInWithOAuth({
+                        provider: 'google',
+                        options: {
+                            redirectTo: window.location.origin + '/html/dashboard-router.html'
+                        }
+                    });
+
+                    if (error) throw error;
+                } else {
+                    // Fallback for demo
+                    showMessage('🔗 Redirecting to Google... (Demo mode)', 'success');
+                    setTimeout(() => {
+                        createUser('user@gmail.com', 'Google User', 'google');
+                    }, 2000);
+                }
+            } catch (error) {
+                console.error('Google sign in error:', error);
+                showMessage('Google sign in failed. Please try again.', 'error');
+            }
+        }
+
+        // Google Sign Up
+        async function signUpWithGoogle() {
+            signInWithGoogle(); // Same process for OAuth
+        }
+
+        // Demo Login - IMPROVED VERSION
+        function demoLogin(type) {
+            console.log('🎭 Demo login requested for:', type);
+            
+            const users = {
+                user: {
+                    email: 'patient@demo.com',
+                    name: 'Demo Patient',
+                    dashboard: 'user-dashboard-improved.html'
+                },
+                provider: {
+                    email: 'doctor@demo.com',
+                    name: 'Dr. Demo Provider',
+                    dashboard: 'provider-dashboard-improved.html'
+                }
+            };
+
+            const userData = users[type];
+            if (!userData) {
+                showMessage('Invalid demo type selected', 'error');
+                return;
+            }
+
+            showMessage(`🎭 Loading ${type} dashboard...`, 'success');
+            
+            // Disable all buttons to prevent double-clicks
+            document.querySelectorAll('.btn').forEach(btn => btn.disabled = true);
+            
+            setTimeout(() => {
+                createUser(userData.email, userData.name, `demo-${type}`, userData.dashboard);
+            }, 1000);
+        }
+
+        // Create user and redirect - IMPROVED VERSION
+        function createUser(email, name, provider, dashboard = null) {
+            console.log('🔄 Creating user and redirecting...', { email, name, provider });
+            
+            const user = {
+                id: `${provider}-${Date.now()}`,
+                email: email,
+                user_metadata: {
+                    full_name: name,
+                    provider: provider
+                }
+            };
+
+            // Save user
+            localStorage.setItem('medicare_user', JSON.stringify(user));
+            console.log('✅ User saved to localStorage');
+            
+            // Create profile
+            const profile = {
+                user_id: user.id,
+                email: email,
+                full_name: name,
+                isComplete: true,
+                created_at: new Date().toISOString()
+            };
+            localStorage.setItem(`user_profile_${user.id}`, JSON.stringify(profile));
+            console.log('✅ Profile saved to localStorage');
+
+            // Determine redirect URL
+            let redirectUrl;
+            if (dashboard) {
+                redirectUrl = dashboard;
+            } else if (provider.includes('patient') || provider.includes('user')) {
+                redirectUrl = 'user-dashboard-improved.html';
+            } else if (provider.includes('provider') || provider.includes('doctor')) {
+                redirectUrl = 'provider-dashboard-improved.html';
+            } else {
+                redirectUrl = 'dashboard-router.html';
+            }
+
+            console.log('🎯 Redirecting to:', redirectUrl);
+            
+            // Show loading message
+            showMessage(`🚀 Redirecting to dashboard...`, 'success');
+            
+            // Multiple redirect attempts for reliability
+            setTimeout(() => {
+                try {
+                    window.location.href = redirectUrl;
+                } catch (error) {
+                    console.error('Redirect failed, trying alternative:', error);
+                    // Fallback redirect
+                    window.location.replace(redirectUrl);
+                }
+            }, 1000);
+            
+            // Backup redirect
+            setTimeout(() => {
+                if (window.location.pathname.includes('auth-new.html')) {
+                    console.log('🔄 Backup redirect triggered');
+                    window.location.assign(redirectUrl);
+                }
+            }, 3000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Medicare+ Authentication loaded');
+        });
+    </script>
+</body>
+</html> 

@@ -20,25 +20,31 @@
     <link rel="stylesheet" href="/css/mobile-responsive.css">
     
     <style>
-        /* Modern Navigation */
+        /* Modern Navigation - Consistent with Home */
         .modern-navbar {
             position: fixed;
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
+            z-index: 10001;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 123, 255, 0.1);
-            border-radius: 30px;
-            padding: 15px 30px;
-            box-shadow: 0 10px 40px rgba(0, 123, 255, 0.1);
-            z-index: 1000;
-            transition: all 0.3s ease;
+            border-radius: 60px;
+            padding: 12px 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: box-shadow 0.3s ease;
+            max-width: 90vw;
+        }
+
+        .modern-navbar:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
         }
 
         .navbar-container {
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 2rem;
         }
 
@@ -46,46 +52,73 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: #212529;
             text-decoration: none;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #1a1a1a;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            transform: scale(1.05);
         }
 
         .navbar-brand i {
             font-size: 1.8rem;
             color: #007BFF;
+            filter: drop-shadow(0 0 8px rgba(0, 123, 255, 0.3));
         }
 
         .brand-accent {
             color: #007BFF;
+            filter: drop-shadow(0 0 4px rgba(0, 123, 255, 0.2));
         }
 
         .navbar-nav {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.5rem;
         }
 
         .nav-link {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 12px 16px;
-            color: #6c757d;
             text-decoration: none;
-            border-radius: 20px;
-            font-weight: 500;
+            color: #6b7280;
+            font-weight: 600;
             font-size: 0.9rem;
+            padding: 12px 16px;
+            border-radius: 30px;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .nav-link:hover,
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0, 123, 255, 0.1), rgba(0, 86, 179, 0.1));
+            opacity: 0;
+            transition: all 0.3s ease;
+            border-radius: 30px;
+        }
+
+        .nav-link:hover::before {
+            opacity: 1;
+        }
+
+        .nav-link:hover {
+            color: #007BFF;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.2);
+            filter: drop-shadow(0 0 12px rgba(0, 123, 255, 0.3));
+        }
+
         .nav-link.active {
             color: #007BFF;
             background: rgba(0, 123, 255, 0.1);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
         }
 
         .navbar-auth {
@@ -94,11 +127,11 @@
             gap: 0.75rem;
         }
 
-        .google-sign-btn {
+        .auth-sign-btn {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 14px 48px;
+            padding: 14px 32px;
             background: linear-gradient(135deg, #007BFF, #0056b3);
             color: white;
             text-decoration: none;
@@ -106,15 +139,19 @@
             font-weight: 600;
             font-size: 0.9rem;
             transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
             box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
             min-width: 160px;
             justify-content: center;
+            white-space: nowrap;
         }
 
-        .google-sign-btn:hover {
+        .auth-sign-btn:hover {
             background: linear-gradient(135deg, #0056b3, #003d82);
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+            filter: drop-shadow(0 0 12px rgba(0, 123, 255, 0.5));
         }
 
         .mobile-toggle {
@@ -412,42 +449,39 @@
     <!-- Modern Navigation -->
     <nav class="modern-navbar">
         <div class="navbar-container">
-            <a href="index.html" class="navbar-brand">
-                <i class="bx bx-health"></i>
-                <span>MediCare<span class="brand-accent">+</span></span>
+            <a href="/" class="navbar-brand">
+                <i class='bx bx-plus-medical'></i>
+                <span>Medi<span class="brand-accent">Care+</span></span>
             </a>
-
+            
             <div class="navbar-nav">
-                <a href="index.html" class="nav-link">
-                    <i class="bx bx-home-alt"></i>
+                <a href="/" class="nav-link">
+                    <i class='bx bx-home'></i>
                     <span>Home</span>
                 </a>
-                <a href="schedule.html" class="nav-link">
-                    <i class="bx bx-calendar"></i>
-                    <span>Schedule</span>
+                <a href="/about.html" class="nav-link active">
+                    <i class='bx bx-info-circle'></i>
+                    <span>About</span>
                 </a>
-                <a href="reminders.html" class="nav-link">
-                    <i class="bx bx-bell"></i>
-                    <span>Reminders</span>
-                </a>
-                <a href="appointments.html" class="nav-link">
-                    <i class="bx bx-calendar-check"></i>
-                    <span>Appointments</span>
-                </a>
-                <a href="blog.html" class="nav-link">
-                    <i class="bx bx-book-open"></i>
+                <a href="/blog.html" class="nav-link">
+                    <i class='bx bx-news'></i>
                     <span>Blog</span>
                 </a>
+                <a href="/contact.html" class="nav-link">
+                    <i class='bx bx-phone'></i>
+                    <span>Contact</span>
+                </a>
             </div>
-
+            
             <div class="navbar-auth">
-                <a href="auth.html" class="google-sign-btn">
-                    <i class="bx bx-user"></i>
-                    <span>Sign Up/In</span>
+                <a href="/auth-new.html" class="auth-sign-btn" id="authButton">
+                    <i class='bx bxl-google'></i>
+                    <span>Get Started</span>
                 </a>
             </div>
 
-            <button class="mobile-toggle" onclick="toggleMobileMenu()">
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-toggle" id="mobileToggle">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -614,64 +648,50 @@
     <!-- Modern Footer -->
     <footer class="modern-footer">
         <div class="footer-container">
-            <!-- Main Footer Content -->
-            <div class="footer-main">
-                <!-- Company Section -->
+            <div class="footer-grid">
                 <div class="footer-section">
-                    <h4>Company</h4>
-                    <div class="footer-links">
-                        <a href="index.html">Home</a>
-                        <a href="about.html">About</a>
-                        <a href="user-dashboard-improved.html">Dashboard</a>
-                        <a href="blog.html">Blog</a>
-                    </div>
+                    <h3>
+                        <i class='bx bx-plus-medical'></i>
+                        MediCare+
+                    </h3>
+                    <p style="color: #d1d5db; line-height: 1.6;">
+                        Revolutionizing healthcare through intelligent technology and compassionate care.
+                    </p>
                 </div>
-
-                <!-- Solutions Section -->
+                
                 <div class="footer-section">
-                    <h4>Solutions</h4>
-                    <div class="footer-links">
-                        <a href="reminders.html">Medication Management</a>
-                        <a href="appointments.html">Appointment Scheduling</a>
-                        <a href="schedule.html">Health Calendar</a>
-                        <a href="#family">Family Care</a>
-                        <a href="#notifications">Smart Reminders</a>
-                        <a href="#analytics">Health Analytics</a>
-                    </div>
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/about.html">About Us</a></li>
+                        <li><a href="/blog.html">Blog</a></li>
+                        <li><a href="/contact.html">Contact</a></li>
+                    </ul>
                 </div>
-
-                <!-- Resources Section -->
+                
                 <div class="footer-section">
-                    <h4>Resources</h4>
-                    <div class="footer-links">
-                        <a href="blog.html">Blog</a>
-                        <a href="help-center.html">Help Center</a>
-                        <a href="contact.html">Contact Us</a>
-                        <a href="privacy-policy.html">Privacy Policy</a>
-                        <a href="terms-of-use.html">Terms of Use</a>
-                    </div>
+                    <h3>Services</h3>
+                    <ul>
+                        <li><a href="#">Patient Portal</a></li>
+                        <li><a href="#">Provider Dashboard</a></li>
+                        <li><a href="#">Health Monitoring</a></li>
+                        <li><a href="#">Appointment Scheduling</a></li>
+                    </ul>
                 </div>
-
-                <!-- Partners Section -->
+                
                 <div class="footer-section">
-                    <h4>Partners</h4>
-                    <div class="footer-links">
-                        <a href="#">Hospitals</a>
-                        <a href="#">Pharmacy</a>
-                        <a href="#">Clinic</a>
-                    </div>
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Contact Support</a></li>
+                    </ul>
                 </div>
             </div>
-
-            <!-- Footer Bottom -->
+            
             <div class="footer-bottom">
-                <div class="footer-brand">
-                    <i class="bx bx-health"></i>
-                    <span>MediCare<span class="brand-accent">+</span></span>
-                </div>
-                <div class="footer-copyright">
-                    <p>Copyright 2025 ©. All rights reserved Developed by Benaiah</p>
-                </div>
+                <p>&copy; 2024 MediCare+. All rights reserved. Built with ❤️ for better healthcare.</p>
             </div>
         </div>
     </footer>

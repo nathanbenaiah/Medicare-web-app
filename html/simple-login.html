@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicare+ Authentication</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 30px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #666;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-google {
+            background: #4285f4;
+        }
+
+        .btn-google:hover {
+            background: #3367d6;
+        }
+
+        .btn-demo-user {
+            background: #10b981;
+        }
+
+        .btn-demo-user:hover {
+            background: #059669;
+        }
+
+        .btn-demo-provider {
+            background: #f59e0b;
+        }
+
+        .btn-demo-provider:hover {
+            background: #d97706;
+        }
+
+        .divider {
+            margin: 20px 0;
+            color: #666;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e1e5e9;
+            z-index: 1;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 15px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .demo-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .success-message {
+            background: #f0fdf4;
+            color: #166534;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #10b981;
+        }
+
+        .error-message {
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ef4444;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .info-box {
+            background: #f0f9ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .info-box h4 {
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+
+        .info-box ul {
+            color: #1e40af;
+            font-size: 0.9rem;
+            margin-left: 20px;
+        }
+
+        .info-box li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="logo">Medicare+</div>
+        <p class="subtitle">Choose your access method</p>
+
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab('signin')">Sign In</button>
+            <button class="tab-btn" onclick="switchTab('signup')">Sign Up</button>
+            <button class="tab-btn" onclick="switchTab('demo')">Demo Login</button>
+        </div>
+
+        <!-- Messages -->
+        <div id="messageArea"></div>
+
+        <!-- Sign In Tab -->
+        <div id="signin-tab" class="tab-content active">
+            <h2 style="margin-bottom: 20px; color: #333;">Welcome Back</h2>
+            
+            <form id="signinForm">
+                <div class="form-group">
+                    <label for="signin-email">Email Address</label>
+                    <input type="email" id="signin-email" placeholder="Enter your email" required>
+                </div>
+                
+                <button type="submit" class="btn" id="signin-btn">
+                    <i class="fas fa-paper-plane"></i>
+                    Send Magic Link
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>or</span>
+            </div>
+
+            <button class="btn btn-google" onclick="signInWithGoogle()">
+                <i class="fab fa-google"></i>
+                Continue with Google
+            </button>
+
+            <div class="info-box">
+                <h4>Magic Link Login</h4>
+                <ul>
+                    <li>No password required</li>
+                    <li>Check your email for login link</li>
+                    <li>Secure and convenient</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sign Up Tab -->
+        <div id="signup-tab" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: #333;">Create Account</h2>
+            
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="signup-name">Full Name</label>
+                    <input type="text" id="signup-name" placeholder="Enter your full name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="signup-email">Email Address</label>
+                    <input type="email" id="signup-email" placeholder="Enter your email" required>
+                </div>
+                
+                <button type="submit" class="btn" id="signup-btn">
+                    <i class="fas fa-user-plus"></i>
+                    Create Account
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>or</span>
+            </div>
+
+            <button class="btn btn-google" onclick="signUpWithGoogle()">
+                <i class="fab fa-google"></i>
+                Sign Up with Google
+            </button>
+
+            <div class="info-box">
+                <h4>Quick Registration</h4>
+                <ul>
+                    <li>No password needed</li>
+                    <li>Instant email verification</li>
+                    <li>Start using immediately</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Demo Login Tab -->
+        <div id="demo-tab" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: #333;">Try Demo</h2>
+            <p style="margin-bottom: 20px; color: #666;">Explore the dashboards without creating an account</p>
+            
+            <div class="demo-options">
+                <button class="btn btn-demo-user" onclick="demoLogin('user')">
+                    <i class="fas fa-user"></i>
+                    Patient Dashboard
+                </button>
+                
+                <button class="btn btn-demo-provider" onclick="demoLogin('provider')">
+                    <i class="fas fa-user-md"></i>
+                    Provider Dashboard
+                </button>
+            </div>
+
+            <div class="info-box">
+                <h4>Demo Features</h4>
+                <ul>
+                    <li><strong>Patient:</strong> View appointments, medications, health records</li>
+                    <li><strong>Provider:</strong> Manage patients, appointments, prescriptions</li>
+                    <li>Full feature access with sample data</li>
+                    <li>No registration required</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Supabase configuration
+        const supabaseUrl = 'https://gcggnrwqilylyykppizb.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjaGducndxaWx5bHl5a3BwaXpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTIyNDI1MzgsImV4cCI6MjAyNzgxODUzOH0.GtHQVOl7NSmNWE6u6wqYSN8EZwrBw4yyJ5fK4Lr0n2k';
+        
+        let supabase = null;
+        try {
+            if (window.supabase && window.supabase.createClient) {
+                supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+                console.log('Supabase client initialized');
+            }
+        } catch (error) {
+            console.error('Supabase initialization failed:', error);
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            // Remove active class from all tabs and buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active class to selected tab and button
+            document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            // Clear messages
+            document.getElementById('messageArea').innerHTML = '';
+        }
+
+        // Message display
+        function showMessage(text, type = 'success') {
+            const messageArea = document.getElementById('messageArea');
+            messageArea.innerHTML = `
+                <div class="${type}-message">
+                    ${text}
+                </div>
+            `;
+        }
+
+        // Sign In with Magic Link
+        document.getElementById('signinForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('signin-email').value;
+            const btn = document.getElementById('signin-btn');
+            
+            if (!email) {
+                showMessage('Please enter your email address', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<div class="loading"></div> Sending...';
+
+            try {
+                if (supabase) {
+                    const { error } = await supabase.auth.signInWithOtp({
+                        email: email,
+                        options: {
+                            emailRedirectTo: window.location.origin + '/html/user-dashboard-improved.html'
+                        }
+                    });
+
+                    if (error) throw error;
+
+                    showMessage('✨ Magic link sent! Check your email to sign in.', 'success');
+                } else {
+                    // Fallback for demo
+                    setTimeout(() => {
+                        createUser(email, email.split('@')[0], 'magic-link');
+                    }, 1500);
+                    showMessage('✨ Magic link sent! (Demo mode - auto logging in...)', 'success');
+                }
+            } catch (error) {
+                console.error('Sign in error:', error);
+                showMessage('Failed to send magic link. Please try again.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Magic Link';
+            }
+        });
+
+        // Sign Up
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const btn = document.getElementById('signup-btn');
+            
+            if (!name || !email) {
+                showMessage('Please fill in all fields', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<div class="loading"></div> Creating Account...';
+
+            try {
+                if (supabase) {
+                    const { error } = await supabase.auth.signInWithOtp({
+                        email: email,
+                        options: {
+                            data: {
+                                full_name: name
+                            },
+                            emailRedirectTo: window.location.origin + '/html/user-dashboard-improved.html'
+                        }
+                    });
+
+                    if (error) throw error;
+
+                    showMessage('🎉 Account created! Check your email to get started.', 'success');
+                } else {
+                    // Fallback for demo
+                    setTimeout(() => {
+                        createUser(email, name, 'signup');
+                    }, 1500);
+                    showMessage('🎉 Account created! (Demo mode - auto logging in...)', 'success');
+                }
+            } catch (error) {
+                console.error('Sign up error:', error);
+                showMessage('Failed to create account. Please try again.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+            }
+        });
+
+        // Google Sign In
+        async function signInWithGoogle() {
+            try {
+                if (supabase) {
+                    const { error } = await supabase.auth.signInWithOAuth({
+                        provider: 'google',
+                        options: {
+                            redirectTo: window.location.origin + '/html/user-dashboard-improved.html'
+                        }
+                    });
+
+                    if (error) throw error;
+                } else {
+                    // Fallback for demo
+                    showMessage('🔗 Redirecting to Google... (Demo mode)', 'success');
+                    setTimeout(() => {
+                        createUser('user@gmail.com', 'Google User', 'google');
+                    }, 2000);
+                }
+            } catch (error) {
+                console.error('Google sign in error:', error);
+                showMessage('Google sign in failed. Please try again.', 'error');
+            }
+        }
+
+        // Google Sign Up
+        async function signUpWithGoogle() {
+            signInWithGoogle(); // Same process for OAuth
+        }
+
+        // Demo Login
+        function demoLogin(type) {
+            const users = {
+                user: {
+                    email: 'patient@demo.com',
+                    name: 'Demo Patient',
+                    dashboard: 'user-dashboard-improved.html'
+                },
+                provider: {
+                    email: 'doctor@demo.com',
+                    name: 'Dr. Demo',
+                    dashboard: 'provider-dashboard-improved.html'
+                }
+            };
+
+            const userData = users[type];
+            showMessage(`🎭 Loading ${type} dashboard...`, 'success');
+            
+            setTimeout(() => {
+                createUser(userData.email, userData.name, `demo-${type}`, userData.dashboard);
+            }, 1000);
+        }
+
+        // Create user and redirect
+        function createUser(email, name, provider, dashboard = 'user-dashboard-improved.html') {
+            const user = {
+                id: `${provider}-${Date.now()}`,
+                email: email,
+                user_metadata: {
+                    full_name: name,
+                    provider: provider
+                }
+            };
+
+            // Save user
+            localStorage.setItem('medicare_user', JSON.stringify(user));
+            
+            // Create profile
+            const profile = {
+                user_id: user.id,
+                email: email,
+                full_name: name,
+                isComplete: true,
+                created_at: new Date().toISOString()
+            };
+            localStorage.setItem(`user_profile_${user.id}`, JSON.stringify(profile));
+
+            // Redirect
+            window.location.href = dashboard;
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Medicare+ Authentication loaded');
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicare+ Debug</title>
+    <style>
+        body { 
+            font-family: 'Courier New', monospace; 
+            padding: 20px; 
+            background: #1a1a1a; 
+            color: #00ff00; 
+        }
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+        }
+        .debug-section { 
+            background: #2a2a2a; 
+            padding: 20px; 
+            margin: 20px 0; 
+            border-radius: 8px; 
+            border: 1px solid #444; 
+        }
+        .btn { 
+            background: #00ff00; 
+            color: #000; 
+            padding: 10px 20px; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            margin: 5px; 
+        }
+        .btn:hover { 
+            background: #00cc00; 
+        }
+        pre { 
+            background: #0a0a0a; 
+            padding: 15px; 
+            border-radius: 4px; 
+            overflow-x: auto; 
+            border: 1px solid #333; 
+        }
+        .error { color: #ff4444; }
+        .success { color: #44ff44; }
+        .warning { color: #ffff44; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Medicare+ Debug Console</h1>
+        
+        <div class="debug-section">
+            <h2>Authentication Status</h2>
+            <button class="btn" onclick="checkAuth()">Check Authentication</button>
+            <button class="btn" onclick="clearAuth()">Clear All Auth Data</button>
+            <button class="btn" onclick="createTestUser()">Create Test User</button>
+            <pre id="authStatus">Click "Check Authentication" to see status...</pre>
+        </div>
+
+        <div class="debug-section">
+            <h2>Local Storage</h2>
+            <button class="btn" onclick="showStorage()">Show Storage</button>
+            <button class="btn" onclick="clearStorage()">Clear Storage</button>
+            <pre id="storageContent">Click "Show Storage" to see contents...</pre>
+        </div>
+
+        <div class="debug-section">
+            <h2>URL Parameters</h2>
+            <button class="btn" onclick="showURL()">Show URL Info</button>
+            <pre id="urlInfo">Click "Show URL Info" to see details...</pre>
+        </div>
+
+        <div class="debug-section">
+            <h2>Quick Actions</h2>
+            <button class="btn" onclick="goDashboard()">Go to Dashboard</button>
+            <button class="btn" onclick="goDashboardDemo()">Go to Dashboard (Demo)</button>
+            <button class="btn" onclick="goAuth()">Go to Auth Page</button>
+        </div>
+
+        <div class="debug-section">
+            <h2>Console Log</h2>
+            <button class="btn" onclick="clearLog()">Clear Log</button>
+            <pre id="consoleLog">Console messages will appear here...</pre>
+        </div>
+    </div>
+
+    <script>
+        let logMessages = [];
+
+        // Override console.log to capture messages
+        const originalLog = console.log;
+        const originalError = console.error;
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            logMessages.push(`[LOG] ${args.join(' ')}`);
+            updateLog();
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            logMessages.push(`[ERROR] ${args.join(' ')}`);
+            updateLog();
+        };
+
+        function updateLog() {
+            const logElement = document.getElementById('consoleLog');
+            logElement.textContent = logMessages.slice(-20).join('\n');
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function clearLog() {
+            logMessages = [];
+            updateLog();
+        }
+
+        function checkAuth() {
+            const authElement = document.getElementById('authStatus');
+            let report = '';
+            
+            // Check localStorage
+            const storedUser = localStorage.getItem('medicare_user');
+            if (storedUser) {
+                try {
+                    const user = JSON.parse(storedUser);
+                    report += `✅ USER FOUND:\n`;
+                    report += `   ID: ${user.id}\n`;
+                    report += `   Email: ${user.email}\n`;
+                    report += `   Name: ${user.user_metadata?.full_name || 'N/A'}\n`;
+                    report += `   Provider: ${user.user_metadata?.provider || 'N/A'}\n`;
+                } catch (e) {
+                    report += `❌ INVALID USER DATA: ${e.message}\n`;
+                }
+            } else {
+                report += `⚠️ NO USER IN STORAGE\n`;
+            }
+
+            // Check profile
+            const userProfile = localStorage.getItem(`user_profile_${JSON.parse(storedUser || '{}').id}`);
+            if (userProfile) {
+                report += `✅ PROFILE FOUND\n`;
+            } else {
+                report += `⚠️ NO PROFILE FOUND\n`;
+            }
+
+            // Check URL params
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('demo')) {
+                report += `🎭 DEMO MODE: ${urlParams.get('demo')}\n`;
+            }
+            if (urlParams.get('login')) {
+                report += `🔓 LOGIN MODE: ${urlParams.get('login')}\n`;
+            }
+
+            authElement.textContent = report || 'No authentication data found';
+        }
+
+        function clearAuth() {
+            const keys = Object.keys(localStorage);
+            keys.forEach(key => {
+                if (key.includes('medicare') || key.includes('user_profile')) {
+                    localStorage.removeItem(key);
+                }
+            });
+            checkAuth();
+            console.log('🧹 Authentication data cleared');
+        }
+
+        function createTestUser() {
+            const testUser = {
+                id: 'test-' + Date.now(),
+                email: 'test@medicare.com',
+                user_metadata: {
+                    full_name: 'Test User',
+                    provider: 'debug'
+                }
+            };
+            
+            localStorage.setItem('medicare_user', JSON.stringify(testUser));
+            
+            const testProfile = {
+                user_id: testUser.id,
+                email: testUser.email,
+                full_name: 'Test User',
+                isComplete: true,
+                created_at: new Date().toISOString()
+            };
+            
+            localStorage.setItem(`user_profile_${testUser.id}`, JSON.stringify(testProfile));
+            
+            checkAuth();
+            console.log('👤 Test user created');
+        }
+
+        function showStorage() {
+            const storageElement = document.getElementById('storageContent');
+            let content = '';
+            
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const value = localStorage.getItem(key);
+                content += `${key}: ${value.substring(0, 100)}${value.length > 100 ? '...' : ''}\n\n`;
+            }
+            
+            storageElement.textContent = content || 'Local storage is empty';
+        }
+
+        function clearStorage() {
+            localStorage.clear();
+            showStorage();
+            console.log('🗑️ Local storage cleared');
+        }
+
+        function showURL() {
+            const urlElement = document.getElementById('urlInfo');
+            let info = '';
+            
+            info += `URL: ${window.location.href}\n`;
+            info += `Path: ${window.location.pathname}\n`;
+            info += `Search: ${window.location.search}\n`;
+            info += `Hash: ${window.location.hash}\n`;
+            
+            const params = new URLSearchParams(window.location.search);
+            if (params.toString()) {
+                info += `\nParameters:\n`;
+                for (const [key, value] of params) {
+                    info += `  ${key}: ${value}\n`;
+                }
+            }
+            
+            urlElement.textContent = info;
+        }
+
+        function goDashboard() {
+            window.location.href = 'user-dashboard-improved.html';
+        }
+
+        function goDashboardDemo() {
+            window.location.href = 'user-dashboard-improved.html?demo=true';
+        }
+
+        function goAuth() {
+            window.location.href = 'auth-new.html';
+        }
+
+        // Auto-run checks on load
+        window.addEventListener('load', () => {
+            checkAuth();
+            showStorage();
+            showURL();
+            console.log('🔧 Debug page loaded');
+        });
+    </script>
+</body>
+</html> 

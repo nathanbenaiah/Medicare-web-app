@@ -1,0 +1,1857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard - Medicare+</title>
+    <link rel="stylesheet" href="../css/user-dashboard.css" onerror="console.log('External CSS failed to load - using inline styles')"
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
+    <style>
+        /* Advanced Healthcare UI Design System */
+        :root {
+            /* Primary Healthcare Colors with Enhanced Gradients */
+            --primary-blue: #2563eb;
+            --primary-blue-light: #3b82f6;
+            --primary-blue-dark: #1d4ed8;
+            --primary-blue-50: #eff6ff;
+            --primary-blue-100: #dbeafe;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-gradient-hover: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            
+            /* Healthcare Accent Colors */
+            --success-green: #10b981;
+            --success-green-light: #34d399;
+            --success-green-50: #ecfdf5;
+            --warning-amber: #f59e0b;
+            --warning-amber-50: #fffbeb;
+            --danger-red: #ef4444;
+            --danger-red-50: #fef2f2;
+            
+            /* Neutral Healthcare Palette */
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            
+            /* Semantic Colors */
+            --background: #ffffff;
+            --surface: #ffffff;
+            --surface-variant: var(--gray-50);
+            --border: var(--gray-200);
+            --border-light: var(--gray-100);
+            --text-primary: var(--gray-900);
+            --text-secondary: var(--gray-600);
+            --text-muted: var(--gray-500);
+            
+            /* Spacing Scale */
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            --space-3xl: 4rem;
+            
+            /* Border Radius */
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --radius-2xl: 1.5rem;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            
+            /* Typography */
+            --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-size-xs: 0.75rem;
+            --font-size-sm: 0.875rem;
+            --font-size-base: 1rem;
+            --font-size-lg: 1.125rem;
+            --font-size-xl: 1.25rem;
+            --font-size-2xl: 1.5rem;
+            --font-size-3xl: 1.875rem;
+            --font-size-4xl: 2.25rem;
+            
+            /* Advanced Animation System */
+            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            --transition-elastic: 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            
+            /* Glass Morphism */
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            
+            /* Neon Effects */
+            --neon-blue: #00d4ff;
+            --neon-green: #39ff14;
+            --neon-purple: #bf00ff;
+            
+            /* Layout */
+            --sidebar-width: 280px;
+            --header-height: 72px;
+            --content-max-width: 1200px;
+        }
+
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-sans);
+            background-color: var(--surface-variant);
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: var(--font-size-base);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Advanced Layout Container with Animated Background */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.1) 0%, transparent 50%),
+                linear-gradient(135deg, var(--primary-blue-50) 0%, var(--gray-50) 100%);
+            background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+            animation: backgroundShift 20s ease-in-out infinite;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% { 
+                background-position: 0% 0%, 100% 100%, 50% 50%, 0% 0%; 
+            }
+            25% { 
+                background-position: 100% 0%, 0% 100%, 80% 20%, 0% 0%; 
+            }
+            50% { 
+                background-position: 100% 100%, 0% 0%, 20% 80%, 0% 0%; 
+            }
+            75% { 
+                background-position: 0% 100%, 100% 0%, 60% 40%, 0% 0%; 
+            }
+        }
+
+        .dashboard-container::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23000" opacity="0.02"/><circle cx="75" cy="75" r="1" fill="%23000" opacity="0.02"/><circle cx="50" cy="10" r="1" fill="%23000" opacity="0.02"/><circle cx="10" cy="90" r="1" fill="%23000" opacity="0.02"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Advanced Sidebar with Glass Morphism */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            box-shadow: var(--glass-shadow);
+            transition: all var(--transition-base);
+            border-radius: 0 24px 24px 0;
+        }
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                rgba(255, 255, 255, 0.05) 50%, 
+                rgba(255, 255, 255, 0.1) 100%);
+            pointer-events: none;
+            border-radius: 0 24px 24px 0;
+        }
+
+        .sidebar-header {
+            padding: var(--space-lg) var(--space-lg) var(--space-xl);
+            border-bottom: 1px solid var(--glass-border);
+            background: var(--primary-gradient);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0 24px 0 0;
+        }
+
+        .sidebar-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .sidebar-header::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            left: -30px;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .sidebar-header h2 {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sidebar-header .subtitle {
+            font-size: var(--font-size-sm);
+            opacity: 0.9;
+            margin-top: var(--space-xs);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Advanced Navigation Menu */
+        .nav-menu {
+            list-style: none;
+            padding: var(--space-lg) 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .nav-item {
+            width: calc(100% - 2rem);
+            padding: var(--space-md) var(--space-lg);
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            text-align: left;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: all var(--transition-bounce);
+            display: flex;
+            align-items: center;
+            font-size: var(--font-size-base);
+            font-weight: 500;
+            position: relative;
+            margin: var(--space-xs) var(--space-md);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            left: -100%;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--primary-blue-50) 50%, 
+                transparent 100%);
+            transition: left var(--transition-base);
+            z-index: -1;
+        }
+
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--primary-blue-50);
+            border-radius: var(--radius-lg);
+            opacity: 0;
+            transition: all var(--transition-base);
+            z-index: -1;
+        }
+
+        .nav-item:hover {
+            color: var(--primary-blue);
+            transform: translateX(8px) scale(1.02);
+            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.15);
+        }
+
+        .nav-item:hover::before {
+            left: 100%;
+        }
+
+        .nav-item:hover::after {
+            opacity: 1;
+        }
+
+        .nav-item.active {
+            color: var(--primary-blue);
+            background: var(--primary-blue-50);
+            border-left-color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .nav-item.active::before {
+            opacity: 1;
+        }
+
+        .nav-item i {
+            margin-right: var(--space-md);
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .nav-item span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: var(--space-lg);
+            max-width: 100%;
+        }
+
+        /* Header Design */
+        .header {
+            background: var(--background);
+            padding: var(--space-lg) var(--space-xl);
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--space-xl);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border-light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--success-green), var(--primary-blue));
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { background-position: 200% 0; }
+            50% { background-position: -200% 0; }
+        }
+
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+        }
+
+        .header h1 {
+            color: var(--text-primary);
+            font-size: var(--font-size-3xl);
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            line-height: 1.2;
+        }
+
+        .header-subtitle {
+            color: var(--text-secondary);
+            font-size: var(--font-size-base);
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: var(--font-size-lg);
+            box-shadow: var(--shadow-md);
+            position: relative;
+        }
+
+        .user-avatar::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-blue), var(--success-green));
+            z-index: -1;
+            opacity: 0;
+            transition: opacity var(--transition-base);
+        }
+
+        .user-avatar:hover::before {
+            opacity: 1;
+        }
+
+        .sign-out-btn {
+            background: linear-gradient(135deg, var(--danger-red), #dc2626);
+            color: white;
+            border: none;
+            padding: var(--space-sm) var(--space-lg);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            transition: all var(--transition-base);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .sign-out-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: var(--space-xl);
+            margin-bottom: var(--space-2xl);
+        }
+
+        /* Advanced Card Design with Morphism */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: var(--space-xl);
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--glass-shadow);
+            border: 1px solid var(--glass-border);
+            transition: all var(--transition-elastic);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                var(--neon-blue), 
+                var(--primary-blue), 
+                var(--neon-green));
+            transition: left var(--transition-slow);
+            box-shadow: 0 0 20px var(--neon-blue);
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                transparent 50%, 
+                rgba(255, 255, 255, 0.05) 100%);
+            opacity: 0;
+            transition: opacity var(--transition-base);
+            pointer-events: none;
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 
+                var(--glass-shadow),
+                0 20px 40px rgba(37, 99, 235, 0.1),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .card:hover::after {
+            opacity: 1;
+        }
+
+        .card h3 {
+            color: var(--text-primary);
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            margin-bottom: var(--space-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .card h3 i {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-blue-50), var(--primary-blue-100));
+            border-radius: var(--radius-md);
+            color: var(--primary-blue);
+            font-size: var(--font-size-sm);
+        }
+
+        .stat-number {
+            font-size: var(--font-size-4xl);
+            font-weight: 800;
+            background: linear-gradient(135deg, 
+                var(--neon-blue), 
+                var(--primary-blue), 
+                var(--neon-green));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: var(--space-md);
+            line-height: 1;
+            animation: gradientShift 3s ease-in-out infinite;
+            position: relative;
+            display: inline-block;
+        }
+
+        .stat-number::after {
+            content: attr(data-value);
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: linear-gradient(135deg, 
+                var(--primary-blue), 
+                var(--primary-blue-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 0;
+            transition: opacity var(--transition-base);
+        }
+
+        .card:hover .stat-number::after {
+            opacity: 1;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .vitals-summary {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+
+        .vitals-summary p {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-sm) 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .vitals-summary p:last-child {
+            border-bottom: none;
+        }
+
+        .vital-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .vital-status {
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .vital-status.normal {
+            background: var(--success-green-50);
+            color: var(--success-green);
+        }
+
+        .vital-status.elevated {
+            background: var(--warning-amber-50);
+            color: var(--warning-amber);
+        }
+
+        /* Advanced Loading States */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            color: var(--text-secondary);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--radius-2xl);
+            margin: var(--space-xl);
+            border: 1px solid var(--glass-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                transparent 100%);
+            animation: shimmerLoad 2s infinite;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            margin-bottom: var(--space-lg);
+            position: relative;
+        }
+
+        .spinner::before,
+        .spinner::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            animation: spinPulse 2s ease-in-out infinite;
+        }
+
+        .spinner::before {
+            width: 100%;
+            height: 100%;
+            border: 3px solid transparent;
+            border-top: 3px solid var(--neon-blue);
+            border-right: 3px solid var(--primary-blue);
+            animation: spin 1s linear infinite;
+        }
+
+        .spinner::after {
+            width: 80%;
+            height: 80%;
+            top: 10%;
+            left: 10%;
+            border: 2px solid transparent;
+            border-bottom: 2px solid var(--neon-green);
+            border-left: 2px solid var(--primary-blue-light);
+            animation: spin 1.5s linear infinite reverse;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes spinPulse {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% { 
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes shimmerLoad {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Message States */
+        .error-message, .success-message {
+            padding: var(--space-lg);
+            border-radius: var(--radius-lg);
+            margin: var(--space-md) 0;
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            font-weight: 500;
+            border-left: 4px solid;
+        }
+
+        .success-message {
+            background: var(--success-green-50);
+            color: var(--success-green);
+            border-left-color: var(--success-green);
+        }
+
+        .error-message {
+            background: var(--danger-red-50);
+            color: var(--danger-red);
+            border-left-color: var(--danger-red);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: var(--space-lg);
+        }
+
+        .modal-content {
+            background: var(--background);
+            padding: var(--space-2xl);
+            border-radius: var(--radius-2xl);
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-light);
+        }
+
+        .modal-content h2 {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-md);
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: var(--space-lg);
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: var(--space-sm);
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: var(--font-size-sm);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: var(--space-md);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-lg);
+            font-size: var(--font-size-base);
+            transition: all var(--transition-base);
+            background: var(--background);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px var(--primary-blue-50);
+        }
+
+        /* Advanced Button Styles */
+        .btn {
+            padding: var(--space-md) var(--space-xl);
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-bounce);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            text-decoration: none;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.2) 50%, 
+                transparent 100%);
+            transition: left var(--transition-base);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 
+                var(--shadow-sm),
+                0 0 20px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 
+                var(--shadow-xl),
+                0 0 30px rgba(37, 99, 235, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            background: var(--primary-gradient-hover);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px) scale(1.02);
+            transition: all var(--transition-fast);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: var(--background);
+            color: var(--text-secondary);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--surface-variant);
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: var(--space-md);
+            margin-top: var(--space-xl);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: var(--space-3xl) var(--space-xl);
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: var(--font-size-4xl);
+            color: var(--gray-300);
+            margin-bottom: var(--space-xl);
+            display: block;
+        }
+
+        .empty-state h3 {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-md);
+        }
+
+        .empty-state p {
+            font-size: var(--font-size-base);
+            color: var(--text-secondary);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            :root {
+                --sidebar-width: 260px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                display: none;
+                box-shadow: none;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .sidebar.mobile-open {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: var(--space-md);
+            }
+
+            .header {
+                flex-direction: column;
+                gap: var(--space-lg);
+                text-align: center;
+                padding: var(--space-lg);
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: var(--space-lg);
+                margin-bottom: var(--space-xl);
+            }
+
+            .card {
+                padding: var(--space-lg);
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+                position: fixed;
+                top: var(--space-lg);
+                right: var(--space-lg);
+                z-index: 1001;
+                background: var(--primary-blue);
+                color: white;
+                border: none;
+                padding: var(--space-md);
+                border-radius: var(--radius-lg);
+                cursor: pointer;
+                box-shadow: var(--shadow-lg);
+                transition: all var(--transition-base);
+            }
+
+            .mobile-menu-toggle:hover {
+                transform: scale(1.05);
+            }
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+        }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Focus Styles */
+        *:focus-visible {
+            outline: 2px solid var(--primary-blue);
+            outline-offset: 2px;
+        }
+
+        /* Advanced Health Status Indicators */
+        .health-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            position: relative;
+            overflow: hidden;
+            transition: all var(--transition-base);
+        }
+
+        .health-indicator::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.3) 50%, 
+                transparent 100%);
+            transition: left var(--transition-slow);
+        }
+
+        .health-indicator:hover::after {
+            left: 100%;
+        }
+
+        .health-indicator.excellent {
+            background: var(--success-green-50);
+            color: var(--success-green);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+        }
+
+        .health-indicator.good {
+            background: var(--primary-blue-50);
+            color: var(--primary-blue);
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.2);
+        }
+
+        .health-indicator.attention {
+            background: var(--warning-amber-50);
+            color: var(--warning-amber);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+        }
+
+        .health-indicator::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 2s ease-in-out infinite;
+            box-shadow: 0 0 10px currentColor;
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% { 
+                transform: scale(1.2);
+                opacity: 0.8;
+            }
+        }
+
+        /* Floating Particles Effect */
+        .dashboard-container::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, rgba(37, 99, 235, 0.3), transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(16, 185, 129, 0.3), transparent),
+                radial-gradient(1px 1px at 90px 40px, rgba(245, 158, 11, 0.3), transparent),
+                radial-gradient(1px 1px at 130px 80px, rgba(37, 99, 235, 0.3), transparent),
+                radial-gradient(2px 2px at 160px 30px, rgba(16, 185, 129, 0.3), transparent);
+            background-repeat: repeat;
+            background-size: 200px 100px;
+            animation: floatParticles 20s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes floatParticles {
+            0% { transform: translateY(0px) translateX(0px); }
+            33% { transform: translateY(-100px) translateX(100px); }
+            66% { transform: translateY(-200px) translateX(-100px); }
+            100% { transform: translateY(-300px) translateX(0px); }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Loading your dashboard...</p>
+        </div>
+    </div>
+
+    <script>
+        // Supabase configuration
+        const supabaseUrl = 'https://gcggnrwqilylyykppizb.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjaGducndxaWx5bHl5a3BwaXpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTIyNDI1MzgsImV4cCI6MjAyNzgxODUzOH0.GtHQVOl7NSmNWE6u6wqYSN8EZwrBw4yyJ5fK4Lr0n2k';
+        
+        let supabase = null;
+        try {
+            if (window.supabase && window.supabase.createClient) {
+                supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+                console.log('Supabase client initialized successfully');
+            } else {
+                console.warn('Supabase client not available - running in demo mode');
+            }
+        } catch (error) {
+            console.error('Failed to initialize Supabase client:', error);
+            console.warn('Continuing in demo mode');
+        }
+
+        // Global state
+        let currentUser = null;
+        let userProfile = null;
+        let activeTab = 'overview';
+        let isMobileMenuOpen = false;
+
+        // Initialize the app
+        async function initApp() {
+            console.log('🚀 Initializing Medicare+ dashboard...');
+            
+            try {
+                // Show loading state
+                document.getElementById('app').innerHTML = `
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading your dashboard...</p>
+                    </div>
+                `;
+
+                // Check authentication
+                console.log('🔐 Checking authentication...');
+                await checkAuthentication();
+                
+                if (!currentUser) {
+                    throw new Error('No user found after authentication check');
+                }
+                console.log('✅ Authentication successful for:', currentUser.email);
+                
+                // Load user profile
+                console.log('👤 Loading user profile...');
+                await loadUserProfile();
+                
+                if (!userProfile) {
+                    throw new Error('Failed to load user profile');
+                }
+                console.log('✅ User profile loaded:', userProfile.full_name);
+                
+                // Check if profile needs completion
+                console.log('📋 Checking profile completion...');
+                checkProfileCompletion();
+                
+                // Render dashboard
+                console.log('🎨 Rendering dashboard...');
+                renderDashboard();
+                
+                console.log('🎉 Dashboard initialization complete!');
+                
+                // Show welcome message
+                if (currentUser.user_metadata?.provider?.includes('demo')) {
+                    showMessage('Welcome to Medicare+ Demo! Explore all features with sample data.', 'success');
+                } else {
+                    showMessage(`Welcome back, ${userProfile.full_name}!`, 'success');
+                }
+                
+            } catch (error) {
+                console.error('❌ App initialization error:', error);
+                console.log('🛠️ Attempting recovery with demo user...');
+                
+                // Create emergency demo user
+                currentUser = {
+                    id: 'emergency-demo-' + Date.now(),
+                    email: 'demo@medicare.com',
+                    user_metadata: {
+                        full_name: 'Demo User',
+                        provider: 'emergency'
+                    }
+                };
+                localStorage.setItem('medicare_user', JSON.stringify(currentUser));
+                
+                // Create minimal profile
+                userProfile = {
+                    user_id: currentUser.id,
+                    email: currentUser.email,
+                    full_name: 'Demo User',
+                    isComplete: true,
+                    created_at: new Date().toISOString()
+                };
+                localStorage.setItem(`user_profile_${currentUser.id}`, JSON.stringify(userProfile));
+                
+                // Render dashboard anyway
+                renderDashboard();
+                showMessage('Dashboard loaded in demo mode. If you were trying to log in, please try again.', 'success');
+            }
+        }
+
+        // Check if user is authenticated - SIMPLIFIED VERSION
+        async function checkAuthentication() {
+            console.log('🔓 Dashboard authentication check...');
+            
+            try {
+                // 1. Check for demo mode or login parameters
+                const urlParams = new URLSearchParams(window.location.search);
+                const isDemoParam = urlParams.get('demo') === 'true';
+                const isEasyLogin = urlParams.get('login') === 'true';
+                
+                if (isDemoParam) {
+                    console.log('🎭 Demo mode activated via URL parameter');
+                    currentUser = {
+                        id: 'demo-user-' + Date.now(),
+                        email: 'demo@medicare.com',
+                        user_metadata: {
+                            full_name: 'Demo User',
+                            provider: 'demo'
+                        }
+                    };
+                    localStorage.setItem('medicare_user', JSON.stringify(currentUser));
+                    return;
+                }
+
+                // 2. Check localStorage for stored user (from new auth system)
+                const storedUser = localStorage.getItem('medicare_user');
+                if (storedUser) {
+                    try {
+                        currentUser = JSON.parse(storedUser);
+                        console.log('✅ User found from auth system:', currentUser.email);
+                        
+                        // Validate user object
+                        if (currentUser.id && currentUser.email) {
+                            return; // Valid user found
+                        } else {
+                            console.log('Invalid user data, clearing...');
+                            localStorage.removeItem('medicare_user');
+                        }
+                    } catch (e) {
+                        console.log('Error parsing stored user, clearing...');
+                        localStorage.removeItem('medicare_user');
+                    }
+                }
+
+                // 3. Check for Supabase session (if available)
+                if (supabase) {
+                    try {
+                        const { data: { session }, error } = await supabase.auth.getSession();
+                        if (session && session.user) {
+                            console.log('✅ Supabase session found:', session.user.email);
+                            currentUser = session.user;
+                            localStorage.setItem('medicare_user', JSON.stringify(currentUser));
+                            return;
+                        }
+                    } catch (supabaseError) {
+                        console.log('Supabase check failed:', supabaseError.message);
+                    }
+                }
+
+                // 4. Check for OAuth redirect parameters
+                const urlHash = window.location.hash;
+                if (urlHash && (urlHash.includes('access_token') || urlHash.includes('refresh_token'))) {
+                    console.log('🔗 OAuth tokens detected, processing...');
+                    // Let Supabase handle the tokens
+                    if (supabase) {
+                        try {
+                            const { data: { session }, error } = await supabase.auth.getSession();
+                            if (session && session.user) {
+                                currentUser = session.user;
+                                localStorage.setItem('medicare_user', JSON.stringify(currentUser));
+                                // Clean URL
+                                window.history.replaceState({}, document.title, window.location.pathname);
+                                return;
+                            }
+                        } catch (error) {
+                            console.log('OAuth processing failed:', error.message);
+                        }
+                    }
+                }
+
+                // 5. Default to demo mode if no authentication found
+                console.log('🎭 No authentication found, defaulting to demo mode');
+                    currentUser = {
+                    id: 'auto-demo-' + Date.now(),
+                    email: 'demo@medicare.com',
+                        user_metadata: {
+                        full_name: 'Demo User',
+                        provider: 'auto-demo'
+                        }
+                    };
+                    localStorage.setItem('medicare_user', JSON.stringify(currentUser));
+                    return;
+                
+            } catch (error) {
+                console.error('Authentication check error:', error);
+                // Always create demo user on error
+                        currentUser = {
+                    id: 'fallback-demo-' + Date.now(),
+                    email: 'demo@medicare.com',
+                            user_metadata: {
+                        full_name: 'Demo User',
+                        provider: 'fallback'
+                            }
+                        };
+                        localStorage.setItem('medicare_user', JSON.stringify(currentUser));
+                        return;
+            }
+        }
+
+        // Load user profile
+        async function loadUserProfile() {
+            if (!currentUser) return;
+
+            try {
+                // Check localStorage first
+                const storedProfile = localStorage.getItem(`user_profile_${currentUser.id}`);
+                if (storedProfile) {
+                    userProfile = JSON.parse(storedProfile);
+                    return;
+                }
+
+                // Fallback to user metadata
+                const metadata = currentUser.user_metadata || {};
+                userProfile = {
+                    user_id: currentUser.id,
+                    email: currentUser.email,
+                    full_name: metadata.full_name || metadata.first_name || 'User',
+                    first_name: metadata.first_name || '',
+                    last_name: metadata.last_name || '',
+                    phone: metadata.phone || '',
+                    date_of_birth: metadata.date_of_birth || '',
+                    address: metadata.address || '',
+                    emergency_contact: metadata.emergency_contact || '',
+                    emergency_phone: metadata.emergency_phone || '',
+                    isComplete: !!(metadata.full_name && metadata.phone),
+                    created_at: new Date().toISOString()
+                };
+
+                // Save to localStorage
+                localStorage.setItem(`user_profile_${currentUser.id}`, JSON.stringify(userProfile));
+
+            } catch (error) {
+                console.error('Failed to load user profile:', error);
+                // Create minimal profile
+                userProfile = {
+                    user_id: currentUser.id,
+                    email: currentUser.email,
+                    full_name: 'User',
+                    isComplete: false
+                };
+            }
+        }
+
+        // Check if profile completion is needed
+        function checkProfileCompletion() {
+            if (userProfile && !userProfile.isComplete) {
+                showProfileCompletionModal();
+            }
+        }
+
+        // Show profile completion modal
+        function showProfileCompletionModal() {
+            const modal = createProfileCompletionModal();
+            document.body.appendChild(modal);
+        }
+
+        // Create profile completion modal
+        function createProfileCompletionModal() {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <h2 style="margin-bottom: 1rem; color: #1f2937;">Complete Your Profile</h2>
+                    <p style="margin-bottom: 1.5rem; color: #6b7280;">
+                        Help us personalize your healthcare experience
+                    </p>
+
+                    <form id="profileForm">
+                        <div class="form-group">
+                            <label>Full Name *</label>
+                            <input type="text" id="fullName" value="${userProfile.full_name || ''}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Phone Number *</label>
+                            <input type="tel" id="phone" value="${userProfile.phone || ''}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Date of Birth</label>
+                            <input type="date" id="dateOfBirth" value="${userProfile.date_of_birth || ''}">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Emergency Contact Name</label>
+                            <input type="text" id="emergencyContact" value="${userProfile.emergency_contact || ''}">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Emergency Contact Phone</label>
+                            <input type="tel" id="emergencyPhone" value="${userProfile.emergency_phone || ''}">
+                        </div>
+
+                        <div class="btn-group">
+                            <button type="submit" class="btn btn-primary" id="completeProfileBtn">
+                                Complete Profile
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="closeProfileModal()">
+                                Skip
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            `;
+
+            // Add event listener for form submission
+            modal.querySelector('#profileForm').addEventListener('submit', handleProfileCompletion);
+
+            return modal;
+        }
+
+        // Handle profile completion
+        async function handleProfileCompletion(e) {
+            e.preventDefault();
+            
+            const fullName = document.getElementById('fullName').value;
+            const phone = document.getElementById('phone').value;
+            
+            if (!fullName || !phone) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            const submitBtn = document.getElementById('completeProfileBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Updating...';
+
+            try {
+                const updatedProfile = {
+                    ...userProfile,
+                    full_name: fullName,
+                    phone: phone,
+                    date_of_birth: document.getElementById('dateOfBirth').value,
+                    emergency_contact: document.getElementById('emergencyContact').value,
+                    emergency_phone: document.getElementById('emergencyPhone').value,
+                    isComplete: true,
+                    updated_at: new Date().toISOString()
+                };
+
+                // Save to localStorage
+                localStorage.setItem(`user_profile_${currentUser.id}`, JSON.stringify(updatedProfile));
+                userProfile = updatedProfile;
+
+                // Close modal and update dashboard
+                closeProfileModal();
+                renderDashboard();
+
+                showMessage('Profile updated successfully!', 'success');
+
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                alert('Failed to update profile. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Complete Profile';
+            }
+        }
+
+        // Close profile modal
+        function closeProfileModal() {
+            const modal = document.querySelector('.modal-overlay');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        // Redirect to login
+        function redirectToLogin() {
+            localStorage.removeItem('medicare_user');
+            window.location.href = 'auth.html';
+        }
+
+        // Enable demo mode
+        function enableDemoMode() {
+            localStorage.setItem('demo_mode', 'true');
+            console.log('🎭 Demo mode enabled, reloading...');
+            window.location.reload();
+        }
+
+        // Sign out
+        async function signOut() {
+            try {
+                await supabase.auth.signOut();
+            } catch (error) {
+                console.error('Sign out error:', error);
+            } finally {
+                localStorage.removeItem('medicare_user');
+                localStorage.removeItem(`user_profile_${currentUser?.id}`);
+                redirectToLogin();
+            }
+        }
+
+        // Show message
+        function showMessage(text, type = 'success') {
+            const message = document.createElement('div');
+            message.className = `${type}-message`;
+            message.innerHTML = `
+                ${text}
+                <button onclick="this.parentElement.remove()" style="background: none; border: none; cursor: pointer;">✕</button>
+            `;
+            
+            const content = document.querySelector('.main-content');
+            if (content) {
+                content.insertBefore(message, content.firstChild);
+                setTimeout(() => message.remove(), 5000);
+            }
+        }
+
+        // Toggle mobile menu
+        function toggleMobileMenu() {
+            isMobileMenuOpen = !isMobileMenuOpen;
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar) {
+                sidebar.classList.toggle('mobile-open', isMobileMenuOpen);
+            }
+        }
+
+        // Set active tab
+        function setActiveTab(tab) {
+            activeTab = tab;
+            isMobileMenuOpen = false;
+            renderDashboard();
+        }
+
+        // Render dashboard
+        function renderDashboard() {
+            const app = document.getElementById('app');
+            const displayName = userProfile?.full_name || userProfile?.first_name || currentUser?.email || 'User';
+            
+            app.innerHTML = `
+                <div class="dashboard-container">
+                    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars"></i> Menu
+                    </button>
+                    
+                    <nav class="sidebar ${isMobileMenuOpen ? 'mobile-open' : ''}">
+                        <div class="sidebar-header">
+                            <h2>Medicare+</h2>
+                            <div class="subtitle">Healthcare Dashboard</div>
+                            ${window.innerWidth <= 768 ? '<button onclick="toggleMobileMenu()" style="float: right; background: none; border: none; font-size: 24px; cursor: pointer; position: absolute; top: 20px; right: 20px; color: white;">✕</button>' : ''}
+                        </div>
+                        
+                        <ul class="nav-menu">
+                            <li><button class="nav-item ${activeTab === 'overview' ? 'active' : ''}" onclick="setActiveTab('overview')">
+                                <i class="fas fa-home"></i>
+                                <span>Overview</span>
+                            </button></li>
+                            <li><button class="nav-item ${activeTab === 'medications' ? 'active' : ''}" onclick="setActiveTab('medications')">
+                                <i class="fas fa-pills"></i>
+                                <span>Medications</span>
+                            </button></li>
+                            <li><button class="nav-item ${activeTab === 'appointments' ? 'active' : ''}" onclick="setActiveTab('appointments')">
+                                <i class="fas fa-calendar"></i>
+                                <span>Appointments</span>
+                            </button></li>
+                            <li><button class="nav-item ${activeTab === 'vitals' ? 'active' : ''}" onclick="setActiveTab('vitals')">
+                                <i class="fas fa-heartbeat"></i>
+                                <span>Vital Signs</span>
+                            </button></li>
+                            <li><button class="nav-item ${activeTab === 'profile' ? 'active' : ''}" onclick="setActiveTab('profile')">
+                                <i class="fas fa-user"></i>
+                                <span>Profile</span>
+                            </button></li>
+                            <li style="margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid var(--border-light);">
+                                <button class="nav-item" onclick="window.location.href='index.html'">
+                                    <i class="fas fa-arrow-left"></i>
+                                    <span>Back to Home</span>
+                                </button>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    <main class="main-content">
+                        <header class="header">
+                            <div class="header-content">
+                            <h1>Patient Dashboard</h1>
+                                <div class="header-subtitle">Your personalized health overview</div>
+                            </div>
+                            <div class="header-actions">
+                                <div class="user-avatar" title="${displayName}">
+                                    ${displayName.charAt(0).toUpperCase()}
+                                </div>
+                                <div style="display: flex; flex-direction: column; text-align: right;">
+                                    <span style="font-weight: 600; color: var(--text-primary);">${displayName}</span>
+                                    <span style="font-size: var(--font-size-sm); color: var(--text-secondary);">Patient ID: ${currentUser?.id?.slice(-8) || 'DEMO-USER'}</span>
+                                </div>
+                                <button onclick="signOut()" class="sign-out-btn">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Sign Out</span>
+                                </button>
+                            </div>
+                        </header>
+                        
+                        ${renderContent()}
+                    </main>
+                </div>
+            `;
+        }
+
+        // Render content based on active tab
+        function renderContent() {
+            switch (activeTab) {
+                case 'overview':
+                    return renderOverview();
+                case 'medications':
+                    return renderMedications();
+                case 'appointments':
+                    return renderAppointments();
+                case 'vitals':
+                    return renderVitals();
+                case 'profile':
+                    return renderProfile();
+                default:
+                    return renderOverview();
+            }
+        }
+
+        // Render overview tab
+        function renderOverview() {
+            const healthScore = 87; // Demo health score
+            const healthStatus = healthScore >= 85 ? 'excellent' : healthScore >= 70 ? 'good' : 'attention';
+            
+            return `
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <h3><i class="fas fa-heart-pulse"></i> Health Score</h3>
+                        <div class="stat-number" data-value="${healthScore}">${healthScore}</div>
+                        <div class="health-indicator ${healthStatus}">
+                            ${healthStatus === 'excellent' ? 'Excellent' : healthStatus === 'good' ? 'Good' : 'Needs Attention'}
+                        </div>
+                        <p style="margin-top: var(--space-md); color: var(--text-secondary);">Based on your recent vitals and activity</p>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-pills"></i> Active Medications</h3>
+                        <div class="stat-number" data-value="3">3</div>
+                        <p style="color: var(--text-secondary);">Current prescriptions</p>
+                        <div style="margin-top: var(--space-md);">
+                            <small style="color: var(--success-green); font-weight: 600;">
+                                <i class="fas fa-check-circle"></i> All up to date
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-calendar-check"></i> Upcoming Appointments</h3>
+                        <div class="stat-number" data-value="2">2</div>
+                        <p style="color: var(--text-secondary);">Scheduled visits</p>
+                        <div style="margin-top: var(--space-md);">
+                            <small style="color: var(--primary-blue); font-weight: 600;">
+                                <i class="fas fa-clock"></i> Next: Tomorrow 2:00 PM
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-heartbeat"></i> Latest Vitals</h3>
+                        <div class="vitals-summary">
+                            <p>
+                                <span>Blood Pressure</span>
+                                <span class="vital-value">120/80 <span class="vital-status normal">Normal</span></span>
+                            </p>
+                            <p>
+                                <span>Heart Rate</span>
+                                <span class="vital-value">72 bpm <span class="vital-status normal">Normal</span></span>
+                            </p>
+                            <p>
+                                <span>Temperature</span>
+                                <span class="vital-value">98.6°F <span class="vital-status normal">Normal</span></span>
+                            </p>
+                            <p style="border: none; color: var(--text-muted); font-size: var(--font-size-xs); margin-top: var(--space-sm);">
+                                <span>Last recorded</span>
+                                <span>2 hours ago</span>
+                            </p>
+                        </div>
+                        </div>
+                    </div>
+
+                <div class="dashboard-grid" style="grid-template-columns: 2fr 1fr; margin-top: var(--space-xl);">
+                    <div class="card">
+                        <h3><i class="fas fa-chart-line"></i> Health Trends</h3>
+                        <div style="padding: var(--space-lg) 0;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md);">
+                                <span style="color: var(--text-secondary);">Blood Pressure Trend</span>
+                                <span style="color: var(--success-green); font-weight: 600;">
+                                    <i class="fas fa-arrow-down"></i> Improving
+                                </span>
+                            </div>
+                            <div style="height: 100px; background: linear-gradient(135deg, var(--primary-blue-50), var(--success-green-50)); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; color: var(--text-secondary);">
+                                <i class="fas fa-chart-area" style="font-size: var(--font-size-2xl); opacity: 0.5;"></i>
+                                <span style="margin-left: var(--space-md);">Chart visualization would appear here</span>
+                            </div>
+                    </div>
+                </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-lightbulb"></i> Health Insights</h3>
+                        <div style="margin-top: var(--space-lg);">
+                            <div style="padding: var(--space-md); background: var(--success-green-50); border-radius: var(--radius-md); border-left: 4px solid var(--success-green); margin-bottom: var(--space-md);">
+                                <div style="font-weight: 600; color: var(--success-green); margin-bottom: var(--space-xs);">
+                                    <i class="fas fa-check-circle"></i> Great Progress
+                                </div>
+                                <p style="font-size: var(--font-size-sm); color: var(--text-secondary);">Your blood pressure has improved by 5% this month.</p>
+                            </div>
+                            <div style="padding: var(--space-md); background: var(--primary-blue-50); border-radius: var(--radius-md); border-left: 4px solid var(--primary-blue);">
+                                <div style="font-weight: 600; color: var(--primary-blue); margin-bottom: var(--space-xs);">
+                                    <i class="fas fa-info-circle"></i> Reminder
+                                </div>
+                                <p style="font-size: var(--font-size-sm); color: var(--text-secondary);">Schedule your annual checkup for next month.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render medications tab
+        function renderMedications() {
+            return `
+                <div class="card">
+                    <h3><i class="fas fa-pills"></i> Your Medications</h3>
+                    <div class="empty-state">
+                        <i class="fas fa-pills fa-3x"></i>
+                        <h3>No medications found</h3>
+                        <p>Contact your healthcare provider to add medications to your profile.</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render appointments tab
+        function renderAppointments() {
+            return `
+                <div class="card">
+                    <h3><i class="fas fa-calendar"></i> Your Appointments</h3>
+                    <div class="empty-state">
+                        <i class="fas fa-calendar fa-3x"></i>
+                        <h3>No appointments scheduled</h3>
+                        <p>Contact your healthcare provider to schedule an appointment.</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render vitals tab
+        function renderVitals() {
+            return `
+                <div class="card">
+                    <h3><i class="fas fa-heartbeat"></i> Vital Signs</h3>
+                    <div class="empty-state">
+                        <i class="fas fa-heartbeat fa-3x"></i>
+                        <h3>No vital signs recorded</h3>
+                        <p>Start tracking your health by recording your vital signs.</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render profile tab
+        function renderProfile() {
+            return `
+                <div class="card">
+                    <h3><i class="fas fa-user"></i> Your Profile</h3>
+                    <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                        <i class="fas fa-user-circle" style="font-size: 64px; color: #d1d5db; margin-right: 20px;"></i>
+                        <div>
+                            <h4 style="margin: 0; font-size: 24px;">${userProfile?.full_name || 'User'}</h4>
+                            <p style="margin: 5px 0; color: #6b7280;">${userProfile?.email || ''}</p>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <div>
+                            <strong>Phone:</strong><br>
+                            <span style="color: #6b7280;">${userProfile?.phone || 'Not provided'}</span>
+                        </div>
+                        <div>
+                            <strong>Date of Birth:</strong><br>
+                            <span style="color: #6b7280;">${userProfile?.date_of_birth || 'Not provided'}</span>
+                        </div>
+                        <div>
+                            <strong>Emergency Contact:</strong><br>
+                            <span style="color: #6b7280;">${userProfile?.emergency_contact || 'Not provided'}</span>
+                        </div>
+                        <div>
+                            <strong>Emergency Phone:</strong><br>
+                            <span style="color: #6b7280;">${userProfile?.emergency_phone || 'Not provided'}</span>
+                        </div>
+                    </div>
+                    
+                    <button onclick="showProfileCompletionModal()" class="btn btn-primary" style="margin-top: 20px;">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </button>
+                </div>
+            `;
+        }
+
+        // Initialize the app when the page loads
+        document.addEventListener('DOMContentLoaded', initApp);
+
+        // Handle window resize for mobile responsiveness
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                isMobileMenuOpen = false;
+                renderDashboard();
+            }
+        });
+    </script>
+</body>
+</html> 

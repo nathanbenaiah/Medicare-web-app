@@ -52,7 +52,7 @@ class AuthManager {
                     // Redirect to signup form to complete profile
                     this.redirectToSignup()
                 } else {
-                    // User has complete profile, update UI
+                    // User has complete profile, update UI and redirect to dashboard
                     this.updateUI()
                     this.showSuccess(`Welcome back, ${this.userProfile.full_name || this.currentUser.email}!`)
                     
@@ -63,6 +63,11 @@ class AuthManager {
                         has_complete_profile: true,
                         last_login: new Date().toISOString()
                     })
+                    
+                    // Redirect to dashboard if not already on a dashboard page
+                    setTimeout(() => {
+                        this.redirectToDashboard()
+                    }, 1500)
                 }
             } else {
                 // New user, create basic profile and redirect to signup
@@ -358,20 +363,27 @@ class AuthManager {
         // Redirect to home if on protected pages
         if (window.location.pathname.includes('profile') || 
             window.location.pathname.includes('signup')) {
-            window.location.href = '/html/index.html'
+            window.location.href = '/'
         }
     }
 
     // Redirect to signup form
     redirectToSignup() {
         if (!window.location.pathname.includes('signup')) {
-            window.location.href = '/html/signup.html'
+            window.location.href = '/auth-new.html'
         }
     }
 
     // Redirect to profile page
     redirectToProfile() {
-        window.location.href = '/html/profile.html'
+        window.location.href = '/user-dashboard-improved.html'
+    }
+
+    // Redirect to dashboard after successful login
+    redirectToDashboard() {
+        if (!window.location.pathname.includes('dashboard')) {
+            window.location.href = '/user-dashboard-improved.html'
+        }
     }
 
     // Update UI based on auth state

@@ -21,6 +21,242 @@
     
     <!-- Modern CSS -->
     <link rel="stylesheet" href="/css/modern.css">
+    
+    <style>
+        /* Modern Navigation - Consistent with Home */
+        .modern-navbar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10001;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 60px;
+            padding: 12px 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: box-shadow 0.3s ease;
+            max-width: 90vw;
+        }
+
+        .modern-navbar:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .navbar-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #1a1a1a;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            transform: scale(1.05);
+        }
+
+        .navbar-brand i {
+            font-size: 1.8rem;
+            color: #007BFF;
+            filter: drop-shadow(0 0 8px rgba(0, 123, 255, 0.3));
+        }
+
+        .brand-accent {
+            color: #007BFF;
+            filter: drop-shadow(0 0 4px rgba(0, 123, 255, 0.2));
+        }
+
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: #6b7280;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 12px 16px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0, 123, 255, 0.1), rgba(0, 86, 179, 0.1));
+            opacity: 0;
+            transition: all 0.3s ease;
+            border-radius: 30px;
+        }
+
+        .nav-link:hover::before {
+            opacity: 1;
+        }
+
+        .nav-link:hover {
+            color: #007BFF;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.2);
+            filter: drop-shadow(0 0 12px rgba(0, 123, 255, 0.3));
+        }
+
+        .nav-link.active {
+            color: #007BFF;
+            background: rgba(0, 123, 255, 0.1);
+        }
+
+        .navbar-auth {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .auth-sign-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+            min-width: 160px;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        .auth-sign-btn:hover {
+            background: linear-gradient(135deg, #0056b3, #003d82);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+            filter: drop-shadow(0 0 12px rgba(0, 123, 255, 0.5));
+        }
+
+        .mobile-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 0.25rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .mobile-toggle span {
+            width: 24px;
+            height: 3px;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        /* Modern Footer Styles */
+        .modern-footer {
+            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+            padding: 80px 0 40px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modern-footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #007BFF, #667eea, #764ba2, #667eea, #007BFF);
+            background-size: 300% 100%;
+            animation: shimmer 6s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { background-position: 300% 0; }
+            50% { background-position: 0% 0; }
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h3 {
+            color: #007BFF;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-section ul li a {
+            color: #d1d5db;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: #007BFF;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #9ca3af;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .navbar-nav {
+                display: none;
+            }
+
+            .mobile-toggle {
+                display: flex;
+            }
+        }
+    </style>
 
     <style>
         .contact-hero {
@@ -351,52 +587,48 @@
 </head>
 
 <body>
-    <!-- Mobile Navigation -->
-    <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
-    
-    <!-- Side Menu -->
-    <nav class="side-menu" id="sideMenu">
-        <div class="menu-header">
-            <button class="close-btn" id="closeBtn">
-                <i class='bx bx-x'></i>
+    <!-- Modern Navigation -->
+    <nav class="modern-navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-brand">
+                <i class='bx bx-plus-medical'></i>
+                <span>Medi<span class="brand-accent">Care+</span></span>
+            </a>
+            
+            <div class="navbar-nav">
+                <a href="/" class="nav-link">
+                    <i class='bx bx-home'></i>
+                    <span>Home</span>
+                </a>
+                <a href="/about.html" class="nav-link">
+                    <i class='bx bx-info-circle'></i>
+                    <span>About</span>
+                </a>
+                <a href="/blog.html" class="nav-link">
+                    <i class='bx bx-news'></i>
+                    <span>Blog</span>
+                </a>
+                <a href="/contact.html" class="nav-link active">
+                    <i class='bx bx-phone'></i>
+                    <span>Contact</span>
+                </a>
+            </div>
+            
+            <div class="navbar-auth">
+                <a href="/auth-new.html" class="auth-sign-btn" id="authButton">
+                    <i class='bx bxl-google'></i>
+                    <span>Get Started</span>
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-toggle" id="mobileToggle">
+                <span></span>
+                <span></span>
+                <span></span>
             </button>
         </div>
-        <div class="menu-content">
-            <a href="index.html" class="menu-item">
-                <i class='bx bx-home'></i>
-                <span>Home</span>
-            </a>
-            <a href="user-dashboard-improved.html" class="menu-item">
-                <i class='bx bx-grid-alt'></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="appointments.html" class="menu-item">
-                <i class='bx bx-calendar'></i>
-                <span>Appointments</span>
-            </a>
-            <a href="reminders.html" class="menu-item">
-                <i class='bx bx-bell'></i>
-                <span>Reminders</span>
-            </a>
-            <a href="schedule.html" class="menu-item">
-                <i class='bx bx-time'></i>
-                <span>Schedule</span>
-            </a>
-            <a href="profile.html" class="menu-item">
-                <i class='bx bx-user'></i>
-                <span>Profile</span>
-            </a>
-            <a href="about.html" class="menu-item">
-                <i class='bx bx-info-circle'></i>
-                <span>About</span>
-            </a>
-            <a href="blog.html" class="menu-item">
-                <i class='bx bx-news'></i>
-                <span>Blog</span>
-            </a>
-            <a href="help-center.html" class="menu-item">
-                <i class='bx bx-help-circle'></i>
-                <span>Help Center</span>
+    </nav>
             </a>
         </div>
     </nav>
@@ -602,64 +834,50 @@
     <!-- Modern Footer -->
     <footer class="modern-footer">
         <div class="footer-container">
-            <!-- Main Footer Content -->
-            <div class="footer-main">
-                <!-- Company Section -->
+            <div class="footer-grid">
                 <div class="footer-section">
-                    <h4>Company</h4>
-                    <div class="footer-links">
-                        <a href="index.html">Home</a>
-                        <a href="about.html">About</a>
-                        <a href="user-dashboard-improved.html">Dashboard</a>
-                        <a href="blog.html">Blog</a>
-                    </div>
+                    <h3>
+                        <i class='bx bx-plus-medical'></i>
+                        MediCare+
+                    </h3>
+                    <p style="color: #d1d5db; line-height: 1.6;">
+                        Revolutionizing healthcare through intelligent technology and compassionate care.
+                    </p>
                 </div>
-
-                <!-- Solutions Section -->
+                
                 <div class="footer-section">
-                    <h4>Solutions</h4>
-                    <div class="footer-links">
-                        <a href="reminders.html">Medication Management</a>
-                        <a href="appointments.html">Appointment Scheduling</a>
-                        <a href="schedule.html">Health Calendar</a>
-                        <a href="#family">Family Care</a>
-                        <a href="#notifications">Smart Reminders</a>
-                        <a href="#analytics">Health Analytics</a>
-                    </div>
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/about.html">About Us</a></li>
+                        <li><a href="/blog.html">Blog</a></li>
+                        <li><a href="/contact.html">Contact</a></li>
+                    </ul>
                 </div>
-
-                <!-- Resources Section -->
+                
                 <div class="footer-section">
-                    <h4>Resources</h4>
-                    <div class="footer-links">
-                        <a href="blog.html">Blog</a>
-                        <a href="help-center.html">Help Center</a>
-                        <a href="contact.html">Contact Us</a>
-                        <a href="privacy-policy.html">Privacy Policy</a>
-                        <a href="terms-of-use.html">Terms of Use</a>
-                    </div>
+                    <h3>Services</h3>
+                    <ul>
+                        <li><a href="#">Patient Portal</a></li>
+                        <li><a href="#">Provider Dashboard</a></li>
+                        <li><a href="#">Health Monitoring</a></li>
+                        <li><a href="#">Appointment Scheduling</a></li>
+                    </ul>
                 </div>
-
-                <!-- Partners Section -->
+                
                 <div class="footer-section">
-                    <h4>Partners</h4>
-                    <div class="footer-links">
-                        <a href="#">Hospitals</a>
-                        <a href="#">Pharmacy</a>
-                        <a href="#">Clinic</a>
-                    </div>
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Contact Support</a></li>
+                    </ul>
                 </div>
             </div>
-
-            <!-- Footer Bottom -->
+            
             <div class="footer-bottom">
-                <div class="footer-brand">
-                    <i class="bx bx-health"></i>
-                    <span>MediCare<span class="brand-accent">+</span></span>
-                </div>
-                <div class="footer-copyright">
-                    <p>Copyright 2025 ©. All rights reserved Developed by Benaiah</p>
-                </div>
+                <p>&copy; 2024 MediCare+. All rights reserved. Built with ❤️ for better healthcare.</p>
             </div>
         </div>
     </footer>
