@@ -131,20 +131,25 @@
             box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
         }
         
-        .debug-info {
-            margin-top: 24px;
-            padding: 16px;
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
-            font-size: 12px;
-            color: #64748b;
-            text-align: left;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        
         .hidden {
             display: none;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(0, 123, 255, 0.1);
+            border-radius: 2px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #007BFF 0%, #0056b3 100%);
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.3s ease;
         }
     </style>
 </head>
@@ -161,6 +166,10 @@
         <div class="message" id="message">Processing Authentication...</div>
         <div class="details" id="details">Please wait while we securely sign you in</div>
         
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress"></div>
+        </div>
+        
         <div id="status" class="status hidden"></div>
         
         <div id="links" class="hidden">
@@ -173,8 +182,6 @@
                 Sign In Again
             </a>
         </div>
-        
-        <div id="debug-info" class="debug-info hidden"></div>
     </div>
 
     <script>
@@ -185,20 +192,14 @@
         // Initialize Supabase client
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Debug logging
-        const debugLogs = [];
+        // Progress tracking
+        let currentStep = 0;
+        const totalSteps = 5;
         
-        function log(message, data = null) {
-            const timestamp = new Date().toISOString();
-            const logEntry = `[${timestamp}] ${message}`;
-            console.log(logEntry, data || '');
-            debugLogs.push(data ? `${logEntry}\n${JSON.stringify(data, null, 2)}` : logEntry);
-            updateDebugInfo();
-        }
-        
-        function updateDebugInfo() {
-            const debugDiv = document.getElementById('debug-info');
-            debugDiv.textContent = debugLogs.slice(-10).join('\n\n');
+        function updateProgress(step) {
+            currentStep = step;
+            const percentage = (step / totalSteps) * 100;
+            document.getElementById('progress').style.width = percentage + '%';
         }
         
         function updateStatus(message, type = 'info') {
@@ -213,7 +214,7 @@
             statusEl.className = `status ${type}`;
             statusEl.classList.remove('hidden');
             
-            log(`Status: ${type.toUpperCase()} - ${message}`);
+            console.log(`[${new Date().toISOString()}] ${type.toUpperCase()}: ${message}`);
         }
         
         function showLinks(showDashboard = false, showAuth = false) {
@@ -242,7 +243,7 @@
         
         async function ensureUserProfile(user) {
             try {
-                log('Ensuring user profile exists', { userId: user.id, email: user.email });
+                console.log('Ensuring user profile exists for:', user.email);
                 
                 // Check if profile exists
                 const { data: existingProfile, error: fetchError } = await supabase
@@ -252,19 +253,19 @@
                     .single();
 
                 if (fetchError && fetchError.code !== 'PGRST116') {
-                    log('Error fetching user profile', fetchError);
+                    console.error('Error fetching user profile:', fetchError);
                     return false;
                 }
 
                 if (!existingProfile) {
-                    log('Creating new user profile...');
+                    console.log('Creating new user profile...');
                     
                     const profileData = {
                         user_id: user.id,
                         email: user.email,
-                        full_name: user.user_metadata?.full_name || '',
-                        first_name: user.user_metadata?.first_name || '',
-                        last_name: user.user_metadata?.last_name || '',
+                        full_name: user.user_metadata?.full_name || user.user_metadata?.name || '',
+                        first_name: user.user_metadata?.first_name || user.user_metadata?.name?.split(' ')[0] || '',
+                        last_name: user.user_metadata?.last_name || user.user_metadata?.name?.split(' ').slice(1).join(' ') || '',
                         user_type: 'patient',
                         is_active: true
                     };
@@ -274,36 +275,43 @@
                         .insert([profileData]);
 
                     if (insertError) {
-                        log('Error creating user profile', insertError);
+                        console.error('Error creating user profile:', insertError);
                         return false;
                     } else {
-                        log('User profile created successfully');
+                        console.log('User profile created successfully');
                         return true;
                     }
                 } else {
-                    log('User profile already exists');
+                    console.log('User profile already exists');
                     return true;
                 }
             } catch (error) {
-                log('Error ensuring user profile', error);
+                console.error('Error ensuring user profile:', error);
                 return false;
             }
         }
 
         async function handleRedirect() {
             try {
-                log('Starting redirect handler');
-                updateStatus('Initializing authentication...');
+                console.log('Starting redirect handler...');
+                updateStatus('Initializing authentication...', 'info');
+                updateProgress(1);
+                
+                // Wait for any ongoing auth processes
+                await new Promise(resolve => setTimeout(resolve, 500));
                 
                 // Parse URL parameters
                 const urlParams = new URLSearchParams(window.location.search);
                 const fragment = new URLSearchParams(window.location.hash.slice(1));
                 
-                log('URL parameters', {
+                console.log('URL Analysis:', {
                     search: window.location.search,
                     hash: window.location.hash,
                     fullUrl: window.location.href
                 });
+                
+                updateStatus('Analyzing authentication parameters...', 'info');
+                updateProgress(2);
                 
                 // Check for OAuth callback parameters
                 const accessToken = urlParams.get('access_token') || fragment.get('access_token');
@@ -311,10 +319,12 @@
                 const error = urlParams.get('error') || fragment.get('error');
                 const errorDescription = urlParams.get('error_description') || fragment.get('error_description');
                 const type = urlParams.get('type') || fragment.get('type');
+                const tokenHash = urlParams.get('token_hash') || fragment.get('token_hash');
 
-                log('OAuth parameters', {
+                console.log('OAuth Parameters:', {
                     hasAccessToken: !!accessToken,
                     hasRefreshToken: !!refreshToken,
+                    hasTokenHash: !!tokenHash,
                     error,
                     errorDescription,
                     type
@@ -327,101 +337,131 @@
                     return;
                 }
 
-                // Handle OAuth callback
-                if (accessToken || type === 'signup' || type === 'magiclink') {
-                    updateStatus('Processing OAuth callback...');
+                updateStatus('Processing authentication tokens...', 'info');
+                updateProgress(3);
+
+                // Handle different authentication scenarios
+                if (tokenHash && type) {
+                    // Handle PKCE flow with token hash
+                    console.log('Processing PKCE flow with token hash...');
                     
-                    try {
-                        const { data, error: sessionError } = await supabase.auth.getSession();
-                        
-                        if (sessionError) {
-                            log('Session error', sessionError);
-                            throw sessionError;
-                        }
-                        
-                        log('Session data', data);
-                        
-                        if (data.session) {
-                            updateStatus('Authentication successful! Creating user profile...', 'success');
-                            
-                            // Ensure user profile exists
-                            const profileCreated = await ensureUserProfile(data.session.user);
-                            
-                            if (profileCreated) {
-                                updateStatus(`Welcome ${data.session.user.email}! Redirecting to dashboard...`, 'success');
-                                hideSpinner();
-                                showLinks(true, false);
-                                
-                                // Redirect after delay
-                                setTimeout(() => {
-                                    window.location.href = '/dashboard/html/user-dashboard.html';
-                                }, 2000);
-                                
-                                return;
-                            } else {
-                                updateStatus('Profile creation failed, but you are signed in. Please try accessing your dashboard.', 'error');
-                                hideSpinner();
-                                showLinks(true, true);
-                                return;
-                            }
-                        }
-                    } catch (sessionError) {
-                        log('Error processing OAuth callback', sessionError);
-                        updateStatus('OAuth processing failed: ' + sessionError.message, 'error');
+                    const { data, error: verifyError } = await supabase.auth.verifyOtp({
+                        token_hash: tokenHash,
+                        type: type
+                    });
+                    
+                    if (verifyError) {
+                        console.error('Token verification error:', verifyError);
+                        updateStatus('Token verification failed: ' + verifyError.message, 'error');
+                        hideSpinner();
+                        showLinks(false, true);
+                        return;
                     }
+                    
+                    console.log('Token verified successfully:', data);
+                } else if (accessToken || type === 'signup' || type === 'magiclink') {
+                    // Handle implicit flow or magic link
+                    console.log('Processing OAuth callback or magic link...');
+                    
+                    // Let Supabase handle the session automatically
+                    await new Promise(resolve => setTimeout(resolve, 1000));
                 }
 
-                // Check for existing session
-                updateStatus('Checking authentication status...');
-                const { data: { session }, error: sessionCheckError } = await supabase.auth.getSession();
+                updateStatus('Verifying session...', 'info');
+                updateProgress(4);
+
+                // Check for active session with retries
+                let session = null;
+                let attempts = 0;
+                const maxAttempts = 3;
                 
-                if (sessionCheckError) {
-                    log('Session check error', sessionCheckError);
-                    throw sessionCheckError;
+                while (!session && attempts < maxAttempts) {
+                    attempts++;
+                    console.log(`Session check attempt ${attempts}/${maxAttempts}`);
+                    
+                    const { data: { session: currentSession }, error: sessionError } = await supabase.auth.getSession();
+                    
+                    if (sessionError) {
+                        console.error('Session check error:', sessionError);
+                        if (attempts === maxAttempts) {
+                            updateStatus('Session verification failed: ' + sessionError.message, 'error');
+                            hideSpinner();
+                            showLinks(false, true);
+                            return;
+                        }
+                    } else {
+                        session = currentSession;
+                    }
+                    
+                    if (!session && attempts < maxAttempts) {
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                    }
                 }
                 
                 if (session) {
-                    log('Found existing session', { userId: session.user.id, email: session.user.email });
+                    console.log('Active session found:', {
+                        userId: session.user.id,
+                        email: session.user.email,
+                        provider: session.user.app_metadata?.provider
+                    });
                     
-                    updateStatus('Authentication verified! Redirecting to dashboard...', 'success');
+                    updateStatus('Authentication successful! Setting up your profile...', 'success');
+                    updateProgress(5);
                     
                     // Ensure user profile exists
-                    await ensureUserProfile(session.user);
+                    const profileCreated = await ensureUserProfile(session.user);
                     
-                    hideSpinner();
-                    showLinks(true, false);
-                    
-                    setTimeout(() => {
-                        window.location.href = '/dashboard/html/user-dashboard.html';
-                    }, 1500);
+                    if (profileCreated) {
+                        const firstName = session.user.user_metadata?.first_name || 
+                                        session.user.user_metadata?.name?.split(' ')[0] || 
+                                        'User';
+                        
+                        updateStatus(`Welcome ${firstName}! Redirecting to your dashboard...`, 'success');
+                        hideSpinner();
+                        showLinks(true, false);
+                        
+                        // Redirect after delay
+                        setTimeout(() => {
+                            window.location.href = '/dashboard/html/user-dashboard.html';
+                        }, 2000);
+                        
+                    } else {
+                        updateStatus('Profile setup encountered an issue, but you are signed in. Please try accessing your dashboard.', 'error');
+                        hideSpinner();
+                        showLinks(true, true);
+                    }
                     
                 } else {
-                    log('No active session found');
+                    console.log('No active session found');
                     updateStatus('No active session found. Please sign in again.', 'error');
                     hideSpinner();
                     showLinks(false, true);
                 }
 
             } catch (error) {
-                log('Redirect handler error', error);
+                console.error('Redirect handler error:', error);
                 updateStatus('Unexpected error: ' + error.message, 'error');
                 hideSpinner();
                 showLinks(true, true);
             }
         }
 
-        // Show debug info on click
-        document.addEventListener('click', function(e) {
-            if (e.ctrlKey || e.metaKey) {
-                const debugDiv = document.getElementById('debug-info');
-                debugDiv.classList.toggle('hidden');
-            }
-        });
-
         // Start the redirect process when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            log('Redirect handler initialized');
+            console.log('Redirect handler initialized');
             handleRedirect();
+        });
+
+        // Setup auth state listener for real-time updates
+        supabase.auth.onAuthStateChange((event, session) => {
+            console.log('Auth state changed:', event, session?.user?.email);
+            
+            if (event === 'SIGNED_IN' && session) {
+                console.log('Auth state listener: User signed in');
+                // The main handler will take care of the redirect
+            } else if (event === 'SIGNED_OUT') {
+                console.log('Auth state listener: User signed out');
+            }
         });
     </script>
 </body>
