@@ -1,0 +1,26 @@
+{
+  "name": "medicare-plus-webapp",
+  "version": "1.0.0",
+  "description": "MediCare+ Healthcare Web Application",
+  "main": "src/html/index.html",
+  "scripts": {
+    "build": "echo 'No build step required for static site'",
+    "start": "echo 'Static site - no start command needed'"
+  },
+  "keywords": [
+    "healthcare",
+    "medical",
+    "telemedicine",
+    "supabase",
+    "static-site"
+  ],
+  "author": "MediCare+ Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nathanbenaiah/Medicare-web-app.git"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+} 
