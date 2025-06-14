@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Use - MediCare+</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #ffffff;
+            color: #1f2937;
+            line-height: 1.7;
+        }
+
+        .header {
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #007BFF 0%, #0056b3 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 800;
+            color: #007BFF;
+            letter-spacing: -0.5px;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .back-button:hover {
+            background: #e2e8f0;
+            color: #374151;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px 80px;
+        }
+
+        .page-title {
+            font-size: 48px;
+            font-weight: 800;
+            color: #FF0000;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            font-size: 18px;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 16px;
+        }
+
+        .subsection-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #374151;
+            margin: 24px 0 12px 0;
+        }
+
+        .section p {
+            margin-bottom: 16px;
+            color: #4b5563;
+            font-size: 16px;
+        }
+
+        .section ul {
+            margin: 16px 0;
+            padding-left: 20px;
+        }
+
+        .section li {
+            margin-bottom: 8px;
+            color: #4b5563;
+        }
+
+        .highlight-box {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+
+        .highlight-box h4 {
+            color: #92400e;
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .highlight-box p {
+            color: #78350f;
+            margin-bottom: 8px;
+        }
+
+        .contact-info {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 32px;
+        }
+
+        .contact-info h4 {
+            color: #1f2937;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            color: #4b5563;
+        }
+
+        .contact-item i {
+            width: 20px;
+            color: #007BFF;
+        }
+
+        .footer {
+            background: #1f2937;
+            color: #d1d5db;
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: #ffffff;
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                padding: 0 16px;
+            }
+
+            .container {
+                padding: 32px 16px 60px;
+            }
+
+            .page-title {
+                font-size: 36px;
+            }
+
+            .back-button {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+
+            .footer-links {
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">+</div>
+                <div class="logo-text">MediCare+</div>
+            </a>
+            <a href="auth.html" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                Back to Sign In
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1 class="page-title">Terms of Use</h1>
+        <p class="page-subtitle">Effective Date: January 1, 2025 | Last Updated: January 1, 2025</p>
+
+        <div class="section">
+            <h2 class="section-title">1. Acceptance of Terms</h2>
+            <p>Welcome to MediCare+, a telemedicine platform operating in Sri Lanka. By accessing, registering for, or using our services, you acknowledge that you have read, understood, and agree to be bound by these Terms of Use and our Privacy Policy.</p>
+            <p>These terms constitute a legally binding agreement between you and MediCare+. If you do not agree to these terms, you must not use our platform or services.</p>
+            <p>We reserve the right to modify these terms at any time. Continued use of our services after changes indicates your acceptance of the updated terms.</p>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">2. Eligibility</h2>
+            <p>You must:</p>
+            <ul>
+                <li>Be at least 16 years old or have parental/legal guardian approval</li>
+                <li>Provide accurate and complete information</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">3. Services Provided</h2>
+            <p>MediCare+ provides the following telemedicine services in compliance with Sri Lankan healthcare regulations:</p>
+            
+            <h3 class="subsection-title">a. Core Medical Services</h3>
+            <ul>
+                <li>Video and audio consultations with SLMC-registered healthcare professionals</li>
+                <li>Secure messaging and communication with healthcare providers</li>
+                <li>Electronic prescription services and medication management</li>
+                <li>Medical record storage and management</li>
+                <li>Laboratory test coordination and results management</li>
+                <li>Appointment scheduling and reminder services</li>
+            </ul>
+
+            <h3 class="subsection-title">b. AI-Powered Health Tools</h3>
+            <ul>
+                <li>Symptom assessment and preliminary health screening</li>
+                <li>Health risk analysis and wellness recommendations</li>
+                <li>Medication reminders and adherence tracking</li>
+                <li>Health insights based on medical history and trends</li>
+                <li>Personalized health education and preventive care suggestions</li>
+            </ul>
+
+            <h3 class="subsection-title">c. Additional Services</h3>
+            <ul>
+                <li>Health monitoring and tracking tools</li>
+                <li>Integration with wearable devices and health apps</li>
+                <li>Emergency contact and referral services</li>
+                <li>Health insurance claim assistance (where applicable)</li>
+            </ul>
+            
+            <div class="highlight-box">
+                <h4>Critical AI Disclaimer:</h4>
+                <p>Our AI tools provide general health information and suggestions only. They are NOT licensed medical providers and do not replace professional medical diagnosis, treatment, or advice.</p>
+                <p>Always consult with qualified healthcare professionals for medical decisions. We are not liable for any health outcomes resulting from reliance solely on AI-generated recommendations.</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">4. Your Responsibilities</h2>
+            <p>You agree to:</p>
+            <ul>
+                <li>Provide accurate medical and personal details</li>
+                <li>Follow medical instructions provided by doctors</li>
+                <li>Not misuse the platform for false claims or impersonation</li>
+                <li>Use the platform only for lawful health-related purposes</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">5. Payment Terms</h2>
+            <ul>
+                <li>Fees must be paid in full before or after consultations as specified</li>
+                <li>Refunds are only processed in cases of service failure or error</li>
+                <li>We use secure third-party payment gateways</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">6. Limitation of Liability</h2>
+            <p>By using MediCare+, you acknowledge and agree to the following limitations:</p>
+            
+            <h3 class="subsection-title">a. Platform Role and Responsibilities</h3>
+            <ul>
+                <li>MediCare+ serves as a technology platform connecting patients with licensed healthcare providers</li>
+                <li>We do not provide medical services directly or guarantee the accuracy of medical diagnoses</li>
+                <li>Healthcare providers using our platform are independent professionals responsible for their own medical decisions</li>
+                <li>We facilitate communication and record-keeping but do not control medical treatment decisions</li>
+            </ul>
+
+            <h3 class="subsection-title">b. AI Technology Limitations</h3>
+            <ul>
+                <li>AI recommendations are based on algorithms and available data, not medical expertise</li>
+                <li>We are not liable for health outcomes resulting from reliance on AI-generated suggestions</li>
+                <li>AI tools may not detect all medical conditions or provide complete health assessments</li>
+                <li>Users must always seek professional medical advice for health concerns</li>
+            </ul>
+
+            <h3 class="subsection-title">c. Third-Party Services</h3>
+            <ul>
+                <li>We are not responsible for errors or delays by third-party service providers (laboratories, pharmacies, delivery services)</li>
+                <li>Payment processing is handled by third-party providers subject to their own terms</li>
+                <li>Integration with external health devices or apps is provided "as-is" without warranty</li>
+            </ul>
+
+            <h3 class="subsection-title">d. Maximum Liability</h3>
+            <ul>
+                <li>Our total liability for any claims shall not exceed the amount paid by you for services in the 12 months preceding the claim</li>
+                <li>We are not liable for indirect, consequential, or punitive damages</li>
+                <li>These limitations apply to the fullest extent permitted by Sri Lankan law</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">7. Intellectual Property</h2>
+            <p>All content, software, and design on this platform belong to us or our partners. You may not reproduce, distribute, or reverse-engineer any part of the platform without written permission.</p>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">8. Account Termination</h2>
+            <p>We may suspend or terminate accounts if:</p>
+            <ul>
+                <li>You provide false information</li>
+                <li>You breach these Terms</li>
+                <li>You misuse medical advice</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">9. Emergency Situations</h2>
+            <div class="highlight-box">
+                <h4>IMPORTANT: Emergency Medical Situations</h4>
+                <p>MediCare+ is NOT intended for emergency medical situations. In case of medical emergencies:</p>
+                <ul>
+                    <li>Call 1990 (Sri Lanka Emergency Services) immediately</li>
+                    <li>Visit the nearest hospital emergency department</li>
+                    <li>Do not rely on our platform or AI tools for emergency medical care</li>
+                </ul>
+                <p>Examples of emergencies include: chest pain, difficulty breathing, severe injuries, loss of consciousness, severe allergic reactions, or any life-threatening conditions.</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">10. Changes to Terms</h2>
+            <p>We may update these Terms of Use from time to time to reflect changes in our services, legal requirements, or business practices. When we make changes:</p>
+            <ul>
+                <li>We will notify you via email, platform notification, or prominent notice on our website</li>
+                <li>Changes will take effect 30 days after notification unless immediate changes are required by law</li>
+                <li>Continued use of our services after the effective date constitutes acceptance of the updated terms</li>
+                <li>If you do not agree to the changes, you must stop using our services</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">11. Governing Law & Dispute Resolution</h2>
+            <p>These Terms of Use and any disputes arising from your use of MediCare+ are governed by the laws of Sri Lanka.</p>
+            
+            <h3 class="subsection-title">a. Dispute Resolution Process</h3>
+            <ul>
+                <li>We encourage resolving disputes through direct communication with our support team</li>
+                <li>If direct resolution fails, disputes may be submitted to mediation</li>
+                <li>Unresolved disputes will be subject to the jurisdiction of Sri Lankan courts</li>
+                <li>Legal proceedings must be initiated within one (1) year of the dispute arising</li>
+            </ul>
+
+            <h3 class="subsection-title">b. Applicable Laws</h3>
+            <ul>
+                <li>Personal Data Protection Act No. 9 of 2022</li>
+                <li>Medical (Amendment) Act No. 30 of 2020</li>
+                <li>Computer Crimes Act No. 24 of 2007</li>
+                <li>Consumer Affairs Authority Act No. 9 of 2003</li>
+                <li>Other relevant Sri Lankan healthcare and technology regulations</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">12. Contact Us</h2>
+            <div class="contact-info">
+                <h4>For support or legal questions:</h4>
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>legal@medicare-plus.lk</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <span>+94 11 234 5678</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>123 Galle Road, Colombo 03, Sri Lanka</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="footer-container">
+            <div class="footer-links">
+                <a href="privacy-policy.html">Privacy Policy</a>
+                <a href="terms-of-use.html">Terms of Use</a>
+                <a href="auth.html">Sign In</a>
+                <a href="index.html">Home</a>
+            </div>
+            <p>&copy; 2025 MediCare+. All rights reserved. | Developed by Benaiah</p>
+        </div>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirect Test - MediCare+</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 12px 24px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .test-btn {
+            background: #007BFF;
+            color: white;
+        }
+        .test-btn:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 MediCare+ Redirect Test</h1>
+        <p>This page will help us test different redirect methods to identify the issue.</p>
+        
+        <h3>Current URL Information:</h3>
+        <div class="result">
+            <p><strong>Current URL:</strong> <span id="current-url"></span></p>
+            <p><strong>Origin:</strong> <span id="origin"></span></p>
+            <p><strong>Expected Dashboard URL:</strong> <span id="dashboard-url"></span></p>
+        </div>
+
+        <h3>Test Redirects:</h3>
+        <button class="test-btn" onclick="testRelativeRedirect()">Test Relative Path</button>
+        <button class="test-btn" onclick="testAbsoluteRedirect()">Test Absolute Path</button>
+        <button class="test-btn" onclick="testDirectAccess()">Test Direct Dashboard Access</button>
+        <button class="test-btn" onclick="checkDashboardExists()">Check Dashboard File Exists</button>
+
+        <div id="test-results" class="result" style="display: none;">
+            <h4>Test Results:</h4>
+            <div id="results-content"></div>
+        </div>
+    </div>
+
+    <script>
+        // Display current URL info
+        document.getElementById('current-url').textContent = window.location.href;
+        document.getElementById('origin').textContent = window.location.origin;
+        document.getElementById('dashboard-url').textContent = window.location.origin + '/dashboard/html/user-dashboard.html';
+
+        function showResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('test-results');
+            const contentDiv = document.getElementById('results-content');
+            
+            const resultItem = document.createElement('div');
+            resultItem.style.marginBottom = '10px';
+            resultItem.style.padding = '8px';
+            resultItem.style.borderRadius = '4px';
+            
+            if (type === 'success') {
+                resultItem.style.background = '#d4edda';
+                resultItem.style.color = '#155724';
+            } else if (type === 'error') {
+                resultItem.style.background = '#f8d7da';
+                resultItem.style.color = '#721c24';
+            } else {
+                resultItem.style.background = '#d1ecf1';
+                resultItem.style.color = '#0c5460';
+            }
+            
+            resultItem.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+            contentDiv.appendChild(resultItem);
+            resultsDiv.style.display = 'block';
+        }
+
+        function testRelativeRedirect() {
+            showResult('Testing relative path redirect...', 'info');
+            setTimeout(() => {
+                window.location.href = 'dashboard/html/user-dashboard.html';
+            }, 1000);
+        }
+
+        function testAbsoluteRedirect() {
+            showResult('Testing absolute path redirect...', 'info');
+            setTimeout(() => {
+                window.location.href = window.location.origin + '/dashboard/html/user-dashboard.html';
+            }, 1000);
+        }
+
+        function testDirectAccess() {
+            showResult('Opening dashboard in new tab...', 'info');
+            window.open(window.location.origin + '/dashboard/html/user-dashboard.html', '_blank');
+        }
+
+        async function checkDashboardExists() {
+            showResult('Checking if dashboard file exists...', 'info');
+            
+            try {
+                const response = await fetch('/dashboard/html/user-dashboard.html', { method: 'HEAD' });
+                if (response.ok) {
+                    showResult('✅ Dashboard file exists and is accessible!', 'success');
+                } else {
+                    showResult(`❌ Dashboard file not accessible. Status: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                showResult(`❌ Error checking dashboard: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-run file existence check on load
+        window.addEventListener('load', () => {
+            setTimeout(checkDashboardExists, 1000);
+        });
+    </script>
+</body>
+</html> 

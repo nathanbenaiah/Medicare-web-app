@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth Test - MediCare+</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 12px 24px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .test-btn {
+            background: #007BFF;
+            color: white;
+        }
+        .test-btn:hover {
+            background: #0056b3;
+        }
+        .success { background: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        .error { background: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        .info { background: #d1ecf1; color: #0c5460; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        input {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 200px;
+        }
+        #log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔐 MediCare+ Authentication Test</h1>
+        <p>This page will help us test the authentication flow step by step.</p>
+        
+        <div id="status" class="info">
+            <strong>Status:</strong> Initializing...
+        </div>
+
+        <h3>Current Session Info:</h3>
+        <div id="session-info" class="info">
+            Loading session information...
+        </div>
+
+        <h3>Quick Test Login:</h3>
+        <div>
+            <input type="email" id="test-email" placeholder="Email" value="">
+            <input type="password" id="test-password" placeholder="Password" value="">
+            <button class="test-btn" onclick="testLogin()">Test Login</button>
+            <button class="test-btn" onclick="testLogout()">Test Logout</button>
+        </div>
+
+        <h3>Redirect Tests:</h3>
+        <button class="test-btn" onclick="testRedirectAfterAuth()">Test Redirect (Simulated)</button>
+        <button class="test-btn" onclick="testDirectDashboard()">Test Direct Dashboard</button>
+        <button class="test-btn" onclick="clearLog()">Clear Log</button>
+
+        <h3>Debug Log:</h3>
+        <div id="log"></div>
+    </div>
+
+    <script>
+        // Supabase Configuration
+        const SUPABASE_URL = 'https://gcggnrwqilylyykppizb.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjZ2ducndxaWx5bHl5a3BwaXpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk0ODA1NjAsImV4cCI6MjA2NTA1NjU2MH0.9ayDDoyjUiYA3Hmir_A92U2i7QNkIuER-94kDNVVgoE';
+        
+        // Initialize Supabase client
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        let currentUser = null;
+
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.innerHTML = `<strong>[${timestamp}]</strong> ${message}`;
+            
+            if (type === 'error') logEntry.style.color = 'red';
+            if (type === 'success') logEntry.style.color = 'green';
+            if (type === 'warning') logEntry.style.color = 'orange';
+            
+            logDiv.appendChild(logEntry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+            
+            console.log(`[${timestamp}] ${message}`);
+        }
+
+        function updateStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = type;
+            statusDiv.innerHTML = `<strong>Status:</strong> ${message}`;
+        }
+
+        function updateSessionInfo(session) {
+            const sessionDiv = document.getElementById('session-info');
+            if (session) {
+                sessionDiv.className = 'success';
+                sessionDiv.innerHTML = `
+                    <strong>✅ Authenticated User:</strong><br>
+                    Email: ${session.user.email}<br>
+                    ID: ${session.user.id}<br>
+                    Created: ${new Date(session.user.created_at).toLocaleString()}
+                `;
+            } else {
+                sessionDiv.className = 'error';
+                sessionDiv.innerHTML = '<strong>❌ No active session</strong>';
+            }
+        }
+
+        async function checkSession() {
+            try {
+                log('🔍 Checking current session...');
+                const { data: { session }, error } = await supabase.auth.getSession();
+                
+                if (error) {
+                    log(`❌ Session check error: ${error.message}`, 'error');
+                    updateStatus('Session check failed', 'error');
+                    return null;
+                }
+                
+                if (session) {
+                    log(`✅ Active session found for: ${session.user.email}`, 'success');
+                    updateStatus('User is authenticated', 'success');
+                    currentUser = session.user;
+                } else {
+                    log('ℹ️ No active session', 'warning');
+                    updateStatus('No active session', 'info');
+                    currentUser = null;
+                }
+                
+                updateSessionInfo(session);
+                return session;
+                
+            } catch (error) {
+                log(`❌ Unexpected error: ${error.message}`, 'error');
+                updateStatus('Unexpected error', 'error');
+                return null;
+            }
+        }
+
+        async function testLogin() {
+            const email = document.getElementById('test-email').value.trim();
+            const password = document.getElementById('test-password').value;
+            
+            if (!email || !password) {
+                log('❌ Please enter both email and password', 'error');
+                return;
+            }
+            
+            try {
+                log(`🔐 Attempting login for: ${email}`);
+                updateStatus('Logging in...', 'info');
+                
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+                
+                if (error) {
+                    log(`❌ Login failed: ${error.message}`, 'error');
+                    updateStatus('Login failed', 'error');
+                    return;
+                }
+                
+                log(`✅ Login successful for: ${data.user.email}`, 'success');
+                updateStatus('Login successful', 'success');
+                currentUser = data.user;
+                updateSessionInfo(data.session);
+                
+            } catch (error) {
+                log(`❌ Login error: ${error.message}`, 'error');
+                updateStatus('Login error', 'error');
+            }
+        }
+
+        async function testLogout() {
+            try {
+                log('🚪 Attempting logout...');
+                updateStatus('Logging out...', 'info');
+                
+                const { error } = await supabase.auth.signOut();
+                
+                if (error) {
+                    log(`❌ Logout failed: ${error.message}`, 'error');
+                    updateStatus('Logout failed', 'error');
+                    return;
+                }
+                
+                log('✅ Logout successful', 'success');
+                updateStatus('Logged out', 'info');
+                currentUser = null;
+                updateSessionInfo(null);
+                
+            } catch (error) {
+                log(`❌ Logout error: ${error.message}`, 'error');
+                updateStatus('Logout error', 'error');
+            }
+        }
+
+        function testRedirectAfterAuth() {
+            if (!currentUser) {
+                log('❌ No authenticated user. Please login first.', 'error');
+                return;
+            }
+            
+            log('🔄 Testing redirect to dashboard...', 'info');
+            const dashboardUrl = window.location.origin + '/dashboard/html/user-dashboard.html';
+            log(`📍 Redirect URL: ${dashboardUrl}`);
+            
+            // Simulate the redirect with a delay like in the real auth
+            setTimeout(() => {
+                log('🚀 Redirecting now...', 'success');
+                window.location.href = dashboardUrl;
+            }, 1500);
+        }
+
+        function testDirectDashboard() {
+            const dashboardUrl = window.location.origin + '/dashboard/html/user-dashboard.html';
+            log(`🔗 Opening dashboard in new tab: ${dashboardUrl}`);
+            window.open(dashboardUrl, '_blank');
+        }
+
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+        }
+
+        // Setup auth state listener
+        supabase.auth.onAuthStateChange((event, session) => {
+            log(`🔔 Auth state changed: ${event}`, 'info');
+            
+            if (event === 'SIGNED_IN' && session) {
+                log(`✅ User signed in: ${session.user.email}`, 'success');
+                updateStatus('User signed in', 'success');
+                updateSessionInfo(session);
+            } else if (event === 'SIGNED_OUT') {
+                log('👋 User signed out', 'info');
+                updateStatus('User signed out', 'info');
+                updateSessionInfo(null);
+            }
+        });
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', async function() {
+            log('🚀 Initializing auth test page...');
+            updateStatus('Initializing...', 'info');
+            
+            // Check current session
+            await checkSession();
+            
+            log('✅ Auth test page ready');
+        });
+    </script>
+</body>
+</html> 

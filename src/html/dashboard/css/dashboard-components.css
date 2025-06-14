@@ -1,0 +1,527 @@
+/* =====================================================
+   🎨 DASHBOARD COMPONENTS CSS
+   ===================================================== */
+
+/* React Component Styles */
+.symptom-checker,
+.appointment-scheduler,
+.vital-signs-recorder {
+    background: var(--bg-white);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    box-shadow: var(--box-shadow);
+    margin: 1rem 0;
+    border: 1px solid rgba(0, 123, 255, 0.1);
+}
+
+/* Symptom Checker Styles */
+.symptom-checker-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.symptom-checker-header h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+
+.symptom-checker-header p {
+    color: var(--text-gray);
+    font-size: 1rem;
+}
+
+.symptom-input-section {
+    margin-bottom: 2rem;
+}
+
+.symptom-textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 1rem;
+    border: 2px solid var(--accent-light-gray);
+    border-radius: 12px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    resize: vertical;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.symptom-textarea:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.analyze-btn {
+    background: linear-gradient(135deg, var(--primary-blue), var(--secondary-dark-blue));
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 auto;
+}
+
+.analyze-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+}
+
+.analyze-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.analyze-btn.loading {
+    pointer-events: none;
+}
+
+.analysis-result {
+    background: linear-gradient(135deg, #f8f9ff, #e8f2ff);
+    border-radius: 15px;
+    padding: 2rem;
+    border-left: 4px solid var(--primary-blue);
+    margin-top: 2rem;
+}
+
+.analysis-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.analysis-header i {
+    color: var(--success-green);
+    font-size: 1.5rem;
+}
+
+.analysis-header h4 {
+    color: var(--text-dark);
+    font-weight: 700;
+}
+
+.analysis-section {
+    margin-bottom: 1.5rem;
+}
+
+.analysis-section h5 {
+    color: var(--text-dark);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.analysis-section p {
+    color: var(--text-gray);
+    line-height: 1.6;
+}
+
+.analysis-section.recommendation {
+    background: rgba(40, 167, 69, 0.1);
+    padding: 1rem;
+    border-radius: 10px;
+    border-left: 3px solid var(--success-green);
+}
+
+.analysis-section.recommendation p {
+    color: var(--success-green);
+    font-weight: 500;
+}
+
+.analysis-disclaimer {
+    background: rgba(255, 193, 7, 0.1);
+    padding: 1rem;
+    border-radius: 10px;
+    border-left: 3px solid #ffc107;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.analysis-disclaimer i {
+    color: #ffc107;
+    margin-top: 0.25rem;
+}
+
+.analysis-disclaimer small {
+    color: #856404;
+    line-height: 1.4;
+}
+
+/* Appointment Scheduler Styles */
+.scheduler-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.scheduler-header h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+
+.scheduler-form {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    width: 100%;
+    padding: 0.875rem;
+    border: 2px solid var(--accent-light-gray);
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.schedule-btn {
+    background: linear-gradient(135deg, var(--success-green), #1e7e34);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 2rem auto 0;
+    min-width: 200px;
+    justify-content: center;
+}
+
+.schedule-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+}
+
+.schedule-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Vital Signs Recorder Styles */
+.recorder-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.recorder-header h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+
+.vitals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.vital-field {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--bg-light);
+    border-radius: 12px;
+    border: 1px solid var(--accent-light-gray);
+    transition: all 0.3s ease;
+}
+
+.vital-field:hover {
+    box-shadow: var(--box-shadow);
+    transform: translateY(-2px);
+}
+
+.vital-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.vital-input-group {
+    flex: 1;
+}
+
+.vital-input-group label {
+    display: block;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.input-with-unit {
+    display: flex;
+    align-items: center;
+    background: white;
+    border: 2px solid var(--accent-light-gray);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.input-with-unit:focus-within {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.vital-input {
+    flex: 1;
+    padding: 0.75rem;
+    border: none;
+    outline: none;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.unit {
+    padding: 0.75rem;
+    background: var(--accent-light-gray);
+    color: var(--text-gray);
+    font-weight: 600;
+    font-size: 0.9rem;
+    min-width: 60px;
+    text-align: center;
+}
+
+.bmi-calculator {
+    background: linear-gradient(135deg, #e8f5e8, #f0f8f0);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    border-left: 4px solid var(--success-green);
+}
+
+.bmi-result h4 {
+    color: var(--text-dark);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.bmi-value {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.bmi-number {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-dark);
+}
+
+.bmi-category {
+    font-size: 1.2rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.vital-summary {
+    background: var(--bg-light);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+}
+
+.vital-summary h4 {
+    color: var(--text-dark);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.summary-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 10px;
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.summary-item i {
+    font-size: 1.2rem;
+}
+
+.record-btn {
+    background: linear-gradient(135deg, var(--primary-blue), var(--secondary-dark-blue));
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 2rem auto 0;
+    min-width: 200px;
+    justify-content: center;
+}
+
+.record-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+}
+
+.record-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .vitals-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .vital-field {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .bmi-value {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Loading Animations */
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.loading {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Hover Effects */
+.form-input:hover,
+.form-select:hover,
+.form-textarea:hover {
+    border-color: rgba(0, 123, 255, 0.3);
+}
+
+.vital-field:hover .vital-icon {
+    transform: scale(1.1);
+}
+
+/* Success States */
+.success-message {
+    background: linear-gradient(135deg, #d4edda, #c3e6cb);
+    color: #155724;
+    padding: 1rem;
+    border-radius: 10px;
+    border-left: 4px solid var(--success-green);
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.success-message i {
+    color: var(--success-green);
+    font-size: 1.2rem;
+}
+
+/* Error States */
+.error-message {
+    background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+    color: #721c24;
+    padding: 1rem;
+    border-radius: 10px;
+    border-left: 4px solid var(--soft-red);
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.error-message i {
+    color: var(--soft-red);
+    font-size: 1.2rem;
+} 

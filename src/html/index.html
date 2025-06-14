@@ -20,6 +20,9 @@
     <!-- Mobile Responsive CSS -->
     <link rel="stylesheet" href="/css/mobile-responsive.css">
     
+    <!-- Modern Curved UI CSS -->
+    <link rel="stylesheet" href="../dashboard/css/modern-curved-ui.css">
+    
     <style>
         :root {
             --primary-blue: hsl(211, 100%, 50%);
@@ -190,6 +193,267 @@
 
         .auth-sign-btn i {
             font-size: 1.1rem;
+        }
+
+        /* Navigation Dropdowns */
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-width: 220px;
+            padding: 0.5rem 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 12px 16px;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(0, 123, 255, 0.1);
+            color: var(--primary-blue);
+            padding-left: 20px;
+        }
+
+        .dropdown-item i {
+            font-size: 1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .dropdown-arrow {
+            margin-left: 0.25rem;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-dropdown:hover .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Providers Section */
+        .providers-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+
+        .providers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .provider-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--box-shadow);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .provider-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--box-shadow-hover);
+        }
+
+        .provider-image {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .provider-image i {
+            font-size: 3rem;
+            color: var(--primary-blue);
+            background: rgba(0, 123, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 50%;
+        }
+
+        .provider-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .provider-type {
+            color: var(--text-gray);
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .provider-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stars {
+            color: #fbbf24;
+        }
+
+        .provider-location {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-gray);
+            margin-bottom: 1rem;
+        }
+
+        .provider-specialties {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .specialty {
+            background: rgba(0, 123, 255, 0.1);
+            color: var(--primary-blue);
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Authentication modal styles removed - authentication now handled through auth.html */
+
+        .terms-checkbox a {
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+
+        .terms-checkbox a:hover {
+            text-decoration: underline;
+        }
+
+        /* Mobile Navigation Sections */
+        .mobile-nav-section {
+            margin: 1rem 0;
+        }
+
+        .mobile-section-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            padding-left: 1rem;
+        }
+
+        .mobile-auth-btn {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-dark-blue));
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 2rem;
+            width: 100%;
+        }
+
+        .mobile-auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+        }
+
+        /* Animation for success toast */
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Mobile Responsiveness for new components */
+        @media (max-width: 768px) {
+            .modern-navbar {
+                left: 10px;
+                right: 10px;
+                transform: none;
+                max-width: none;
+                padding: 8px 16px;
+            }
+            
+            .navbar-nav {
+                display: none;
+            }
+            
+            .providers-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .provider-card {
+                padding: 1.5rem;
+            }
+            
+            .auth-modal-content {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            
+            .dropdown-menu {
+                position: relative;
+                top: 0;
+                left: 0;
+                transform: none;
+                opacity: 1;
+                visibility: visible;
+                box-shadow: none;
+                background: transparent;
+                backdrop-filter: none;
+                border: none;
+                border-radius: 0;
+                padding: 0;
+                margin-top: 0.5rem;
+            }
+            
+            .dropdown-item {
+                padding: 8px 16px;
+                font-size: 0.85rem;
+            }
         }
 
         /* Mobile Menu Toggle */
@@ -14791,9 +15055,9 @@
     <nav class="modern-navbar">
         <div class="navbar-container">
             <!-- Brand Logo -->
-            <a href="index.html" class="navbar-brand">
-                <i class="bx bx-health"></i>
-                <span>MediCare<span class="brand-accent">+</span></span>
+            <a href="index.html" class="medicare-logo">
+                <span class="medicare-logo-icon">✱</span>
+                <span class="medicare-brand-text">MediCare<span class="medicare-accent">+</span></span>
             </a>
 
             <!-- Navigation Links -->
@@ -14802,28 +15066,71 @@
                     <i class="bx bx-home-alt"></i>
                     <span>Home</span>
                 </a>
-                <a href="schedule.html" class="nav-link" data-page="schedule">
-                    <i class="bx bx-calendar"></i>
-                    <span>Schedule</span>
+                
+                <!-- Features Dropdown -->
+                <div class="nav-dropdown">
+                    <a href="#" class="nav-link" onclick="toggleFeatures(event)">
+                        <i class="bx bx-grid-alt"></i>
+                        <span>Features</span>
+                        <i class="bx bx-chevron-down dropdown-arrow"></i>
+                    </a>
+                    <div class="dropdown-menu" id="featuresDropdown">
+                        <a href="schedule.html" class="dropdown-item">
+                            <i class="bx bx-calendar"></i>
+                            <span>Schedule</span>
+                        </a>
+                        <a href="reminders.html" class="dropdown-item">
+                            <i class="bx bx-bell"></i>
+                            <span>Reminders</span>
+                        </a>
+                        <a href="appointments.html" class="dropdown-item">
+                            <i class="bx bx-calendar-check"></i>
+                            <span>Appointments</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <a href="#providers" class="nav-link" onclick="scrollToProviders()">
+                    <i class="bx bx-buildings"></i>
+                    <span>Providers</span>
                 </a>
-                <a href="reminders.html" class="nav-link" data-page="reminders">
-                    <i class="bx bx-bell"></i>
-                    <span>Reminders</span>
-                </a>
-                <a href="appointments.html" class="nav-link" data-page="appointments">
-                    <i class="bx bx-calendar-check"></i>
-                    <span>Appointments</span>
+                <a href="about.html" class="nav-link" data-page="about">
+                    <i class="bx bx-info-circle"></i>
+                    <span>About</span>
                 </a>
                 <a href="blog.html" class="nav-link" data-page="blog">
                     <i class="bx bx-book-open"></i>
                     <span>Blog</span>
                 </a>
+                
+                <!-- AI Dropdown -->
+                <div class="nav-dropdown">
+                    <a href="#" class="nav-link" onclick="toggleAI(event)">
+                        <i class="bx bx-brain"></i>
+                        <span>AI</span>
+                        <i class="bx bx-chevron-down dropdown-arrow"></i>
+                    </a>
+                    <div class="dropdown-menu" id="aiDropdown">
+                        <a href="../dashboard/html/ai-health-assistant.html" class="dropdown-item">
+                            <i class="fas fa-robot"></i>
+                            <span>AI Health Assistant</span>
+                        </a>
+                        <a href="#ai-scheduler" class="dropdown-item">
+                            <i class="fas fa-calendar-plus"></i>
+                            <span>AI Appointment Scheduler</span>
+                        </a>
+                        <a href="#family-planner" class="dropdown-item">
+                            <i class="fas fa-users"></i>
+                            <span>Smart Family Health Planner</span>
+                        </a>
+                    </div>
+                </div>
             </div>
 
             <!-- Auth Section -->
             <div class="navbar-auth">
-                                        <a href="auth-new.html" class="auth-sign-btn">
-                    <i class="bx bx-health"></i>
+                <a href="auth.html" class="auth-sign-btn">
+                    <i class="fas fa-user-circle"></i>
                     <span>Sign In / Sign Up</span>
                 </a>
             </div>
@@ -14845,7 +15152,7 @@
             </button>
             
             <div class="mobile-menu-brand">
-                <i class="bx bx-health"></i>
+                <span class="medicare-logo-icon">✱</span>
                 <span>MediCare<span class="brand-accent">+</span></span>
             </div>
             
@@ -14854,26 +15161,52 @@
                     <i class="bx bx-home-alt"></i>
                     <span>Home</span>
                 </a>
-                <a href="schedule.html" class="mobile-nav-link">
-                    <i class="bx bx-calendar"></i>
-                    <span>Schedule</span>
+                <div class="mobile-nav-section">
+                    <div class="mobile-section-title">Features</div>
+                    <a href="schedule.html" class="mobile-nav-link">
+                        <i class="bx bx-calendar"></i>
+                        <span>Schedule</span>
+                    </a>
+                    <a href="reminders.html" class="mobile-nav-link">
+                        <i class="bx bx-bell"></i>
+                        <span>Reminders</span>
+                    </a>
+                    <a href="appointments.html" class="mobile-nav-link">
+                        <i class="bx bx-calendar-check"></i>
+                        <span>Appointments</span>
+                    </a>
+                </div>
+                <a href="#providers" class="mobile-nav-link" onclick="scrollToProviders(); toggleMobileMenu();">
+                    <i class="bx bx-buildings"></i>
+                    <span>Providers</span>
                 </a>
-                <a href="reminders.html" class="mobile-nav-link">
-                    <i class="bx bx-bell"></i>
-                    <span>Reminders</span>
-                </a>
-                <a href="appointments.html" class="mobile-nav-link">
-                    <i class="bx bx-calendar-check"></i>
-                    <span>Appointments</span>
+                <a href="about.html" class="mobile-nav-link">
+                    <i class="bx bx-info-circle"></i>
+                    <span>About</span>
                 </a>
                 <a href="blog.html" class="mobile-nav-link">
                     <i class="bx bx-book-open"></i>
                     <span>Blog</span>
                 </a>
+                <div class="mobile-nav-section">
+                    <div class="mobile-section-title">AI Tools</div>
+                    <a href="../dashboard/html/ai-health-assistant.html" class="mobile-nav-link">
+                        <i class="fas fa-robot"></i>
+                        <span>AI Health Assistant</span>
+                    </a>
+                    <a href="#ai-scheduler" class="mobile-nav-link">
+                        <i class="fas fa-calendar-plus"></i>
+                        <span>AI Appointment Scheduler</span>
+                    </a>
+                    <a href="#family-planner" class="mobile-nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>Smart Family Health Planner</span>
+                    </a>
+                </div>
             </div>
             
-                                    <a href="auth-new.html" class="mobile-auth-btn">
-                <i class="bx bx-health"></i>
+            <a href="auth.html" class="mobile-auth-btn">
+                <i class="fas fa-user-circle"></i>
                 <span>Sign In / Sign Up</span>
             </a>
         </div>
@@ -14932,14 +15265,14 @@
                 </p>
                 
                 <div class="hero-action-suite" data-aos="fade-up" data-aos-delay="800">
-                    <button class="hero-primary-action" onclick="signInWithGoogle()">
+                    <a href="auth.html" class="hero-primary-action">
                         <div class="action-background"></div>
                         <div class="action-content">
                             <i class="fas fa-heart"></i>
                             <span>Start Your Health Journey</span>
                         </div>
                         <div class="action-sparkle"></div>
-                    </button>
+                    </a>
                     
                     <button class="hero-secondary-action" onclick="scrollToDemo()">
                         <div class="action-content">
@@ -15176,7 +15509,7 @@
                         </div>
                     </div>
                     
-                    <div class="feature-box feature-3" data-aos="fade-right" data-aos-delay="1800" onclick="signInWithGoogle()">
+                    <a href="auth.html" class="feature-box feature-3" data-aos="fade-right" data-aos-delay="1800">
                         <div class="feature-box-icon">
                             <i class="fas fa-user-plus"></i>
                         </div>
@@ -15186,7 +15519,7 @@
                         </div>
                     </div>
                     
-                    <div class="feature-box cta-action-feature feature-4" data-aos="fade-left" data-aos-delay="2000" onclick="signInWithGoogle()">
+                    <a href="auth.html" class="feature-box cta-action-feature feature-4" data-aos="fade-left" data-aos-delay="2000">
                         <div class="feature-box-icon">
                             <i class="fas fa-rocket"></i>
                         </div>
@@ -15461,14 +15794,14 @@
                 <h3>Join Sri Lanka's Leading Healthcare Network</h3>
                 <p>Be part of the digital health revolution connecting users with top medical professionals.</p>
                 <div class="cta-action-buttons">
-                    <button class="cta-action-primary" onclick="signInWithGoogle()">
+                    <a href="auth.html" class="cta-action-primary">
                         <i class="fas fa-user-plus"></i>
                         Join as User
-                    </button>
-                    <button class="cta-action-secondary" onclick="signInWithGoogle()">
+                    </a>
+                    <a href="auth.html" class="cta-action-secondary">
                         <i class="fas fa-hospital"></i>
                         Partner with Us
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -15952,6 +16285,114 @@
         </div>
     </section>
 
+    <!-- Providers Section -->
+    <section id="providers" class="providers-section">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2 class="section-title">
+                    <span class="gradient-text">Trusted Healthcare Providers</span>
+                </h2>
+                <p class="section-subtitle">
+                    Connect with top-rated hospitals, clinics, and healthcare professionals in your area
+                </p>
+            </div>
+            
+            <div class="providers-grid" data-aos="fade-up" data-aos-delay="200">
+                <!-- Hospital Card -->
+                <div class="provider-card">
+                    <div class="provider-image">
+                        <i class="fas fa-hospital-alt"></i>
+                    </div>
+                    <div class="provider-info">
+                        <h3 class="provider-name">Colombo General Hospital</h3>
+                        <p class="provider-type">Multi-Specialty Hospital</p>
+                        <div class="provider-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span>4.8 (2,340 reviews)</span>
+                        </div>
+                        <div class="provider-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Colombo 07, Sri Lanka</span>
+                        </div>
+                        <div class="provider-specialties">
+                            <span class="specialty">Cardiology</span>
+                            <span class="specialty">Neurology</span>
+                            <span class="specialty">Emergency</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Clinic Card -->
+                <div class="provider-card">
+                    <div class="provider-image">
+                        <i class="fas fa-clinic-medical"></i>
+                    </div>
+                    <div class="provider-info">
+                        <h3 class="provider-name">Nawaloka Medical Center</h3>
+                        <p class="provider-type">Private Hospital</p>
+                        <div class="provider-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span>4.9 (1,850 reviews)</span>
+                        </div>
+                        <div class="provider-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Nawaloka Hospital, Colombo</span>
+                        </div>
+                        <div class="provider-specialties">
+                            <span class="specialty">Oncology</span>
+                            <span class="specialty">Pediatrics</span>
+                            <span class="specialty">Surgery</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Doctor Card -->
+                <div class="provider-card">
+                    <div class="provider-image">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <div class="provider-info">
+                        <h3 class="provider-name">Dr. Kumari Perera</h3>
+                        <p class="provider-type">Cardiologist</p>
+                        <div class="provider-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span>4.9 (890 reviews)</span>
+                        </div>
+                        <div class="provider-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Asiri Hospital, Colombo</span>
+                        </div>
+                        <div class="provider-specialties">
+                            <span class="specialty">Heart Surgery</span>
+                            <span class="specialty">Interventional</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Authentication Modal -->
+    <!-- Removed auth modal - authentication now handled through auth.html -->
+
     <!-- Modern Footer -->
     <footer class="modern-footer">
         <div class="footer-container">
@@ -16000,6 +16441,7 @@
                         <a href="#">Hospitals</a>
                         <a href="#">Pharmacy</a>
                         <a href="#">Clinic</a>
+                        <a href="#">MediCare+</a>
                     </div>
                 </div>
             </div>
@@ -16007,11 +16449,12 @@
             <!-- Footer Bottom -->
             <div class="footer-bottom">
                 <div class="footer-brand">
-                    <i class="bx bx-health"></i>
+                    <span class="medicare-logo-icon">✱</span>
                     <span>MediCare<span class="brand-accent">+</span></span>
                 </div>
                 <div class="footer-copyright">
-                    <p>Copyright 2025 ©. All rights reserved Developed by Benaiah</p>
+                    <p>© 2025. All rights reserved.</p>
+                    <p>Developed by Benaiah Nicholas Nimal</p>
                 </div>
             </div>
         </div>
@@ -16021,6 +16464,165 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
     <script>
+        // Navigation Dropdown Functions
+        function toggleFeatures(event) {
+            event.preventDefault();
+            const dropdown = document.getElementById('featuresDropdown');
+            dropdown.classList.toggle('show');
+            
+            // Close other dropdowns
+            document.getElementById('aiDropdown').classList.remove('show');
+        }
+
+        function toggleAI(event) {
+            event.preventDefault();
+            const dropdown = document.getElementById('aiDropdown');
+            dropdown.classList.toggle('show');
+            
+            // Close other dropdowns
+            document.getElementById('featuresDropdown').classList.remove('show');
+        }
+
+        // Scroll to Providers Section
+        function scrollToProviders() {
+            document.getElementById('providers').scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+
+        // Authentication functions removed - now handled through auth.html
+
+        // Authentication Handlers
+        async function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Show loading state
+            const submitBtn = event.target.querySelector('.auth-submit-btn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing In...';
+            submitBtn.disabled = true;
+            
+            try {
+                // Simulate login process
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Store session
+                sessionStorage.setItem('userLoggedIn', 'true');
+                sessionStorage.setItem('userEmail', email);
+                sessionStorage.setItem('loginTime', new Date().toISOString());
+                
+                // Close modal and redirect
+                closeAuthModal();
+                redirectToDashboard();
+                
+            } catch (error) {
+                alert('Login failed. Please try again.');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        async function handleSignup(event) {
+            event.preventDefault();
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            
+            // Show loading state
+            const submitBtn = event.target.querySelector('.auth-submit-btn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+            submitBtn.disabled = true;
+            
+            try {
+                // Simulate signup process
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Store session
+                sessionStorage.setItem('userLoggedIn', 'true');
+                sessionStorage.setItem('userEmail', email);
+                sessionStorage.setItem('userName', name);
+                sessionStorage.setItem('loginTime', new Date().toISOString());
+                
+                // Close modal and redirect
+                closeAuthModal();
+                redirectToDashboard();
+                
+            } catch (error) {
+                alert('Signup failed. Please try again.');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        // Google Authentication
+        async function signInWithGoogle() {
+            try {
+                // Simulate Google sign-in
+                const user = {
+                    name: 'John Doe',
+                    email: 'john.doe@gmail.com',
+                    picture: 'https://via.placeholder.com/150'
+                };
+                
+                // Store session
+                sessionStorage.setItem('userLoggedIn', 'true');
+                sessionStorage.setItem('userEmail', user.email);
+                sessionStorage.setItem('userName', user.name);
+                sessionStorage.setItem('loginTime', new Date().toISOString());
+                sessionStorage.setItem('authProvider', 'google');
+                
+                closeAuthModal();
+                redirectToDashboard();
+                
+            } catch (error) {
+                alert('Google sign-in failed. Please try again.');
+            }
+        }
+
+        async function signUpWithGoogle() {
+            // Same as sign in for Google
+            await signInWithGoogle();
+        }
+
+        // Dashboard Redirect
+        function redirectToDashboard() {
+            // Show success message
+            const successDiv = document.createElement('div');
+            successDiv.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: linear-gradient(135deg, #10B981, #059669);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 12px;
+                box-shadow: 0 10px 40px rgba(16, 185, 129, 0.3);
+                z-index: 10001;
+                font-weight: 600;
+                animation: slideInRight 0.3s ease;
+            `;
+            successDiv.innerHTML = '<i class="fas fa-check-circle"></i> Welcome to MediCare+! Redirecting...';
+            document.body.appendChild(successDiv);
+            
+            // Redirect after 2 seconds
+            setTimeout(() => {
+                window.location.href = '../dashboard/html/user-dashboard.html';
+            }, 2000);
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.nav-dropdown')) {
+                document.querySelectorAll('.dropdown-menu').forEach(dropdown => {
+                    dropdown.classList.remove('show');
+                });
+            }
+        });
+
+        // Modal event listeners removed - authentication now handled through auth.html
         // New Hero Carousel Functionality
         let currentSlide = 1;
         let slideInterval;

@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare+ Provider Dashboard</title>
+    
+    <!-- Fonts - Same as home page -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+    
+    <!-- React CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Supabase Client -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
+    <!-- Chart.js for analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- AOS Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        /* CSS Variables - Same as home page */
+        :root {
+            --primary-blue: #007BFF;
+            --secondary-dark-blue: #0056b3;
+            --bg-light: #f9f9f9;
+            --bg-white: #ffffff;
+            --accent-light-gray: #f0f0f0;
+            --text-dark: #212529;
+            --text-gray: #6c757d;
+            --success-green: #28a745;
+            --soft-red: #ef4444;
+            --warning-orange: #ffc107;
+            --border-radius: 20px;
+            --box-shadow: 0 4px 15px rgba(0, 123, 255, 0.1);
+            --box-shadow-hover: 0 8px 30px rgba(0, 123, 255, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-white);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Modern Navigation - Same as home page */
+        .modern-navbar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10001;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 60px;
+            padding: 12px 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: box-shadow 0.3s ease;
+            max-width: 90vw;
+        }
+
+        .modern-navbar:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .navbar-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #1a1a1a;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            transform: scale(1.05);
+        }
+
+        .navbar-brand i {
+            font-size: 1.8rem;
+            color: #007BFF;
+            filter: drop-shadow(0 0 8px rgba(0, 123, 255, 0.3));
+        }
+
+        .brand-accent {
+            color: #007BFF;
+            filter: drop-shadow(0 0 4px rgba(0, 123, 255, 0.2));
+        }
+
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: #6b7280;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 12px 16px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0, 123, 255, 0.1), rgba(0, 86, 179, 0.1));
+            opacity: 0;
+            transition: all 0.3s ease;
+            border-radius: 30px;
+        }
+
+        .nav-link:hover::before,
+        .nav-link.active::before {
+            opacity: 1;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #007BFF;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.2);
+            filter: drop-shadow(0 0 12px rgba(0, 123, 255, 0.3));
+        }
+
+        .nav-link i {
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover i {
+            filter: drop-shadow(0 0 8px rgba(0, 123, 255, 0.4));
+        }
+
+        /* Main Dashboard Container */
+        .dashboard-container {
+            margin-top: 120px;
+            padding: 0 2rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Hero Section */
+        .dashboard-hero {
+            background: linear-gradient(135deg, var(--success-green), #1e7e34);
+            border-radius: var(--border-radius);
+            padding: 3rem;
+            color: white;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(50%, -50%);
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-content p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        .hero-stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-white);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--box-shadow);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 123, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--success-green);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--box-shadow-hover);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .stat-icon.patients {
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+        }
+
+        .stat-icon.appointments {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+        }
+
+        .stat-icon.revenue {
+            background: linear-gradient(135deg, #ffc107, #e0a800);
+        }
+
+        .stat-icon.analytics {
+            background: linear-gradient(135deg, #6f42c1, #5a32a3);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-gray);
+            font-weight: 500;
+        }
+
+        .stat-change {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .stat-change.positive {
+            color: var(--success-green);
+        }
+
+        .stat-change.negative {
+            color: var(--soft-red);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            background: var(--bg-white);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 2rem;
+        }
+
+        .quick-actions h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-dark);
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: var(--bg-light);
+            border: 2px solid transparent;
+            border-radius: 15px;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .action-btn:hover {
+            background: var(--success-green);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--box-shadow-hover);
+        }
+
+        .action-btn i {
+            font-size: 1.5rem;
+            color: var(--success-green);
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover i {
+            color: white;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-section {
+            background: var(--bg-white);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .section-action {
+            color: var(--success-green);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .section-action:hover {
+            color: #1e7e34;
+        }
+
+        /* Patient List */
+        .patient-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid var(--accent-light-gray);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .patient-item:hover {
+            box-shadow: var(--box-shadow);
+        }
+
+        .patient-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 1rem;
+        }
+
+        .patient-info {
+            flex: 1;
+        }
+
+        .patient-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .patient-details {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        .patient-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .patient-status.stable {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success-green);
+        }
+
+        .patient-status.critical {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--soft-red);
+        }
+
+        .patient-status.monitoring {
+            background: rgba(255, 193, 7, 0.1);
+            color: var(--warning-orange);
+        }
+
+        /* Emergency Alert */
+        .emergency-alert {
+            background: linear-gradient(135deg, var(--soft-red), #c82333);
+            color: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .emergency-alert i {
+            font-size: 2rem;
+        }
+
+        .emergency-content h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 0 1rem;
+                margin-top: 100px;
+            }
+
+            .dashboard-hero {
+                padding: 2rem;
+            }
+
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar-nav {
+                display: none;
+            }
+        }
+
+        /* Loading States */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            color: var(--text-gray);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--accent-light-gray);
+            border-top: 4px solid var(--success-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: var(--bg-white);
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            border-left: 4px solid var(--success-green);
+            z-index: 10000;
+            transform: translateX(400px);
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            border-left-color: var(--soft-red);
+        }
+
+        .toast.warning {
+            border-left-color: var(--warning-orange);
+        }
+
+        /* Enhanced Provider Dashboard Styles */
+        .appointment-request-card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--primary-blue);
+            box-shadow: var(--box-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .appointment-request-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--box-shadow-hover);
+        }
+
+        .appointment-request-card.priority-high {
+            border-left-color: var(--soft-red);
+            background: rgba(239, 68, 68, 0.02);
+        }
+
+        .appointment-request-card.priority-medium {
+            border-left-color: var(--warning-orange);
+            background: rgba(255, 193, 7, 0.02);
+        }
+
+        .appointment-request-card.priority-low {
+            border-left-color: var(--success-green);
+            background: rgba(40, 167, 69, 0.02);
+        }
+
+        .ai-analysis-section {
+            background: rgba(111, 66, 193, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 1px solid rgba(111, 66, 193, 0.1);
+        }
+
+        .ai-diagnostic-suggestions {
+            margin-top: 1rem;
+        }
+
+        .ai-diagnostic-suggestions h5 {
+            color: #6f42c1;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .diagnostic-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .diagnostic-option {
+            background: rgba(111, 66, 193, 0.1);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 120px;
+        }
+
+        .diagnostic-option .diagnosis {
+            font-weight: 600;
+            color: #6f42c1;
+        }
+
+        .diagnostic-option .confidence {
+            font-size: 0.7rem;
+            color: #6c757d;
+        }
+
+        .recommended-actions {
+            margin-top: 1rem;
+        }
+
+        .recommended-actions h5 {
+            color: #17a2b8;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .recommended-actions ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .recommended-actions li {
+            background: rgba(23, 162, 184, 0.1);
+            padding: 0.3rem 0.6rem;
+            margin-bottom: 0.3rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: #17a2b8;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .recommended-actions li::before {
+            content: '✓';
+            position: absolute;
+            left: 0.5rem;
+            color: #17a2b8;
+            font-weight: bold;
+        }
+
+        .schedule-btn {
+            background: var(--warning-orange);
+            color: var(--text-dark);
+        }
+
+        .schedule-btn:hover {
+            background: #e0a800;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .no-appointments {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-gray);
+        }
+
+        .no-appointments i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .appointment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .patient-info h4 {
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .patient-info p {
+            color: var(--text-gray);
+            margin-bottom: 0.25rem;
+        }
+
+        .patient-info small {
+            color: var(--text-muted);
+        }
+
+        .appointment-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .approve-btn, .reject-btn {
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .approve-btn {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .approve-btn:hover {
+            background: #1e7e34;
+            transform: translateY(-2px);
+        }
+
+        .reject-btn {
+            background: var(--soft-red);
+            color: white;
+        }
+
+        .reject-btn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .ai-recommendation {
+            background: rgba(111, 66, 193, 0.1);
+            border-radius: 8px;
+            padding: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #6f42c1;
+        }
+
+        .ai-recommendation i {
+            color: #6f42c1;
+        }
+
+        .ai-risk-score {
+            text-align: center;
+            margin-left: auto;
+            margin-right: 1rem;
+        }
+
+        .risk-score {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .risk-score.high {
+            color: var(--soft-red);
+        }
+
+        .risk-score.medium {
+            color: var(--warning-orange);
+        }
+
+        .risk-score.low {
+            color: var(--success-green);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid var(--accent-light-gray);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--success-green);
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+        }
+
+        /* Enhanced Emergency Alert Styles */
+        .emergency-alert.warning {
+            background: linear-gradient(135deg, var(--warning-orange), #e0a800);
+            color: var(--text-dark);
+        }
+
+        .emergency-alert.info {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-dark-blue));
+            color: white;
+        }
+
+        /* Enhanced Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .appointment-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .appointment-actions {
+                flex-direction: column;
+                width: 100%;
+                gap: 0.5rem;
+            }
+
+            .approve-btn, .reject-btn, .schedule-btn {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .patient-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+
+            .ai-risk-score {
+                margin: 0;
+                order: -1;
+            }
+
+            .ai-analysis-section {
+                padding: 0.8rem;
+                margin: 0.8rem 0;
+            }
+
+            .diagnostic-options {
+                flex-direction: column;
+                gap: 0.3rem;
+            }
+
+            .diagnostic-option {
+                min-width: 100%;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            .recommended-actions li {
+                font-size: 0.75rem;
+                padding: 0.25rem 0.5rem;
+                padding-left: 1.2rem;
+            }
+
+            .ai-diagnostic-suggestions h5,
+            .recommended-actions h5 {
+                font-size: 0.8rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .actions-grid {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .navbar-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .navbar-nav {
+                display: none;
+            }
+
+            .modern-navbar {
+                position: relative;
+                top: 0;
+                left: 0;
+                transform: none;
+                margin-bottom: 1rem;
+                width: 100%;
+                max-width: none;
+            }
+
+            .dashboard-container {
+                margin-top: 0;
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-container {
+                padding: 0 0.5rem;
+            }
+
+            .dashboard-hero {
+                padding: 1.5rem;
+            }
+
+            .hero-content h1 {
+                font-size: 1.8rem;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .quick-actions {
+                padding: 1rem;
+            }
+
+            .dashboard-section {
+                padding: 1rem;
+            }
+
+            .appointment-request-card {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Modern Navigation -->
+    <nav class="modern-navbar">
+        <div class="navbar-container">
+            <a href="/html/index.html" class="medicare-logo">
+                <span class="medicare-logo-icon">✱</span>
+                <span class="medicare-brand-text">MediCare<span class="medicare-accent">+</span></span>
+            </a>
+            
+            <div class="navbar-nav">
+                <a href="provider-dashboard.html" class="nav-link active">
+                    <i class="fas fa-user-md"></i>
+                    <span>Provider Dashboard</span>
+                </a>
+                <a href="provider-appointments.html" class="nav-link">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+                <a href="provider-reminders.html" class="nav-link">
+                    <i class="fas fa-bell"></i>
+                    <span>Reminders</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Dashboard Container -->
+    <div class="dashboard-container">
+        <!-- Emergency Alert (Hidden by default) -->
+        <div id="emergency-alert" class="emergency-alert" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div class="emergency-content">
+                <h3>Emergency Alert</h3>
+                <p id="emergency-message">Critical patient requires immediate attention</p>
+            </div>
+        </div>
+
+        <!-- Hero Section -->
+        <div class="dashboard-hero" data-aos="fade-up">
+            <div class="hero-content">
+                <h1>Welcome, Dr. <span id="provider-name">Smith</span>!</h1>
+                <p>Your healthcare practice dashboard. Monitor patients and manage appointments efficiently.</p>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <span class="hero-stat-number" id="hero-patients">0</span>
+                        <span class="hero-stat-label">Active Patients</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="hero-stat-number" id="hero-appointments">0</span>
+                        <span class="hero-stat-label">Today's Appointments</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="hero-stat-number" id="hero-revenue">$0</span>
+                        <span class="hero-stat-label">Monthly Revenue</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="hero-stat-number" id="hero-satisfaction">0%</span>
+                        <span class="hero-stat-label">Patient Satisfaction</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid" data-aos="fade-up" data-aos-delay="100">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon patients">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="patients-count">0</div>
+                <div class="stat-label">Total Patients</div>
+                <div class="stat-change positive" id="patients-change">+0 new this month</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon appointments">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="appointments-count">0</div>
+                <div class="stat-label">Appointments Today</div>
+                <div class="stat-change positive" id="appointments-change">+0 scheduled</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon revenue">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="revenue-count">$0</div>
+                <div class="stat-label">Monthly Revenue</div>
+                <div class="stat-change positive" id="revenue-change">+0% from last month</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon analytics">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="analytics-count">0%</div>
+                <div class="stat-label">Patient Satisfaction</div>
+                <div class="stat-change positive" id="analytics-change">+0% improvement</div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions" data-aos="fade-up" data-aos-delay="200">
+            <h2>Quick Actions</h2>
+            <div class="actions-grid">
+                <button class="action-btn" onclick="addNewPatient()">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Add New Patient</span>
+                </button>
+                <button class="action-btn" onclick="scheduleAppointment()">
+                    <i class="fas fa-calendar-plus"></i>
+                    <span>Schedule Appointment</span>
+                </button>
+                <button class="action-btn" onclick="writePrescription()">
+                    <i class="fas fa-prescription-bottle"></i>
+                    <span>Write Prescription</span>
+                </button>
+                <button class="action-btn" onclick="viewReports()">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>View Reports</span>
+                </button>
+                <button class="action-btn" onclick="patientRecords()">
+                    <i class="fas fa-file-medical"></i>
+                    <span>Patient Records</span>
+                </button>
+                <button class="action-btn" onclick="aiDiagnostics()">
+                    <i class="fas fa-robot"></i>
+                    <span>AI Diagnostics</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid" data-aos="fade-up" data-aos-delay="300">
+            <!-- Today's Appointments -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h3 class="section-title">Today's Appointments</h3>
+                    <a href="/html/appointments.html" class="section-action">View All</a>
+                </div>
+                <div id="todays-appointments">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Loading appointments...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Critical Patients -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h3 class="section-title">Critical Patients</h3>
+                    <a href="#" class="section-action" onclick="viewAllPatients()">View All</a>
+                </div>
+                <div id="critical-patients">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Loading patients...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Sections -->
+        <div class="dashboard-grid" data-aos="fade-up" data-aos-delay="400">
+            <!-- Recent Prescriptions -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h3 class="section-title">Recent Prescriptions</h3>
+                    <a href="#" class="section-action" onclick="viewAllPrescriptions()">View All</a>
+                </div>
+                <div id="recent-prescriptions">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Loading prescriptions...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Chart -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h3 class="section-title">Patient Analytics</h3>
+                    <a href="#" class="section-action" onclick="viewFullAnalytics()">View Details</a>
+                </div>
+                <div id="analytics-chart">
+                    <canvas id="analyticsChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- React Components Container -->
+    <div id="react-components"></div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <div id="toast-message"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="../js/enhanced-database-config.js"></script>
+    <script src="../js/healthcare-backend-api.js"></script>
+    <script src="../js/dashboard-integration.js"></script>
+    <script src="../js/ai-health-assistant.js"></script>
+    <script src="../js/modern-provider-functions.js"></script>
+    
+    <script>
+        // Enhanced Provider Dashboard with AI Integration
+        class ProviderDashboard {
+            constructor() {
+                this.providerData = {
+                    id: 'provider-001',
+                    name: 'Dr. Smith',
+                    specialization: 'Cardiology',
+                    hospital: 'City General Hospital'
+                };
+                this.init();
+            }
+
+            async init() {
+                await this.loadProviderStats();
+                await this.loadPendingAppointments();
+                await this.loadCriticalPatients();
+                await this.initializeAIFeatures();
+                this.setupEventListeners();
+                this.startRealTimeUpdates();
+            }
+
+            async loadProviderStats() {
+                try {
+                    // Mock data for demo - in real app, this would come from database
+                    const stats = {
+                        totalPatients: 1247,
+                        todayAppointments: 18,
+                        monthlyRevenue: 45000,
+                        satisfaction: 94,
+                        patientsChange: 23,
+                        appointmentsToday: 18,
+                        revenueChange: 12,
+                        satisfactionChange: 3
+                    };
+
+                    this.updateStatsDisplay(stats);
+                } catch (error) {
+                    console.error('Error loading provider stats:', error);
+                }
+            }
+
+            updateStatsDisplay(stats) {
+                // Update hero stats
+                document.getElementById('hero-patients').textContent = stats.totalPatients.toLocaleString();
+                document.getElementById('hero-appointments').textContent = stats.todayAppointments;
+                document.getElementById('hero-revenue').textContent = `$${stats.monthlyRevenue.toLocaleString()}`;
+                document.getElementById('hero-satisfaction').textContent = `${stats.satisfaction}%`;
+
+                // Update stat cards
+                document.getElementById('patients-count').textContent = stats.totalPatients.toLocaleString();
+                document.getElementById('appointments-count').textContent = stats.todayAppointments;
+                document.getElementById('revenue-count').textContent = `$${stats.monthlyRevenue.toLocaleString()}`;
+                document.getElementById('analytics-count').textContent = `${stats.satisfaction}%`;
+
+                // Update change indicators
+                document.getElementById('patients-change').textContent = `+${stats.patientsChange} new this month`;
+                document.getElementById('appointments-change').textContent = `+${stats.appointmentsToday} scheduled`;
+                document.getElementById('revenue-change').textContent = `+${stats.revenueChange}% from last month`;
+                document.getElementById('analytics-change').textContent = `+${stats.satisfactionChange}% improvement`;
+            }
+
+            async loadPendingAppointments() {
+                try {
+                    const appointments = await enhancedDbManager.getAppointments();
+                    const pendingAppointments = appointments.filter(apt => apt.status === 'pending');
+                    
+                    this.displayPendingAppointments(pendingAppointments);
+                } catch (error) {
+                    console.error('Error loading appointments:', error);
+                }
+            }
+
+            displayPendingAppointments(appointments) {
+                const container = document.getElementById('todays-appointments');
+                
+                if (!appointments || appointments.length === 0) {
+                    container.innerHTML = '<div class="no-appointments"><i class="fas fa-calendar-check"></i><p>No pending appointments at this time.</p></div>';
+                    return;
+                }
+
+                const html = appointments.map(appointment => {
+                    const aiAnalysis = this.generateAdvancedAIAnalysis(appointment);
+                    const priorityClass = aiAnalysis.priority >= 8 ? 'high' : aiAnalysis.priority >= 6 ? 'medium' : 'low';
+                    
+                    return `
+                        <div class="appointment-request-card priority-${priorityClass}">
+                            <div class="appointment-header">
+                                <div class="patient-info">
+                                    <h4>${appointment.patient_name}</h4>
+                                    <p><strong>${appointment.specialty}</strong> - ${appointment.type}</p>
+                                    <small><i class="fas fa-calendar"></i> ${appointment.appointment_date} at ${appointment.appointment_time}</small>
+                                    ${appointment.notes ? `<small><i class="fas fa-notes-medical"></i> ${appointment.notes}</small>` : ''}
+                                </div>
+                                <div class="ai-risk-score">
+                                    <span class="risk-score ${priorityClass}">
+                                        ${aiAnalysis.priority.toFixed(1)}/10
+                                    </span>
+                                    <small>AI Priority</small>
+                                </div>
+                            </div>
+                            
+                            <div class="ai-analysis-section">
+                                <div class="ai-recommendation">
+                                    <i class="fas fa-robot"></i>
+                                    <span><strong>AI Analysis:</strong> ${aiAnalysis.recommendation}</span>
+                                </div>
+                                
+                                <div class="ai-diagnostic-suggestions">
+                                    <h5><i class="fas fa-stethoscope"></i> Diagnostic Insights:</h5>
+                                    <div class="diagnostic-options">
+                                        ${aiAnalysis.diagnostics.map(diag => `
+                                            <div class="diagnostic-option">
+                                                <span class="diagnosis">${diag.condition}</span>
+                                                <span class="confidence">Confidence: ${(diag.confidence * 100).toFixed(0)}%</span>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                                
+                                <div class="recommended-actions">
+                                    <h5><i class="fas fa-list-check"></i> Recommended Actions:</h5>
+                                    <ul>
+                                        ${aiAnalysis.actions.map(action => `<li>${action}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="appointment-actions">
+                                <button class="approve-btn" onclick="providerDashboard.approveAppointmentWithAI(${appointment.id}, '${aiAnalysis.recommendation}')">
+                                    <i class="fas fa-check"></i> Smart Approve
+                                </button>
+                                <button class="schedule-btn" onclick="providerDashboard.rescheduleAppointment(${appointment.id})">
+                                    <i class="fas fa-calendar-alt"></i> Reschedule
+                                </button>
+                                <button class="reject-btn" onclick="providerDashboard.rejectAppointment(${appointment.id})">
+                                    <i class="fas fa-times"></i> Decline
+                                </button>
+                            </div>
+                        </div>`;
+                }).join('');
+
+                container.innerHTML = html;
+            }
+
+            async loadCriticalPatients() {
+                try {
+                    // Mock critical patients data
+                    const criticalPatients = [
+                        {
+                            id: 1,
+                            name: 'Mary Johnson',
+                            condition: 'Acute MI',
+                            status: 'critical',
+                            lastVitals: '2 hours ago',
+                            riskScore: 9.2
+                        },
+                        {
+                            id: 2,
+                            name: 'Robert Brown',
+                            condition: 'Post-surgical monitoring',
+                            status: 'monitoring',
+                            lastVitals: '30 minutes ago',
+                            riskScore: 6.8
+                        }
+                    ];
+
+                    this.displayCriticalPatients(criticalPatients);
+                } catch (error) {
+                    console.error('Error loading critical patients:', error);
+                }
+            }
+
+            displayCriticalPatients(patients) {
+                const container = document.getElementById('critical-patients');
+                
+                const html = patients.map(patient => `
+                    <div class="patient-item ${patient.status}">
+                        <div class="patient-avatar">${patient.name.charAt(0)}</div>
+                        <div class="patient-info">
+                            <div class="patient-name">${patient.name}</div>
+                            <div class="patient-details">${patient.condition}</div>
+                            <small>Last vitals: ${patient.lastVitals}</small>
+                        </div>
+                        <div class="ai-risk-score">
+                            <span class="risk-score ${patient.riskScore > 8 ? 'high' : patient.riskScore > 5 ? 'medium' : 'low'}">
+                                ${patient.riskScore}/10
+                            </span>
+                            <small>AI Risk Score</small>
+                        </div>
+                        <div class="patient-status ${patient.status}">${patient.status}</div>
+                    </div>
+                `).join('');
+
+                container.innerHTML = html;
+            }
+
+            async initializeAIFeatures() {
+                // Initialize AI diagnostic assistant
+                this.aiAssistant = new AIHealthAssistant();
+                
+                // Set up AI-powered analytics
+                this.setupAIAnalytics();
+                
+                // Initialize predictive alerts
+                this.setupPredictiveAlerts();
+            }
+
+            setupAIAnalytics() {
+                const ctx = document.getElementById('analyticsChart').getContext('2d');
+                
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [{
+                            label: 'Patient Satisfaction',
+                            data: [88, 91, 89, 94, 92, 94],
+                            borderColor: '#28a745',
+                            tension: 0.4
+                        }, {
+                            label: 'AI Prediction',
+                            data: [90, 92, 91, 95, 94, 96],
+                            borderColor: '#6f42c1',
+                            borderDash: [5, 5],
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Patient Satisfaction Trends (AI-Enhanced)'
+                            }
+                        }
+                    }
+                });
+            }
+
+            setupPredictiveAlerts() {
+                // Simulate AI-powered predictive alerts
+                setTimeout(() => {
+                    this.showAIAlert('High-risk patient detected: John Wilson may require immediate attention based on vital patterns.', 'warning');
+                }, 5000);
+
+                setTimeout(() => {
+                    this.showAIAlert('Recommendation: Consider adjusting medication dosage for Patient #1247 based on recent lab results.', 'info');
+                }, 10000);
+            }
+
+            generateAdvancedAIAnalysis(appointment) {
+                // Advanced AI analysis with multiple diagnostic suggestions
+                const symptoms = appointment.notes ? appointment.notes.toLowerCase() : '';
+                const specialty = appointment.specialty.toLowerCase();
+                const appointmentType = appointment.type.toLowerCase();
+                
+                let priority = 5.0; // Base priority
+                let diagnostics = [];
+                let actions = [];
+                let recommendation = '';
+                
+                // Priority scoring based on various factors
+                if (appointmentType.includes('emergency') || appointmentType.includes('urgent')) {
+                    priority += 3.0;
+                }
+                
+                if (symptoms.includes('chest pain') || symptoms.includes('shortness of breath')) {
+                    priority += 2.5;
+                    diagnostics.push(
+                        { condition: 'Acute Coronary Syndrome', confidence: 0.75 },
+                        { condition: 'Pulmonary Embolism', confidence: 0.45 },
+                        { condition: 'Anxiety/Panic Disorder', confidence: 0.30 }
+                    );
+                    actions.push('Immediate ECG and vital signs', 'Cardiac enzymes if indicated', 'Chest X-ray consideration');
+                } else if (symptoms.includes('headache') || symptoms.includes('neurological')) {
+                    priority += 1.5;
+                    diagnostics.push(
+                        { condition: 'Tension Headache', confidence: 0.60 },
+                        { condition: 'Migraine', confidence: 0.55 },
+                        { condition: 'Secondary Headache', confidence: 0.25 }
+                    );
+                    actions.push('Neurological examination', 'Blood pressure assessment', 'Consider imaging if red flags');
+                } else if (specialty.includes('pediatric') || specialty.includes('children')) {
+                    priority += 1.0;
+                    diagnostics.push(
+                        { condition: 'Routine Pediatric Care', confidence: 0.70 },
+                        { condition: 'Developmental Assessment', confidence: 0.40 },
+                        { condition: 'Vaccination Schedule', confidence: 0.35 }
+                    );
+                    actions.push('Growth and development check', 'Vaccination review', 'Parental guidance');
+                } else {
+                    // Default diagnostic suggestions
+                    diagnostics.push(
+                        { condition: 'Routine Follow-up', confidence: 0.65 },
+                        { condition: 'Preventive Care', confidence: 0.50 },
+                        { condition: 'Symptom Assessment', confidence: 0.40 }
+                    );
+                    actions.push('Complete physical examination', 'Review medical history', 'Discuss treatment plan');
+                }
+                
+                // Generate recommendation based on priority
+                if (priority >= 8.0) {
+                    recommendation = 'HIGH PRIORITY: Immediate approval recommended. Patient requires urgent medical attention.';
+                } else if (priority >= 6.0) {
+                    recommendation = 'MEDIUM PRIORITY: Approve with careful scheduling. Consider clinical urgency.';
+                } else {
+                    recommendation = 'ROUTINE: Standard approval process. Regular scheduling appropriate.';
+                }
+                
+                return {
+                    priority: Math.min(priority, 10.0),
+                    recommendation,
+                    diagnostics,
+                    actions
+                };
+            }
+
+            async approveAppointmentWithAI(appointmentId, aiRecommendation) {
+                try {
+                    // Generate token number
+                    const tokenNumber = this.generateTokenNumber();
+                    
+                    // Update appointment with AI insights
+                    await enhancedDbManager.updateAppointmentStatus(appointmentId, 'confirmed', {
+                        token_number: tokenNumber,
+                        ai_recommendation: aiRecommendation,
+                        approved_by: this.providerData.name,
+                        approved_at: new Date().toISOString()
+                    });
+                    
+                    this.showToast(`✅ Smart Approval Complete! Token: ${tokenNumber}`, 'success');
+                    await this.loadPendingAppointments();
+                    
+                    // Enhanced notification with AI insights
+                    await this.sendEnhancedNotification(appointmentId, tokenNumber, aiRecommendation);
+                    
+                    // Update provider stats
+                    this.updateProviderStats('appointment_approved');
+                    
+                } catch (error) {
+                    console.error('Error approving appointment:', error);
+                    this.showToast('Error approving appointment', 'error');
+                }
+            }
+
+            async rescheduleAppointment(appointmentId) {
+                // Mock reschedule functionality
+                this.showToast('🔄 Reschedule feature coming soon! For now, please contact patient directly.', 'info');
+                
+                // In a real implementation, this would open a scheduling interface
+                // await this.openRescheduleModal(appointmentId);
+            }
+
+            async rejectAppointment(appointmentId) {
+                if (confirm('Are you sure you want to reject this appointment?')) {
+                    try {
+                        await enhancedDbManager.updateAppointmentStatus(appointmentId, 'rejected', {
+                            rejected_by: this.providerData.name,
+                            rejected_at: new Date().toISOString(),
+                            rejection_reason: 'Provider discretion'
+                        });
+                        this.showToast('Appointment declined', 'warning');
+                        await this.loadPendingAppointments();
+                        
+                        // Update provider stats
+                        this.updateProviderStats('appointment_rejected');
+                    } catch (error) {
+                        console.error('Error rejecting appointment:', error);
+                        this.showToast('Error rejecting appointment', 'error');
+                    }
+                }
+            }
+
+            generateTokenNumber() {
+                const prefix = 'TK';
+                const number = String(Date.now()).slice(-4);
+                return `${prefix}${number}`;
+            }
+
+            async sendEnhancedNotification(appointmentId, tokenNumber, aiRecommendation) {
+                // Enhanced patient notification with AI insights
+                console.log(`📱 Enhanced SMS sent to patient:`);
+                console.log(`✅ Appointment CONFIRMED! Token: ${tokenNumber}`);
+                console.log(`🏥 Hospital: ${this.providerData.hospital}`);
+                console.log(`👨‍⚕️ Provider: ${this.providerData.name}`);
+                console.log(`🤖 AI Analysis: ${aiRecommendation.substring(0, 100)}...`);
+                console.log(`📞 Questions? Call us at (555) 123-4567`);
+                
+                // In real implementation, this would send actual notifications
+                // await this.smsService.send(patientPhone, message);
+                // await this.emailService.send(patientEmail, detailedMessage);
+            }
+
+            updateProviderStats(action) {
+                // Update real-time provider statistics
+                const statsMap = {
+                    'appointment_approved': () => {
+                        const current = parseInt(document.getElementById('appointments-count').textContent) || 0;
+                        document.getElementById('appointments-count').textContent = current + 1;
+                        document.getElementById('hero-appointments').textContent = current + 1;
+                    },
+                    'appointment_rejected': () => {
+                        // Update rejection statistics if needed
+                        console.log('Appointment rejection recorded');
+                    }
+                };
+                
+                if (statsMap[action]) {
+                    statsMap[action]();
+                }
+            }
+
+            showAIAlert(message, type) {
+                const alertDiv = document.getElementById('emergency-alert');
+                const messageDiv = document.getElementById('emergency-message');
+                
+                messageDiv.textContent = message;
+                alertDiv.style.display = 'flex';
+                alertDiv.className = `emergency-alert ${type}`;
+                
+                // Auto-hide after 10 seconds
+                setTimeout(() => {
+                    alertDiv.style.display = 'none';
+                }, 10000);
+            }
+
+            setupEventListeners() {
+                // Add search functionality for patients
+                const searchInput = document.createElement('input');
+                searchInput.type = 'text';
+                searchInput.placeholder = 'Search patients...';
+                searchInput.className = 'search-input';
+                
+                // Add to critical patients section
+                const criticalSection = document.querySelector('#critical-patients').parentElement;
+                criticalSection.insertBefore(searchInput, document.querySelector('#critical-patients'));
+                
+                searchInput.addEventListener('input', (e) => {
+                    this.searchPatients(e.target.value);
+                });
+            }
+
+            searchPatients(query) {
+                // Implement patient search functionality
+                console.log('Searching patients:', query);
+            }
+
+            startRealTimeUpdates() {
+                // Simulate real-time updates every 30 seconds
+                setInterval(() => {
+                    this.loadProviderStats();
+                }, 30000);
+            }
+
+            showToast(message, type = 'info') {
+                const toast = document.getElementById('toast');
+                const toastMessage = document.getElementById('toast-message');
+                
+                toastMessage.textContent = message;
+                toast.className = `toast show ${type}`;
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 4000);
+            }
+        }
+
+        // AI Health Assistant for Providers
+        class AIHealthAssistant {
+            constructor() {
+                this.models = {
+                    diagnostics: 'gpt-4-medical',
+                    riskAssessment: 'claude-medical',
+                    drugInteraction: 'medical-ai-v2'
+                };
+            }
+
+            async analyzeDiagnostics(symptoms, patientHistory) {
+                // Mock AI diagnostic analysis
+                return {
+                    primaryDiagnosis: 'Acute coronary syndrome',
+                    confidence: 0.87,
+                    recommendations: [
+                        'Immediate ECG',
+                        'Cardiac enzymes',
+                        'Chest X-ray'
+                    ],
+                    riskFactors: ['Hypertension', 'Diabetes', 'Smoking history']
+                };
+            }
+
+            async checkDrugInteractions(medications) {
+                // Mock drug interaction check
+                return {
+                    interactions: [
+                        {
+                            drugs: ['Warfarin', 'Aspirin'],
+                            severity: 'moderate',
+                            description: 'Increased bleeding risk'
+                        }
+                    ],
+                    alternatives: ['Consider Clopidogrel instead of Aspirin']
+                };
+            }
+        }
+
+        // Global functions for quick actions
+        function addNewPatient() {
+            providerDashboard.showToast('Opening patient registration form...', 'info');
+            // In real app, this would open a patient registration modal
+        }
+
+        function scheduleAppointment() {
+            providerDashboard.showToast('Opening appointment scheduler...', 'info');
+            // In real app, this would open appointment scheduling interface
+        }
+
+        function writePrescription() {
+            providerDashboard.showToast('Opening prescription interface...', 'info');
+            // In real app, this would open prescription writing tool
+        }
+
+        function viewReports() {
+            providerDashboard.showToast('Loading analytics reports...', 'info');
+            // In real app, this would navigate to reports section
+        }
+
+        function patientRecords() {
+            providerDashboard.showToast('Accessing patient records system...', 'info');
+            // In real app, this would open patient records database
+        }
+
+        function aiDiagnostics() {
+            providerDashboard.showToast('Launching AI Diagnostic Assistant...', 'success');
+            // In real app, this would open AI diagnostic interface
+            setTimeout(() => {
+                window.open('../html/ai-health-assistant.html', '_blank');
+            }, 1000);
+        }
+
+        function viewAllPatients() {
+            providerDashboard.showToast('Loading all patients...', 'info');
+        }
+
+        function viewAllPrescriptions() {
+            providerDashboard.showToast('Loading prescription history...', 'info');
+        }
+
+        function viewFullAnalytics() {
+            providerDashboard.showToast('Loading detailed analytics...', 'info');
+        }
+
+        // Initialize dashboard
+        let providerDashboard;
+
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('MediCare+ Enhanced Provider Dashboard with AI Loading...');
+            providerDashboard = new ProviderDashboard();
+        });
+    </script>
+</body>
+</html> 
