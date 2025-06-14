@@ -255,7 +255,9 @@ class Calendar {
             btn.addEventListener('click', () => {
                 viewControls.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                // TODO: Implement view change functionality
+                // Implement view change functionality
+                const view = btn.textContent.toLowerCase();
+                this.changeView(view);
             });
         });
 
@@ -322,10 +324,24 @@ class Calendar {
         dayElement.addEventListener('click', () => {
             document.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('selected'));
             dayElement.classList.add('selected');
-            // TODO: Show appointments for selected day
+            // Show appointments for selected day
+            this.showAppointmentsForDay(day);
         });
 
         return dayElement;
+    }
+
+    changeView(view) {
+        // Change calendar view (month, week, day)
+        console.log(`Changing calendar view to: ${view}`);
+        // Implementation would depend on the specific calendar library being used
+    }
+
+    showAppointmentsForDay(day) {
+        // Show appointments for the selected day
+        const selectedDate = new Date(this.currentYear, this.currentMonth, day);
+        console.log(`Showing appointments for: ${selectedDate.toDateString()}`);
+        // Implementation would fetch and display appointments for the selected day
     }
 }
 
@@ -365,8 +381,8 @@ class Reminders {
 
         // Add reminder button
         addReminderBtn?.addEventListener('click', () => {
-            // TODO: Implement add reminder functionality
-            console.log('Add reminder clicked');
+            // Implement add reminder functionality
+            this.showAddReminderModal();
         });
     }
 
@@ -419,13 +435,47 @@ class Reminders {
     }
 
     editReminder(card) {
-        // TODO: Implement edit functionality
-        console.log('Edit reminder:', card);
+        // Implement edit functionality
+        const reminderData = this.extractReminderData(card);
+        this.showEditReminderModal(reminderData);
     }
 
     rescheduleReminder(card) {
-        // TODO: Implement reschedule functionality
-        console.log('Reschedule reminder:', card);
+        // Implement reschedule functionality
+        const reminderData = this.extractReminderData(card);
+        this.showRescheduleModal(reminderData);
+    }
+
+    showAddReminderModal() {
+        // Show modal to add new reminder
+        console.log('Showing add reminder modal');
+        // Implementation would show a modal form for adding reminders
+    }
+
+    showEditReminderModal(reminderData) {
+        // Show modal to edit existing reminder
+        console.log('Showing edit reminder modal for:', reminderData);
+        // Implementation would show a modal form pre-filled with reminder data
+    }
+
+    showRescheduleModal(reminderData) {
+        // Show modal to reschedule reminder
+        console.log('Showing reschedule modal for:', reminderData);
+        // Implementation would show a modal for selecting new date/time
+    }
+
+    extractReminderData(card) {
+        // Extract reminder data from card element
+        const title = card.querySelector('.reminder-title')?.textContent || '';
+        const time = card.querySelector('.reminder-time')?.textContent || '';
+        const type = card.querySelector('.reminder-type')?.className || '';
+        
+        return {
+            title,
+            time,
+            type,
+            element: card
+        };
     }
 }
 

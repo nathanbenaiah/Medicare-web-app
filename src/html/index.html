@@ -16404,7 +16404,7 @@
                     <div class="footer-links">
                         <a href="index.html">Home</a>
                         <a href="about.html">About</a>
-                        <a href="user-dashboard-improved.html">Dashboard</a>
+                        <a href="dashboard/html/user-dashboard.html">Dashboard</a>
                         <a href="blog.html">Blog</a>
                     </div>
                 </div>
@@ -16609,7 +16609,7 @@
             
             // Redirect after 2 seconds
             setTimeout(() => {
-                window.location.href = '../dashboard/html/user-dashboard.html';
+                                        window.location.href = 'dashboard/html/user-dashboard.html';
             }, 2000);
         }
 
@@ -17955,7 +17955,7 @@
                         window.history.replaceState({}, document.title, window.location.pathname);
                         setTimeout(() => {
                             console.log('🚀 Redirecting to dashboard...');
-                            window.location.href = 'html/user-dashboard-improved.html';
+                            window.location.href = 'html/dashboard/html/user-dashboard.html';
                         }, 1500);
                         return;
                     } else {
@@ -17977,7 +17977,7 @@
                             // Clear URL and redirect
                             window.history.replaceState({}, document.title, window.location.pathname);
                             setTimeout(() => {
-                                window.location.href = 'html/user-dashboard-improved.html';
+                                window.location.href = 'html/dashboard/html/user-dashboard.html';
                             }, 1000);
                             return;
                         }
@@ -17999,7 +17999,7 @@
                     localStorage.setItem('medicare_user', JSON.stringify(session.user));
                     showNotification('Welcome back! Redirecting to dashboard...', 'success');
                     setTimeout(() => {
-                        window.location.href = 'html/user-dashboard-improved.html';
+                        window.location.href = 'html/dashboard/html/user-dashboard.html';
                     }, 1000);
                 }
             } catch (error) {

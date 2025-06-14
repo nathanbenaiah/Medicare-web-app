@@ -230,12 +230,12 @@
                 patient: {
                     email: 'patient@instant.com',
                     name: 'Instant Patient',
-                    dashboard: 'user-dashboard-improved.html'
+                    dashboard: 'dashboard/html/user-dashboard.html'
                 },
                 provider: {
                     email: 'provider@instant.com',
                     name: 'Instant Provider',
-                    dashboard: 'provider-dashboard-improved.html'
+                    dashboard: 'dashboard/html/provider-dashboard.html'
                 }
             };
 
@@ -304,12 +304,12 @@
             const provider = user.user_metadata?.provider || '';
             
             if (provider.includes('patient') || provider.includes('user')) {
-                window.location.href = 'user-dashboard-improved.html';
+                window.location.href = 'dashboard/html/user-dashboard.html';
             } else if (provider.includes('provider') || provider.includes('doctor')) {
-                window.location.href = 'provider-dashboard-improved.html';
+                window.location.href = 'dashboard/html/provider-dashboard.html';
             } else {
                 // Default to patient dashboard
-                window.location.href = 'user-dashboard-improved.html';
+                window.location.href = 'dashboard/html/user-dashboard.html';
             }
         }
 
