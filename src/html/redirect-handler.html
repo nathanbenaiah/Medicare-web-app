@@ -4,72 +4,177 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Redirecting... - MediCare+</title>
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.4/dist/umd/supabase.min.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            background: linear-gradient(135deg, #007BFF 0%, #0056b3 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
+        
         .redirect-container {
             text-align: center;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            padding: 50px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 90%;
         }
+        
+        .logo {
+            margin-bottom: 24px;
+        }
+        
+        .logo-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #007BFF 0%, #0056b3 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            margin: 0 auto 16px;
+            box-shadow: 0 8px 20px rgba(0, 123, 255, 0.3);
+        }
+        
+        .logo-text {
+            font-size: 28px;
+            font-weight: 800;
+            color: #007BFF;
+            margin-bottom: 8px;
+        }
+        
         .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid white;
+            width: 60px;
+            height: 60px;
+            border: 6px solid rgba(0, 123, 255, 0.1);
+            border-top: 6px solid #007BFF;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+            margin: 0 auto 24px;
         }
+        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
         .message {
-            font-size: 18px;
-            margin-bottom: 10px;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #1f2937;
         }
+        
         .details {
-            font-size: 14px;
-            opacity: 0.8;
+            font-size: 16px;
+            color: #64748b;
+            margin-bottom: 24px;
+            line-height: 1.5;
         }
+        
+        .status {
+            background: rgba(0, 123, 255, 0.1);
+            border: 1px solid rgba(0, 123, 255, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 20px 0;
+            color: #1f2937;
+            font-weight: 500;
+        }
+        
+        .success {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.2);
+            color: #065f46;
+        }
+        
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.2);
+            color: #991b1b;
+        }
+        
         .manual-link {
             display: inline-block;
-            margin-top: 20px;
-            padding: 12px 24px;
-            background: rgba(255, 255, 255, 0.2);
+            margin-top: 24px;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, #007BFF 0%, #0056b3 100%);
             color: white;
             text-decoration: none;
-            border-radius: 8px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            font-weight: 600;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
         }
+        
         .manual-link:hover {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 123, 255, 0.4);
+        }
+        
+        .auth-link {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+        
+        .auth-link:hover {
+            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
+        }
+        
+        .debug-info {
+            margin-top: 24px;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            font-size: 12px;
+            color: #64748b;
+            text-align: left;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
     <div class="redirect-container">
-        <div class="spinner"></div>
-        <div class="message">Redirecting to Dashboard...</div>
-        <div class="details" id="status">Processing authentication...</div>
-        <a href="#" id="manual-link" class="manual-link" style="display: none;">
-            Go to Dashboard Manually
-        </a>
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-heartbeat"></i>
+            </div>
+            <div class="logo-text">MediCare+</div>
+        </div>
+        
+        <div class="spinner" id="spinner"></div>
+        <div class="message" id="message">Processing Authentication...</div>
+        <div class="details" id="details">Please wait while we securely sign you in</div>
+        
+        <div id="status" class="status hidden"></div>
+        
+        <div id="links" class="hidden">
+            <a href="#" id="dashboard-link" class="manual-link hidden">
+                <i class="fas fa-tachometer-alt"></i>
+                Go to Dashboard
+            </a>
+            <a href="#" id="auth-link" class="manual-link auth-link hidden">
+                <i class="fas fa-sign-in-alt"></i>
+                Sign In Again
+            </a>
+        </div>
+        
+        <div id="debug-info" class="debug-info hidden"></div>
     </div>
 
     <script>
@@ -80,102 +185,244 @@
         // Initialize Supabase client
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        function updateStatus(message) {
-            document.getElementById('status').textContent = message;
-            console.log('🔄', message);
+        // Debug logging
+        const debugLogs = [];
+        
+        function log(message, data = null) {
+            const timestamp = new Date().toISOString();
+            const logEntry = `[${timestamp}] ${message}`;
+            console.log(logEntry, data || '');
+            debugLogs.push(data ? `${logEntry}\n${JSON.stringify(data, null, 2)}` : logEntry);
+            updateDebugInfo();
         }
+        
+        function updateDebugInfo() {
+            const debugDiv = document.getElementById('debug-info');
+            debugDiv.textContent = debugLogs.slice(-10).join('\n\n');
+        }
+        
+        function updateStatus(message, type = 'info') {
+            const messageEl = document.getElementById('message');
+            const detailsEl = document.getElementById('details');
+            const statusEl = document.getElementById('status');
+            
+            messageEl.textContent = type === 'error' ? 'Authentication Error' : 'Processing...';
+            detailsEl.textContent = message;
+            
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+            statusEl.classList.remove('hidden');
+            
+            log(`Status: ${type.toUpperCase()} - ${message}`);
+        }
+        
+        function showLinks(showDashboard = false, showAuth = false) {
+            const linksDiv = document.getElementById('links');
+            const dashboardLink = document.getElementById('dashboard-link');
+            const authLink = document.getElementById('auth-link');
+            
+            if (showDashboard || showAuth) {
+                linksDiv.classList.remove('hidden');
+            }
+            
+            if (showDashboard) {
+                dashboardLink.classList.remove('hidden');
+                dashboardLink.href = '/dashboard/html/user-dashboard.html';
+            }
+            
+            if (showAuth) {
+                authLink.classList.remove('hidden');
+                authLink.href = '/auth';
+            }
+        }
+        
+        function hideSpinner() {
+            document.getElementById('spinner').style.display = 'none';
+        }
+        
+        async function ensureUserProfile(user) {
+            try {
+                log('Ensuring user profile exists', { userId: user.id, email: user.email });
+                
+                // Check if profile exists
+                const { data: existingProfile, error: fetchError } = await supabase
+                    .from('user_profiles')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .single();
 
-        function showManualLink(url) {
-            const link = document.getElementById('manual-link');
-            link.href = url;
-            link.style.display = 'inline-block';
+                if (fetchError && fetchError.code !== 'PGRST116') {
+                    log('Error fetching user profile', fetchError);
+                    return false;
+                }
+
+                if (!existingProfile) {
+                    log('Creating new user profile...');
+                    
+                    const profileData = {
+                        user_id: user.id,
+                        email: user.email,
+                        full_name: user.user_metadata?.full_name || '',
+                        first_name: user.user_metadata?.first_name || '',
+                        last_name: user.user_metadata?.last_name || '',
+                        user_type: 'patient',
+                        is_active: true
+                    };
+
+                    const { error: insertError } = await supabase
+                        .from('user_profiles')
+                        .insert([profileData]);
+
+                    if (insertError) {
+                        log('Error creating user profile', insertError);
+                        return false;
+                    } else {
+                        log('User profile created successfully');
+                        return true;
+                    }
+                } else {
+                    log('User profile already exists');
+                    return true;
+                }
+            } catch (error) {
+                log('Error ensuring user profile', error);
+                return false;
+            }
         }
 
         async function handleRedirect() {
             try {
-                updateStatus('Checking authentication status...');
+                log('Starting redirect handler');
+                updateStatus('Initializing authentication...');
                 
                 // Parse URL parameters
                 const urlParams = new URLSearchParams(window.location.search);
                 const fragment = new URLSearchParams(window.location.hash.slice(1));
+                
+                log('URL parameters', {
+                    search: window.location.search,
+                    hash: window.location.hash,
+                    fullUrl: window.location.href
+                });
                 
                 // Check for OAuth callback parameters
                 const accessToken = urlParams.get('access_token') || fragment.get('access_token');
                 const refreshToken = urlParams.get('refresh_token') || fragment.get('refresh_token');
                 const error = urlParams.get('error') || fragment.get('error');
                 const errorDescription = urlParams.get('error_description') || fragment.get('error_description');
+                const type = urlParams.get('type') || fragment.get('type');
+
+                log('OAuth parameters', {
+                    hasAccessToken: !!accessToken,
+                    hasRefreshToken: !!refreshToken,
+                    error,
+                    errorDescription,
+                    type
+                });
 
                 if (error) {
-                    updateStatus(`Authentication error: ${errorDescription || error}`);
-                    console.error('OAuth error:', error, errorDescription);
+                    updateStatus(`Authentication failed: ${errorDescription || error}`, 'error');
+                    hideSpinner();
+                    showLinks(false, true);
                     return;
                 }
 
-                if (accessToken) {
-                    updateStatus('OAuth callback detected, processing session...');
+                // Handle OAuth callback
+                if (accessToken || type === 'signup' || type === 'magiclink') {
+                    updateStatus('Processing OAuth callback...');
                     
-                    // Let Supabase handle the OAuth callback
-                    const { data, error: sessionError } = await supabase.auth.getSession();
-                    
-                    if (sessionError) {
-                        updateStatus('Session error: ' + sessionError.message);
-                        console.error('Session error:', sessionError);
-                        return;
+                    try {
+                        const { data, error: sessionError } = await supabase.auth.getSession();
+                        
+                        if (sessionError) {
+                            log('Session error', sessionError);
+                            throw sessionError;
+                        }
+                        
+                        log('Session data', data);
+                        
+                        if (data.session) {
+                            updateStatus('Authentication successful! Creating user profile...', 'success');
+                            
+                            // Ensure user profile exists
+                            const profileCreated = await ensureUserProfile(data.session.user);
+                            
+                            if (profileCreated) {
+                                updateStatus(`Welcome ${data.session.user.email}! Redirecting to dashboard...`, 'success');
+                                hideSpinner();
+                                showLinks(true, false);
+                                
+                                // Redirect after delay
+                                setTimeout(() => {
+                                    window.location.href = '/dashboard/html/user-dashboard.html';
+                                }, 2000);
+                                
+                                return;
+                            } else {
+                                updateStatus('Profile creation failed, but you are signed in. Please try accessing your dashboard.', 'error');
+                                hideSpinner();
+                                showLinks(true, true);
+                                return;
+                            }
+                        }
+                    } catch (sessionError) {
+                        log('Error processing OAuth callback', sessionError);
+                        updateStatus('OAuth processing failed: ' + sessionError.message, 'error');
                     }
                 }
 
-                // Check for active session
-                const { data: { session } } = await supabase.auth.getSession();
+                // Check for existing session
+                updateStatus('Checking authentication status...');
+                const { data: { session }, error: sessionCheckError } = await supabase.auth.getSession();
+                
+                if (sessionCheckError) {
+                    log('Session check error', sessionCheckError);
+                    throw sessionCheckError;
+                }
                 
                 if (session) {
-                    updateStatus(`Welcome ${session.user.email}! Redirecting to dashboard...`);
+                    log('Found existing session', { userId: session.user.id, email: session.user.email });
                     
-                    // Determine the correct dashboard URL
-                    let dashboardUrl;
+                    updateStatus('Authentication verified! Redirecting to dashboard...', 'success');
                     
-                    // Check if we're on localhost
-                    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                        dashboardUrl = `${window.location.origin}/dashboard/html/user-dashboard.html`;
-                    } else {
-                        // We're on production, use the correct production path
-                        dashboardUrl = `${window.location.origin}/html/dashboard/html/user-dashboard.html`;
-                    }
+                    // Ensure user profile exists
+                    await ensureUserProfile(session.user);
                     
-                    console.log('🎯 Redirecting to:', dashboardUrl);
-                    showManualLink(dashboardUrl);
+                    hideSpinner();
+                    showLinks(true, false);
                     
-                    // Redirect after a short delay
                     setTimeout(() => {
-                        window.location.href = dashboardUrl;
-                    }, 2000);
+                        window.location.href = '/dashboard/html/user-dashboard.html';
+                    }, 1500);
                     
                 } else {
-                    updateStatus('No active session found. Redirecting to login...');
-                    
-                    // Redirect to auth page
-                    const authUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                        ? `${window.location.origin}/src/html/auth.html`
-                        : `${window.location.origin}/html/auth.html`;
-                    
-                    setTimeout(() => {
-                        window.location.href = authUrl;
-                    }, 2000);
+                    log('No active session found');
+                    updateStatus('No active session found. Please sign in again.', 'error');
+                    hideSpinner();
+                    showLinks(false, true);
                 }
 
             } catch (error) {
-                updateStatus('Unexpected error: ' + error.message);
-                console.error('Redirect handler error:', error);
-                
-                // Show manual link as fallback
-                const fallbackUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                    ? `${window.location.origin}/src/html/auth.html`
-                    : `${window.location.origin}/html/auth.html`;
-                showManualLink(fallbackUrl);
+                log('Redirect handler error', error);
+                updateStatus('Unexpected error: ' + error.message, 'error');
+                hideSpinner();
+                showLinks(true, true);
             }
         }
 
+        // Show debug info on click
+        document.addEventListener('click', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                const debugDiv = document.getElementById('debug-info');
+                debugDiv.classList.toggle('hidden');
+            }
+        });
+
         // Start the redirect process when page loads
-        document.addEventListener('DOMContentLoaded', handleRedirect);
+        document.addEventListener('DOMContentLoaded', function() {
+            log('Redirect handler initialized');
+            handleRedirect();
+        });
     </script>
 </body>
 </html> 
