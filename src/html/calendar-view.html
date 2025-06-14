@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar - MediLab</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="../js/supabase-mcp-backend.js"></script>
+    
+    <style>
+        /* CSS Custom Properties */
+        :root {
+            /* Colors */
+            --primary-blue-600: #4F46E5;
+            --primary-blue-700: #4338CA;
+            --primary-blue-50: #EEF2FF;
+            --primary-blue-light: #6366F1;
+            --primary-blue-dark: #3730A3;
+            
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+            
+            --white: #FFFFFF;
+            --error-red: #EF4444;
+            --success-green: #10B981;
+            --warning-orange: #F59E0B;
+            --success-green-50: #ECFDF5;
+            --warning-orange-50: #FFFBEB;
+            
+            /* Typography */
+            --text-xs: 0.75rem;
+            --text-sm: 0.875rem;
+            --text-base: 1rem;
+            --text-lg: 1.125rem;
+            --text-xl: 1.25rem;
+            --text-2xl: 1.5rem;
+            --text-3xl: 1.875rem;
+            
+            /* Spacing */
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-5: 1.25rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            --space-10: 2.5rem;
+            --space-12: 3rem;
+            
+            /* Border Radius */
+            --radius: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.5;
+        }
+
+        /* Dashboard Container */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 220px;
+            background-color: var(--white);
+            border-right: 1px solid var(--gray-200);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .sidebar-header {
+            padding: var(--space-6);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            font-size: var(--text-xl);
+            font-weight: 700;
+            color: var(--primary-blue-600);
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary-blue-600), var(--primary-blue-light));
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: var(--text-lg);
+        }
+
+        .user-profile {
+            margin-top: var(--space-4);
+            padding: var(--space-4);
+            background-color: var(--gray-50);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-blue-600), var(--success-green));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: var(--text-base);
+        }
+
+        .user-info h4 {
+            font-size: var(--text-sm);
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: var(--space-1);
+        }
+
+        .user-info p {
+            font-size: var(--text-xs);
+            color: var(--gray-500);
+        }
+
+        .sidebar-nav {
+            padding: var(--space-4);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: var(--space-3) var(--space-4);
+            margin-bottom: var(--space-1);
+            border-radius: var(--radius-lg);
+            color: var(--gray-700);
+            font-size: var(--text-sm);
+            font-weight: 500;
+            text-decoration: none;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .nav-item:hover {
+            background-color: var(--primary-blue-50);
+            color: var(--primary-blue-600);
+        }
+
+        .nav-item.active {
+            background-color: var(--primary-blue-50);
+            color: var(--primary-blue-600);
+            border-right: 3px solid var(--primary-blue-600);
+        }
+
+        .nav-item i {
+            margin-right: var(--space-3);
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 220px;
+            flex: 1;
+            background-color: var(--gray-50);
+            min-height: 100vh;
+        }
+
+        /* Sticky Top Navigation Bar - MediLab Style */
+        .top-action-bar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: var(--white);
+            border-bottom: 1px solid var(--gray-200);
+            padding: var(--space-4) var(--space-6);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--space-4);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 0;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: var(--space-6);
+        }
+
+        .page-title {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            color: var(--gray-900);
+            margin: 0;
+        }
+
+        .date-selector {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            color: var(--gray-600);
+            font-size: var(--text-sm);
+        }
+
+        .date-nav {
+            background: none;
+            border: none;
+            color: var(--gray-400);
+            cursor: pointer;
+            padding: var(--space-1);
+            border-radius: var(--radius);
+            transition: all 0.2s ease;
+        }
+
+        .date-nav:hover {
+            background-color: var(--gray-100);
+            color: var(--gray-600);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+
+        .quick-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .quick-action-btn {
+            padding: var(--space-2) var(--space-4);
+            border: 1px solid var(--primary-blue-600);
+            border-radius: var(--radius);
+            background-color: var(--primary-blue-600);
+            color: white;
+            font-size: var(--text-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .quick-action-btn:hover {
+            background-color: var(--primary-blue-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .quick-action-btn.secondary {
+            background-color: var(--white);
+            color: var(--primary-blue-600);
+            border: 1px solid var(--gray-300);
+        }
+
+        .quick-action-btn.secondary:hover {
+            background-color: var(--gray-50);
+            border-color: var(--primary-blue-600);
+        }
+
+        .notification-area {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .notification-badge {
+            position: relative;
+            cursor: pointer;
+            padding: var(--space-2);
+            border-radius: var(--radius);
+            transition: all 0.2s ease;
+        }
+
+        .notification-badge:hover {
+            background-color: var(--gray-100);
+        }
+
+        .badge-count {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: var(--error-red);
+            color: white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .user-profile-nav {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            cursor: pointer;
+            padding: var(--space-2);
+            border-radius: var(--radius);
+            transition: all 0.2s ease;
+        }
+
+        .user-profile-nav:hover {
+            background-color: var(--gray-100);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--primary-blue-600);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: var(--text-sm);
+        }
+
+        .user-name {
+            font-size: var(--text-sm);
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        .content-wrapper {
+            padding: var(--space-6);
+        }
+
+        /* Calendar Styles */
+        .calendar-container {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            overflow: hidden;
+        }
+
+        .calendar-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background-color: var(--gray-50);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .calendar-day-header {
+            padding: var(--space-4);
+            text-align: center;
+            font-weight: 600;
+            color: var(--gray-700);
+            font-size: var(--text-sm);
+            border-right: 1px solid var(--gray-200);
+        }
+
+        .calendar-day-header:last-child {
+            border-right: none;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+        }
+
+        .calendar-day {
+            min-height: 120px;
+            border-right: 1px solid var(--gray-200);
+            border-bottom: 1px solid var(--gray-200);
+            padding: var(--space-2);
+            position: relative;
+            background-color: var(--white);
+            transition: background-color 0.2s ease;
+        }
+
+        .calendar-day:hover {
+            background-color: var(--gray-50);
+        }
+
+        .calendar-day:last-child {
+            border-right: none;
+        }
+
+        .calendar-day.other-month {
+            background-color: var(--gray-50);
+            color: var(--gray-400);
+        }
+
+        .calendar-day.today {
+            background-color: var(--primary-blue-50);
+        }
+
+        .day-number {
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: var(--space-2);
+        }
+
+        .calendar-day.other-month .day-number {
+            color: var(--gray-400);
+        }
+
+        .appointment-item {
+            background-color: var(--primary-blue-600);
+            color: white;
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius);
+            font-size: var(--text-xs);
+            margin-bottom: var(--space-1);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+        }
+
+        .appointment-item:hover {
+            background-color: var(--primary-blue-700);
+            transform: translateY(-1px);
+        }
+
+
+
+        .appointment-item.examination {
+            background-color: var(--warning-orange);
+        }
+
+        .appointment-item.follow-up {
+            background-color: var(--error-red);
+        }
+
+        .appointment-avatar {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            font-weight: 600;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .calendar-day {
+                min-height: 80px;
+            }
+
+            .quick-actions {
+                flex-wrap: wrap;
+                gap: var(--space-1);
+            }
+
+            .quick-action-btn {
+                padding: var(--space-1) var(--space-2);
+                font-size: var(--text-xs);
+            }
+        }
+
+
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Sidebar Component
+        const Sidebar = ({ activeTab, setActiveTab }) => {
+            const menuItems = [
+                { id: 'dashboard', icon: 'fas fa-th-large', label: 'Dashboard' },
+                { id: 'calendar', icon: 'fas fa-calendar', label: 'Calendar' },
+                { id: 'patients', icon: 'fas fa-users', label: 'Patients' },
+                { id: 'schedule', icon: 'fas fa-clock', label: 'Staff schedule' },
+                { id: 'doctors', icon: 'fas fa-user-md', label: 'Doctors' },
+                { id: 'departments', icon: 'fas fa-building', label: 'Departments' },
+                { id: 'stock', icon: 'fas fa-boxes', label: 'Stock' },
+                { id: 'settings', icon: 'fas fa-cog', label: 'Settings' },
+                { id: 'help', icon: 'fas fa-question-circle', label: 'Help Center' },
+                { id: 'logout', icon: 'fas fa-sign-out-alt', label: 'Log out' }
+            ];
+
+            return (
+                <div className="sidebar">
+                    <div className="sidebar-header">
+                        <div className="logo">
+                            <div className="logo-icon">
+                                <i className="fas fa-heartbeat"></i>
+                            </div>
+                            <span>MediCare+</span>
+                        </div>
+                        
+                        <div className="user-profile">
+                            <div className="user-avatar">
+                                D
+                            </div>
+                            <div className="user-info">
+                                <h4>Dr. Demo</h4>
+                                <p>Provider</p>
+                                <p style={{ fontSize: 'var(--text-xs)', color: 'var(--gray-400)', marginTop: 'var(--space-1)' }}>
+                                    Health ID: 48348298
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <nav className="sidebar-nav">
+                        {menuItems.map(item => (
+                            <div
+                                key={item.id}
+                                className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
+                                onClick={() => setActiveTab(item.id)}
+                            >
+                                <i className={item.icon}></i>
+                                {item.label}
+                            </div>
+                        ))}
+                    </nav>
+                </div>
+            );
+        };
+
+        // Calendar Component
+        const CalendarView = ({ currentDate, setCurrentDate }) => {
+            const [appointments, setAppointments] = useState([]);
+
+            useEffect(() => {
+                // Mock appointment data matching the image
+                const mockAppointments = [
+                    { id: 1, date: 7, time: '10:00', patient: 'Millie Simons', type: 'time-slot', avatar: 'MS' },
+                    { id: 2, date: 8, time: '14:00', patient: 'Millie Simons', type: 'time-slot', avatar: 'MS' },
+                    { id: 3, date: 13, time: '09:00', patient: 'Betty Hase', type: 'examination', avatar: 'BH' },
+                    { id: 4, date: 16, time: '11:00', patient: 'Millie Simons', type: 'time-slot', avatar: 'MS' },
+                    { id: 5, date: 21, time: '15:45', patient: 'Mark Brent', type: 'examination', avatar: 'MB' },
+                    { id: 6, date: 21, time: '10:00', patient: 'Petra Collins', type: 'time-slot', avatar: 'PC' },
+                    { id: 7, date: 27, time: '16:00', patient: 'John Pope', type: 'follow-up', avatar: 'JP' }
+                ];
+                setAppointments(mockAppointments);
+            }, [currentDate]);
+
+            const getDaysInMonth = () => {
+                const year = currentDate.getFullYear();
+                const month = currentDate.getMonth();
+                const firstDay = new Date(year, month, 1);
+                const lastDay = new Date(year, month + 1, 0);
+                const daysInMonth = lastDay.getDate();
+                const startingDayOfWeek = firstDay.getDay();
+
+                const days = [];
+
+                // Add previous month's trailing days
+                const prevMonth = new Date(year, month - 1, 0);
+                for (let i = startingDayOfWeek - 1; i >= 0; i--) {
+                    days.push({
+                        day: prevMonth.getDate() - i,
+                        isCurrentMonth: false,
+                        date: new Date(year, month - 1, prevMonth.getDate() - i)
+                    });
+                }
+
+                // Add current month's days
+                for (let day = 1; day <= daysInMonth; day++) {
+                    days.push({
+                        day,
+                        isCurrentMonth: true,
+                        date: new Date(year, month, day)
+                    });
+                }
+
+                // Add next month's leading days to fill the grid
+                const remainingDays = 42 - days.length;
+                for (let day = 1; day <= remainingDays; day++) {
+                    days.push({
+                        day,
+                        isCurrentMonth: false,
+                        date: new Date(year, month + 1, day)
+                    });
+                }
+
+                return days;
+            };
+
+            const getAppointmentsForDay = (day) => {
+                return appointments.filter(apt => apt.date === day);
+            };
+
+            const isToday = (date) => {
+                const today = new Date();
+                return date.toDateString() === today.toDateString();
+            };
+
+            const days = getDaysInMonth();
+            const dayHeaders = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Friday', 'Notes'];
+
+            return (
+                <div className="calendar-container">
+                    <div className="calendar-header">
+                        {dayHeaders.map((day, index) => (
+                            <div key={index} className="calendar-day-header">
+                                {day}
+                            </div>
+                        ))}
+                    </div>
+                    <div className="calendar-grid">
+                        {days.map((dayInfo, index) => {
+                            const dayAppointments = getAppointmentsForDay(dayInfo.day);
+                            const isCurrentMonth = dayInfo.isCurrentMonth;
+                            const todayClass = isToday(dayInfo.date) ? 'today' : '';
+                            const otherMonthClass = !isCurrentMonth ? 'other-month' : '';
+
+                            return (
+                                <div 
+                                    key={index} 
+                                    className={`calendar-day ${todayClass} ${otherMonthClass}`}
+                                >
+                                    <div className="day-number">{dayInfo.day}</div>
+                                    {isCurrentMonth && dayAppointments.map(appointment => (
+                                        <div 
+                                            key={appointment.id} 
+                                            className={`appointment-item ${appointment.type}`}
+                                            title={`${appointment.time} - ${appointment.patient}`}
+                                        >
+                                            <div className="appointment-avatar">
+                                                {appointment.avatar}
+                                            </div>
+                                            <span>{appointment.time}</span>
+                                            <span>{appointment.patient}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            );
+        };
+
+        // Main Calendar App Component
+        const CalendarApp = () => {
+            const [activeTab, setActiveTab] = useState('calendar');
+            const [currentDate, setCurrentDate] = useState(new Date(2023, 5)); // June 2023
+
+            const getCurrentDate = () => {
+                return currentDate.toLocaleDateString('en-US', { 
+                    month: 'long', 
+                    year: 'numeric' 
+                });
+            };
+
+            const changeDate = (direction) => {
+                const newDate = new Date(currentDate);
+                newDate.setMonth(newDate.getMonth() + direction);
+                setCurrentDate(newDate);
+            };
+
+            const handleNavigation = (tab) => {
+                if (tab === 'dashboard') {
+                    window.location.href = 'user-dashboard-modern.html';
+                } else if (tab === 'logout') {
+                    // Clear any stored user data
+                    localStorage.removeItem('userProfile');
+                    localStorage.removeItem('providerProfile');
+                    sessionStorage.clear();
+                    // Redirect to home
+                    window.location.href = 'index.html';
+                } else {
+                    setActiveTab(tab);
+                }
+            };
+
+            return (
+                <div className="dashboard-container">
+                    <Sidebar activeTab={activeTab} setActiveTab={handleNavigation} />
+                    
+                    <main className="main-content">
+                        {/* Sticky Top Navigation Bar - MediLab Style */}
+                        <div className="top-action-bar">
+                            <div className="nav-left">
+                                <h1 className="page-title">Appointments</h1>
+                                <div className="date-selector">
+                                    <button className="date-nav" onClick={() => changeDate(-1)}>
+                                        <i className="fas fa-chevron-left"></i>
+                                    </button>
+                                    <span>{getCurrentDate()}</span>
+                                    <button className="date-nav" onClick={() => changeDate(1)}>
+                                        <i className="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div className="nav-right">
+                                <div className="quick-actions">
+                                    <button className="quick-action-btn">
+                                        <i className="fas fa-plus"></i>
+                                        New appointment
+                                    </button>
+                                    <button className="quick-action-btn secondary">
+                                        <i className="fas fa-calendar-alt"></i>
+                                    </button>
+                                    <button className="quick-action-btn secondary">
+                                        <i className="fas fa-lock"></i>
+                                    </button>
+                                </div>
+                                
+                                <div className="notification-area">
+                                    <div className="notification-badge">
+                                        <i className="fas fa-bell"></i>
+                                        <span className="badge-count">38</span>
+                                    </div>
+                                    
+                                    <div className="user-profile-nav">
+                                        <div className="user-avatar">DK</div>
+                                        <span className="user-name">Dr. Kawasaki</span>
+                                        <i className="fas fa-chevron-down"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div className="content-wrapper">
+                            <CalendarView currentDate={currentDate} setCurrentDate={setCurrentDate} />
+                        </div>
+                    </main>
+                </div>
+            );
+        };
+
+        // Render the app
+        ReactDOM.render(<CalendarApp />, document.getElementById('root'));
+    </script>
+</body>
+</html> 

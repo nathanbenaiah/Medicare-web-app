@@ -1,0 +1,831 @@
+/* Enhanced Dashboard CSS */
+/* Modern styling for premium user dashboard with advanced features */
+
+/* Toast Notification Styles */
+.toast {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    background: white;
+    border-radius: 10px;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid var(--primary-blue);
+    z-index: 10001;
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    max-width: 350px;
+}
+
+.toast.show {
+    transform: translateX(0);
+}
+
+.toast.toast-success {
+    border-left-color: var(--success-green);
+}
+
+.toast.toast-error {
+    border-left-color: var(--soft-red);
+}
+
+.toast.toast-warning {
+    border-left-color: var(--warning-orange);
+}
+
+.toast.toast-info {
+    border-left-color: var(--primary-blue);
+}
+
+/* AI Coach Recommendations */
+.ai-recommendation {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid var(--primary-blue);
+    transition: all 0.3s ease;
+}
+
+.ai-recommendation:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 123, 255, 0.2);
+}
+
+.ai-recommendation.high {
+    border-left-color: var(--soft-red);
+    background: rgba(239, 68, 68, 0.05);
+}
+
+.ai-recommendation.medium {
+    border-left-color: var(--warning-orange);
+    background: rgba(255, 193, 7, 0.05);
+}
+
+.ai-recommendation.low {
+    border-left-color: var(--success-green);
+    background: rgba(40, 167, 69, 0.05);
+}
+
+.recommendation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.recommendation-header h4 {
+    margin: 0;
+    color: var(--text-dark);
+    font-weight: 700;
+}
+
+.priority-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.priority-high {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--soft-red);
+}
+
+.priority-medium {
+    background: rgba(255, 193, 7, 0.1);
+    color: var(--warning-orange);
+}
+
+.priority-low {
+    background: rgba(40, 167, 69, 0.1);
+    color: var(--success-green);
+}
+
+.recommendation-description {
+    color: var(--text-gray);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.recommendation-actions h5 {
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.recommendation-actions ul {
+    margin-left: 1rem;
+    margin-bottom: 1rem;
+}
+
+.recommendation-actions li {
+    color: var(--text-gray);
+    margin-bottom: 0.25rem;
+}
+
+.expected-improvement {
+    background: rgba(0, 123, 255, 0.05);
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.recommendation-buttons {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btn-accept, .btn-customize {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-accept {
+    background: var(--success-green);
+    color: white;
+}
+
+.btn-accept:hover {
+    background: #218838;
+    transform: translateY(-2px);
+}
+
+.btn-customize {
+    background: var(--primary-blue);
+    color: white;
+}
+
+.btn-customize:hover {
+    background: var(--secondary-dark-blue);
+    transform: translateY(-2px);
+}
+
+/* Medication Tracker Styles */
+.medication-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.medication-header h3 {
+    margin: 0;
+    color: var(--text-dark);
+}
+
+.btn-add-med {
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-add-med:hover {
+    background: var(--secondary-dark-blue);
+    transform: translateY(-2px);
+}
+
+.medication-list {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.medication-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 1px solid rgba(0, 123, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.medication-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(0, 123, 255, 0.2);
+}
+
+.med-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.med-header h4 {
+    margin: 0;
+    color: var(--text-dark);
+    font-weight: 700;
+}
+
+.dosage {
+    background: rgba(0, 123, 255, 0.1);
+    color: var(--primary-blue);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.med-details p {
+    margin: 0.5rem 0;
+    color: var(--text-gray);
+    font-size: 0.9rem;
+}
+
+.adherence-rate {
+    font-weight: 700;
+    color: var(--success-green);
+}
+
+.med-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.btn-take, .btn-skip, .btn-details {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-take {
+    background: var(--success-green);
+    color: white;
+}
+
+.btn-take:hover {
+    background: #218838;
+}
+
+.btn-skip {
+    background: var(--warning-orange);
+    color: white;
+}
+
+.btn-skip:hover {
+    background: #e0a800;
+}
+
+.btn-details {
+    background: var(--text-gray);
+    color: white;
+}
+
+.btn-details:hover {
+    background: #5a6268;
+}
+
+.refill-warning {
+    background: rgba(255, 193, 7, 0.1);
+    color: var(--warning-orange);
+    padding: 0.5rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.adherence-summary {
+    background: rgba(0, 123, 255, 0.05);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+.adherence-summary h4 {
+    margin: 0 0 1rem 0;
+    color: var(--text-dark);
+}
+
+.adherence-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 1rem;
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary-blue);
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--text-gray);
+}
+
+/* Fitness Integration Styles */
+.devices-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.devices-header h3 {
+    margin: 0;
+    color: var(--text-dark);
+}
+
+.btn-add-device {
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-add-device:hover {
+    background: var(--secondary-dark-blue);
+    transform: translateY(-2px);
+}
+
+.devices-list {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.device-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 1px solid rgba(0, 123, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.device-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(0, 123, 255, 0.2);
+}
+
+.device-card.connected {
+    border-left: 4px solid var(--success-green);
+}
+
+.device-card.disconnected {
+    border-left: 4px solid var(--soft-red);
+}
+
+.device-info h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-dark);
+    font-weight: 700;
+}
+
+.device-info p {
+    margin: 0.25rem 0;
+    color: var(--text-gray);
+    font-size: 0.9rem;
+}
+
+.btn-sync, .btn-connect {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-sync {
+    background: var(--success-green);
+    color: white;
+}
+
+.btn-sync:hover {
+    background: #218838;
+}
+
+.btn-connect {
+    background: var(--primary-blue);
+    color: white;
+}
+
+.btn-connect:hover {
+    background: var(--secondary-dark-blue);
+}
+
+/* Workout History Styles */
+.workout-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.workout-header h3 {
+    margin: 0;
+    color: var(--text-dark);
+}
+
+.btn-log-workout {
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-log-workout:hover {
+    background: var(--secondary-dark-blue);
+    transform: translateY(-2px);
+}
+
+.workout-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.workout-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 1px solid rgba(0, 123, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.workout-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(0, 123, 255, 0.2);
+}
+
+.workout-type {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.activity-icon {
+    font-size: 2rem;
+}
+
+.workout-type h4 {
+    margin: 0;
+    color: var(--text-dark);
+    font-weight: 700;
+}
+
+.workout-type p {
+    margin: 0.25rem 0 0 0;
+    color: var(--text-gray);
+    font-size: 0.9rem;
+}
+
+.workout-stats {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.workout-stats .stat {
+    text-align: center;
+}
+
+.workout-stats .stat-value {
+    display: block;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--primary-blue);
+}
+
+.workout-stats .stat-label {
+    font-size: 0.8rem;
+    color: var(--text-gray);
+}
+
+/* Smart Analytics Styles */
+.analytics-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.analytics-header h3 {
+    margin: 0;
+    color: var(--text-dark);
+}
+
+.analytics-header select {
+    padding: 0.5rem 1rem;
+    border: 1px solid rgba(0, 123, 255, 0.2);
+    border-radius: 8px;
+    background: white;
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+.trends-section, .predictions-section, .insights-section {
+    margin-bottom: 2rem;
+}
+
+.trends-section h4, .predictions-section h4, .insights-section h4 {
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.trends-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.trend-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 1px solid rgba(0, 123, 255, 0.1);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.trend-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(0, 123, 255, 0.2);
+}
+
+.trend-card h5 {
+    margin: 0 0 1rem 0;
+    color: var(--text-dark);
+    font-weight: 700;
+}
+
+.trend-indicator {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: inline-block;
+}
+
+.trend-indicator.improving {
+    background: rgba(40, 167, 69, 0.1);
+    color: var(--success-green);
+}
+
+.trend-indicator.declining {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--soft-red);
+}
+
+.trend-indicator.stable {
+    background: rgba(0, 123, 255, 0.1);
+    color: var(--primary-blue);
+}
+
+.trend-change {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.predictions-list, .insights-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.prediction-card, .insight-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 1px solid rgba(0, 123, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.prediction-card:hover, .insight-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(0, 123, 255, 0.2);
+}
+
+.prediction-content p {
+    color: var(--text-gray);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.confidence-meter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.confidence-meter span {
+    font-weight: 600;
+    color: var(--text-dark);
+    white-space: nowrap;
+}
+
+.confidence-bar {
+    flex: 1;
+    height: 8px;
+    background: rgba(0, 123, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.confidence-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-blue), var(--success-green));
+    border-radius: 4px;
+    transition: width 1s ease;
+}
+
+.insight-card h5 {
+    margin: 0 0 1rem 0;
+    color: var(--text-dark);
+    font-weight: 700;
+}
+
+.insight-card p {
+    color: var(--text-gray);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.insight-action {
+    background: rgba(0, 123, 255, 0.05);
+    padding: 0.75rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-blue);
+}
+
+.insight-celebration {
+    background: rgba(40, 167, 69, 0.05);
+    padding: 0.75rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--success-green);
+    color: var(--success-green);
+}
+
+/* Health Notification Styles */
+.health-notification {
+    animation: slideInRight 0.3s ease;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.notification-header h4 {
+    margin: 0;
+    color: var(--text-dark);
+    font-weight: 700;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-gray);
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.notification-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.notification-action-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--primary-blue);
+    color: white;
+}
+
+.notification-action-btn:hover {
+    background: var(--secondary-dark-blue);
+    transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .trends-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .workout-card {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .workout-stats {
+        justify-content: center;
+    }
+    
+    .device-card {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .med-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .recommendation-buttons {
+        flex-direction: column;
+    }
+    
+    .adherence-stats {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .confidence-meter {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .health-notification {
+        width: 90%;
+        right: 5%;
+    }
+    
+    .toast {
+        width: 90%;
+        right: 5%;
+    }
+}
+
+@media (max-width: 480px) {
+    .adherence-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .workout-stats {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .trends-grid {
+        grid-template-columns: 1fr;
+    }
+} 

@@ -1,0 +1,626 @@
+/* Symptoms Checker Styles */
+.symptoms-checker-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.symptoms-checker-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.symptoms-checker-header h2 {
+    color: #2c3e50;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.symptoms-checker-header p {
+    color: #7f8c8d;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+}
+
+.emergency-notice {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+    font-weight: 500;
+    box-shadow: 0 2px 10px rgba(255, 107, 107, 0.3);
+}
+
+/* Step Navigation */
+.checker-step {
+    display: none;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.checker-step.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.checker-step h3 {
+    color: #2c3e50;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #3498db;
+}
+
+/* Symptom Search */
+.symptom-search {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+#symptom-search {
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 1.1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    outline: none;
+    transition: all 0.3s ease;
+    background: #fafafa;
+}
+
+#symptom-search:focus {
+    border-color: #3498db;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.symptom-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.symptom-suggestion {
+    padding: 12px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s ease;
+    text-transform: capitalize;
+}
+
+.symptom-suggestion:hover {
+    background-color: #f8f9fa;
+}
+
+.symptom-suggestion:last-child {
+    border-bottom: none;
+}
+
+/* Selected Symptoms */
+.selected-symptoms {
+    margin-bottom: 25px;
+}
+
+.selected-symptoms h4 {
+    color: #2c3e50;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.symptoms-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.selected-symptom {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    text-transform: capitalize;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+}
+
+.remove-symptom {
+    background: rgba(255, 255, 255, 0.3);
+    border: none;
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.remove-symptom:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Form Elements */
+.additional-info-form {
+    margin-bottom: 25px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
+
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+    background: #fafafa;
+}
+
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #3498db;
+    background: #ffffff;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Range Slider */
+input[type="range"] {
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: #e0e0e0;
+    outline: none;
+    -webkit-appearance: none;
+    margin: 10px 0;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #3498db;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(52, 152, 219, 0.3);
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #3498db;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 6px rgba(52, 152, 219, 0.3);
+}
+
+#severity-value {
+    display: inline-block;
+    background: #3498db;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-weight: 600;
+    margin-left: 10px;
+}
+
+/* Buttons */
+.btn-primary,
+.btn-secondary,
+.btn-emergency {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+.btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+}
+
+.btn-primary:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-secondary {
+    background: #95a5a6;
+    color: white;
+    box-shadow: 0 4px 15px rgba(149, 165, 166, 0.3);
+}
+
+.btn-secondary:hover {
+    background: #7f8c8d;
+    transform: translateY(-2px);
+}
+
+.btn-emergency {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+    margin: 5px;
+}
+
+.btn-emergency:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+}
+
+/* Step Navigation */
+.step-navigation {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-spinner p {
+    color: #7f8c8d;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+/* Analysis Results */
+.analysis-results {
+    margin-top: 20px;
+}
+
+.analysis-summary {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    border-left: 5px solid #3498db;
+}
+
+.urgency-level {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.urgency-level h4 {
+    margin: 0;
+    font-size: 1.3rem;
+}
+
+.urgency-score {
+    background: #3498db;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.urgency-low { border-left-color: #27ae60; }
+.urgency-medium { border-left-color: #f39c12; }
+.urgency-high { border-left-color: #e67e22; }
+.urgency-emergency { border-left-color: #e74c3c; }
+
+/* Conditions */
+.possible-conditions,
+.recommended-actions,
+.red-flags,
+.self-care-advice,
+.when-to-seek-care {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f0f0f0;
+}
+
+.possible-conditions h4,
+.recommended-actions h4,
+.red-flags h4,
+.self-care-advice h4,
+.when-to-seek-care h4 {
+    color: #2c3e50;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #ecf0f1;
+}
+
+.condition-item {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border-left: 4px solid #3498db;
+}
+
+.condition-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.probability {
+    background: #3498db;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.severity {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.severity-mild { background: #d5f4e6; color: #27ae60; }
+.severity-moderate { background: #fef9e7; color: #f39c12; }
+.severity-severe { background: #fadbd8; color: #e74c3c; }
+
+/* Actions */
+.action-item {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border-left: 4px solid #95a5a6;
+}
+
+.priority-high { border-left-color: #e74c3c; }
+.priority-medium { border-left-color: #f39c12; }
+.priority-low { border-left-color: #27ae60; }
+
+.action-meta {
+    display: flex;
+    gap: 15px;
+    margin-top: 8px;
+    font-size: 0.9rem;
+}
+
+.priority,
+.timeframe {
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.priority {
+    background: #ecf0f1;
+    color: #2c3e50;
+}
+
+.timeframe {
+    background: #e8f5e8;
+    color: #27ae60;
+}
+
+/* Red Flags */
+.red-flags {
+    background: linear-gradient(135deg, #fadbd8, #f5b7b1);
+    border-left-color: #e74c3c;
+}
+
+.red-flags ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.red-flags li {
+    margin-bottom: 8px;
+    color: #c0392b;
+    font-weight: 500;
+}
+
+/* Care Timeline */
+.care-timeline {
+    display: grid;
+    gap: 15px;
+}
+
+.care-immediate,
+.care-urgent,
+.care-routine {
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid;
+}
+
+.care-immediate {
+    background: #fadbd8;
+    border-left-color: #e74c3c;
+}
+
+.care-urgent {
+    background: #fef9e7;
+    border-left-color: #f39c12;
+}
+
+.care-routine {
+    background: #d5f4e6;
+    border-left-color: #27ae60;
+}
+
+/* Medical Disclaimer */
+.medical-disclaimer {
+    background: linear-gradient(135deg, #f4f4f4, #e8e8e8);
+    border: 2px solid #bdc3c7;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 25px;
+}
+
+.medical-disclaimer h4 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.medical-disclaimer p {
+    color: #5d6d7e;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+/* Emergency Alert */
+.emergency-alert {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+}
+
+.emergency-alert h3 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+}
+
+.emergency-actions {
+    margin: 20px 0;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Error Message */
+.error-message {
+    background: #fadbd8;
+    color: #c0392b;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    border: 2px solid #e74c3c;
+}
+
+.error-message h4 {
+    margin-bottom: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .symptoms-checker-container {
+        margin: 10px;
+        padding: 15px;
+    }
+    
+    .symptoms-checker-header h2 {
+        font-size: 1.8rem;
+    }
+    
+    .condition-header,
+    .action-meta {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .step-navigation {
+        flex-direction: column;
+    }
+    
+    .emergency-actions {
+        flex-direction: column;
+    }
+    
+    .care-timeline {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .symptoms-checker-header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .btn-primary,
+    .btn-secondary,
+    .btn-emergency {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+} 

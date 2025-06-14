@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced User Dashboard - MediCare+</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js for simple charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --primary-blue: #007BFF;
+            --secondary-blue: #0056b3;
+            --success-green: #28a745;
+            --warning-orange: #ffc107;
+            --danger-red: #dc3545;
+            --info-cyan: #17a2b8;
+            --light-gray: #f8f9fa;
+            --dark-gray: #343a40;
+            --text-dark: #212529;
+            --text-muted: #6c757d;
+            --border-radius: 15px;
+            --shadow: 0 4px 15px rgba(0, 123, 255, 0.1);
+            --shadow-hover: 0 8px 25px rgba(0, 123, 255, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 50px;
+            padding: 12px 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .navbar-content {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .navbar-brand i {
+            color: var(--primary-blue);
+            font-size: 1.5rem;
+        }
+
+        .brand-accent {
+            color: var(--primary-blue);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary-blue);
+            background: rgba(0, 123, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Main Container */
+        .container {
+            margin-top: 120px;
+            padding: 2rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .welcome-text h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-text p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .health-score {
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--success-green), #20c997);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 0 auto 1rem;
+            box-shadow: 0 8px 30px rgba(40, 167, 69, 0.3);
+        }
+
+        .score-label {
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        /* Quick Stats */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Card Styles */
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-title i {
+            color: var(--primary-blue);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid transparent;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .action-btn i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-blue);
+        }
+
+        .action-btn h4 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .action-btn p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* Health Metrics */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+
+        .metric-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(0, 123, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 123, 255, 0.1);
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* Activity List */
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(0, 123, 255, 0.05);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .activity-item:hover {
+            background: rgba(0, 123, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-time {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .welcome-section {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .navbar-content {
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .quick-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 123, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-blue);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Notification Badge */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger-red);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: white;
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary-blue);
+            z-index: 1001;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            max-width: 300px;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            border-left-color: var(--success-green);
+        }
+
+        .toast.error {
+            border-left-color: var(--danger-red);
+        }
+
+        .toast.warning {
+            border-left-color: var(--warning-orange);
+        }
+
+        /* Calendar Widget Styles */
+        .calendar-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .calendar-nav-btn {
+            background: none;
+            border: none;
+            color: var(--primary-blue);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .calendar-nav-btn:hover {
+            background: rgba(0, 123, 255, 0.1);
+            transform: scale(1.1);
+        }
+
+        .current-month {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            min-width: 150px;
+            text-align: center;
+        }
+
+        .calendar-container {
+            padding: 1rem;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            min-height: 40px;
+            font-size: 0.9rem;
+        }
+
+        .calendar-day:hover {
+            background: rgba(0, 123, 255, 0.1);
+            transform: scale(1.05);
+        }
+
+        .calendar-day.today {
+            background: var(--primary-blue);
+            color: white;
+            font-weight: 600;
+        }
+
+        .calendar-day.other-month {
+            color: var(--text-muted);
+            opacity: 0.5;
+        }
+
+        .calendar-day.has-events {
+            font-weight: 600;
+        }
+
+        .calendar-day-header {
+            font-weight: 600;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .event-indicators {
+            display: flex;
+            gap: 2px;
+            margin-top: 2px;
+        }
+
+        .event-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+        }
+
+        .event-dot.appointment {
+            background: var(--primary-blue);
+        }
+
+        .event-dot.reminder {
+            background: var(--warning-orange);
+        }
+
+        .event-dot.both {
+            background: var(--success-green);
+        }
+
+        .calendar-legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1rem;
+            background: rgba(0, 123, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.appointment {
+            background: var(--primary-blue);
+        }
+
+        .legend-dot.reminder {
+            background: var(--warning-orange);
+        }
+
+        .legend-dot.both {
+            background: var(--success-green);
+        }
+
+        /* Day Detail Modal */
+        .day-detail-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1002;
+        }
+
+        .day-detail-content {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .day-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .day-detail-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .event-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .event-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            background: rgba(0, 123, 255, 0.05);
+        }
+
+        .event-item.reminder {
+            background: rgba(255, 193, 7, 0.1);
+        }
+
+        .event-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .event-icon.appointment {
+            background: var(--primary-blue);
+        }
+
+        .event-icon.reminder {
+            background: var(--warning-orange);
+        }
+
+        .event-details h4 {
+            margin: 0 0 0.25rem 0;
+            color: var(--text-dark);
+        }
+
+        .event-details p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Small Button Widgets */
+        .widget-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .widget-btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .widget-btn:hover {
+            background: var(--secondary-blue);
+            transform: translateY(-2px);
+        }
+
+        .widget-btn.reminder {
+            background: var(--warning-orange);
+        }
+
+        .widget-btn.reminder:hover {
+            background: #e0a800;
+        }
+
+        .widget-btn i {
+            font-size: 0.7rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="../../html/index.html" class="navbar-brand">
+                <i class="fas fa-heartbeat"></i>
+                <span>Medi<span class="brand-accent">Care+</span></span>
+            </a>
+            
+            <div class="nav-links">
+                <a href="user-dashboard.html" class="nav-link active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="user-appointments.html" class="nav-link">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Appointments</span>
+                    <span class="notification-badge">2</span>
+                </a>
+                <a href="user-reminders.html" class="nav-link">
+                    <i class="fas fa-bell"></i>
+                    <span>Reminders</span>
+                    <span class="notification-badge">5</span>
+                </a>
+                <a href="ai-health-assistant.html" class="nav-link">
+                    <i class="fas fa-robot"></i>
+                    <span>AI Assistant</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+            <div class="welcome-text">
+                <h1>Welcome back, John! 👋</h1>
+                <p>Your health journey continues with smart insights and personalized care management.</p>
+                <div class="quick-stats-mini">
+                    <span><strong>15-day</strong> medication streak</span> • 
+                    <span><strong>92%</strong> health score</span> • 
+                    <span><strong>2 days</strong> until next appointment</span>
+                </div>
+            </div>
+            <div class="health-score">
+                <div class="score-circle">
+                    <span id="health-score-value">92</span>
+                </div>
+                <div class="score-label">Health Score</div>
+            </div>
+        </section>
+
+        <!-- Quick Stats -->
+        <section class="quick-stats">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #dc3545, #fd7e14);">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <div class="stat-value">120/80</div>
+                <div class="stat-label">Blood Pressure</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #007bff, #6610f2);">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="stat-value">72 BPM</div>
+                <div class="stat-label">Heart Rate</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #28a745, #20c997);">
+                    <i class="fas fa-weight"></i>
+                </div>
+                <div class="stat-value">165 lbs</div>
+                <div class="stat-label">Weight</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #6f42c1, #e83e8c);">
+                    <i class="fas fa-moon"></i>
+                </div>
+                <div class="stat-value">7.5h</div>
+                <div class="stat-label">Sleep</div>
+            </div>
+        </section>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fas fa-bolt"></i>
+                            Quick Actions
+                        </h2>
+                    </div>
+                    
+                    <div class="quick-actions">
+                        <div class="action-btn" onclick="openSymptomChecker()">
+                            <i class="fas fa-stethoscope"></i>
+                            <h4>Symptom Checker</h4>
+                            <p>AI health analysis</p>
+                        </div>
+                        
+                        <div class="action-btn" onclick="recordVitals()">
+                            <i class="fas fa-heartbeat"></i>
+                            <h4>Record Vitals</h4>
+                            <p>Track health metrics</p>
+                        </div>
+                        
+                        <div class="action-btn" onclick="bookAppointment()">
+                            <i class="fas fa-calendar-plus"></i>
+                            <h4>Book Appointment</h4>
+                            <p>Schedule with doctor</p>
+                        </div>
+                        
+                        <div class="action-btn" onclick="viewMedications()">
+                            <i class="fas fa-pills"></i>
+                            <h4>Medications</h4>
+                            <p>Manage prescriptions</p>
+                        </div>
+                        
+                        <div class="action-btn" onclick="emergencyContact()">
+                            <i class="fas fa-phone-alt"></i>
+                            <h4>Emergency</h4>
+                            <p>Quick contacts</p>
+                        </div>
+                        
+                        <div class="action-btn" onclick="healthReports()">
+                            <i class="fas fa-file-medical"></i>
+                            <h4>Health Reports</h4>
+                            <p>View medical history</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calendar Widget -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fas fa-calendar-alt"></i>
+                            Calendar Overview
+                        </h2>
+                        <div class="calendar-controls">
+                            <button class="calendar-nav-btn" onclick="previousMonth()">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span id="current-month-year" class="current-month"></span>
+                            <button class="calendar-nav-btn" onclick="nextMonth()">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="calendar-container">
+                        <div class="calendar-grid" id="calendar-grid">
+                            <!-- Calendar will be generated here -->
+                        </div>
+                        
+                        <div class="calendar-legend">
+                            <div class="legend-item">
+                                <span class="legend-dot appointment"></span>
+                                <span>Appointments</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-dot reminder"></span>
+                                <span>Reminders</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-dot both"></span>
+                                <span>Both</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Today's Health Metrics -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fas fa-chart-bar"></i>
+                            Today's Metrics
+                        </h2>
+                    </div>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <div class="metric-value">8,432</div>
+                            <div class="metric-label">Steps</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">6/8</div>
+                            <div class="metric-label">Water</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">285</div>
+                            <div class="metric-label">Calories</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">98.6°F</div>
+                            <div class="metric-label">Temperature</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Upcoming Events -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-calendar-alt"></i>
+                            Upcoming
+                        </h3>
+                    </div>
+                    
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background: var(--primary-blue);">
+                                <i class="fas fa-user-md"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">Cardiology Appointment</div>
+                                <div class="activity-time">Tomorrow, 2:30 PM</div>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background: var(--warning-orange);">
+                                <i class="fas fa-pills"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">Medication Refill</div>
+                                <div class="activity-time">In 3 days</div>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background: var(--success-green);">
+                                <i class="fas fa-flask"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">Lab Results</div>
+                                <div class="activity-time">Available now</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activities -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-history"></i>
+                            Recent Activity
+                        </h3>
+                    </div>
+                    
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background: var(--success-green);">
+                                <i class="fas fa-heartbeat"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">Blood pressure recorded</div>
+                                <div class="activity-time">2 hours ago</div>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background: var(--primary-blue);">
+                                <i class="fas fa-pills"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">Medication taken</div>
+                                <div class="activity-time">4 hours ago</div>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background: var(--info-cyan);">
+                                <i class="fas fa-walking"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">30-minute walk</div>
+                                <div class="activity-time">6 hours ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Health Tips -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-lightbulb"></i>
+                            Health Tips
+                        </h3>
+                    </div>
+                    
+                    <div style="padding: 1rem; background: rgba(40, 167, 69, 0.1); border-radius: 10px; border-left: 4px solid var(--success-green);">
+                        <h4 style="color: var(--success-green); margin-bottom: 0.5rem;">💧 Stay Hydrated</h4>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">Drink water regularly throughout the day. You're doing great with 6/8 glasses today!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <div id="toast-message"></div>
+    </div>
+
+    <!-- Day Detail Modal -->
+    <div id="day-detail-modal" class="day-detail-modal">
+        <div class="day-detail-content">
+            <div class="day-detail-header">
+                <h3 class="day-detail-title" id="day-detail-title">Day Details</h3>
+                <button class="close-modal" onclick="closeDayDetail()">&times;</button>
+            </div>
+            <div class="event-list" id="day-events">
+                <!-- Events will be populated here -->
+            </div>
+            <div class="widget-buttons">
+                <button class="widget-btn" onclick="addAppointment()">
+                    <i class="fas fa-plus"></i>
+                    Add Appointment
+                </button>
+                <button class="widget-btn reminder" onclick="addReminder()">
+                    <i class="fas fa-bell"></i>
+                    Add Reminder
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Calendar and Dashboard JavaScript
+        let currentDate = new Date();
+        let selectedDate = null;
+        
+        // Sample data for appointments and reminders
+        const sampleEvents = {
+            '2024-01-15': [
+                { type: 'appointment', title: 'Cardiology Appointment', time: '2:30 PM', doctor: 'Dr. Johnson' },
+                { type: 'reminder', title: 'Take Blood Pressure Medication', time: '8:00 AM' }
+            ],
+            '2024-01-16': [
+                { type: 'reminder', title: 'Exercise - 30 min walk', time: '7:00 AM' }
+            ],
+            '2024-01-18': [
+                { type: 'appointment', title: 'Lab Work', time: '10:00 AM', doctor: 'City Lab' },
+                { type: 'reminder', title: 'Medication Refill', time: '2:00 PM' }
+            ],
+            '2024-01-20': [
+                { type: 'reminder', title: 'Check Blood Sugar', time: '9:00 AM' }
+            ],
+            '2024-01-22': [
+                { type: 'appointment', title: 'Follow-up Visit', time: '3:00 PM', doctor: 'Dr. Smith' }
+            ]
+        };
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDashboard();
+            initializeCalendar();
+        });
+
+        function initializeDashboard() {
+            // Show welcome message
+            showToast('Welcome to your enhanced dashboard!', 'success');
+            
+            // Animate health score
+            animateHealthScore();
+        }
+
+        function initializeCalendar() {
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const calendarGrid = document.getElementById('calendar-grid');
+            const monthYearElement = document.getElementById('current-month-year');
+            
+            if (!calendarGrid || !monthYearElement) return;
+            
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            // Set month/year display
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'];
+            monthYearElement.textContent = `${monthNames[month]} ${year}`;
+            
+            // Clear calendar
+            calendarGrid.innerHTML = '';
+            
+            // Add day headers
+            const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dayHeaders.forEach(day => {
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'calendar-day-header';
+                dayHeader.textContent = day;
+                calendarGrid.appendChild(dayHeader);
+            });
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            
+            // Add empty cells for days before month starts
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day other-month';
+                calendarGrid.appendChild(emptyDay);
+            }
+            
+            // Add days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = day;
+                
+                const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                
+                // Check if it's today
+                if (year === today.getFullYear() && month === today.getMonth() && day === today.getDate()) {
+                    dayElement.classList.add('today');
+                }
+                
+                // Check for events
+                const events = sampleEvents[dateString];
+                if (events && events.length > 0) {
+                    dayElement.classList.add('has-events');
+                    
+                    const indicators = document.createElement('div');
+                    indicators.className = 'event-indicators';
+                    
+                    const hasAppointment = events.some(e => e.type === 'appointment');
+                    const hasReminder = events.some(e => e.type === 'reminder');
+                    
+                    if (hasAppointment && hasReminder) {
+                        const dot = document.createElement('div');
+                        dot.className = 'event-dot both';
+                        indicators.appendChild(dot);
+                    } else if (hasAppointment) {
+                        const dot = document.createElement('div');
+                        dot.className = 'event-dot appointment';
+                        indicators.appendChild(dot);
+                    } else if (hasReminder) {
+                        const dot = document.createElement('div');
+                        dot.className = 'event-dot reminder';
+                        indicators.appendChild(dot);
+                    }
+                    
+                    dayElement.appendChild(indicators);
+                }
+                
+                // Add click event
+                dayElement.addEventListener('click', () => showDayDetail(dateString, day));
+                
+                calendarGrid.appendChild(dayElement);
+            }
+        }
+
+        function previousMonth() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+        }
+
+        function showDayDetail(dateString, day) {
+            selectedDate = dateString;
+            const modal = document.getElementById('day-detail-modal');
+            const title = document.getElementById('day-detail-title');
+            const eventsList = document.getElementById('day-events');
+            
+            const date = new Date(dateString);
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'];
+            
+            title.textContent = `${monthNames[date.getMonth()]} ${day}, ${date.getFullYear()}`;
+            
+            // Clear events list
+            eventsList.innerHTML = '';
+            
+            const events = sampleEvents[dateString] || [];
+            
+            if (events.length === 0) {
+                eventsList.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No events scheduled for this day</p>';
+            } else {
+                events.forEach(event => {
+                    const eventItem = document.createElement('div');
+                    eventItem.className = `event-item ${event.type}`;
+                    
+                    eventItem.innerHTML = `
+                        <div class="event-icon ${event.type}">
+                            <i class="fas ${event.type === 'appointment' ? 'fa-user-md' : 'fa-bell'}"></i>
+                        </div>
+                        <div class="event-details">
+                            <h4>${event.title}</h4>
+                            <p>${event.time}${event.doctor ? ` - ${event.doctor}` : ''}</p>
+                        </div>
+                    `;
+                    
+                    eventsList.appendChild(eventItem);
+                });
+            }
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeDayDetail() {
+            document.getElementById('day-detail-modal').style.display = 'none';
+        }
+
+        function addAppointment() {
+            showToast('Redirecting to appointment booking...', 'info');
+            setTimeout(() => {
+                window.location.href = 'user-appointments.html';
+            }, 1000);
+        }
+
+        function addReminder() {
+            showToast('Redirecting to reminders...', 'info');
+            setTimeout(() => {
+                window.location.href = 'user-reminders.html';
+            }, 1000);
+        }
+
+        function animateHealthScore() {
+            const scoreElement = document.getElementById('health-score-value');
+            if (!scoreElement) return;
+            
+            let currentScore = 0;
+            const targetScore = 92;
+            const increment = targetScore / 50;
+            
+            const animation = setInterval(() => {
+                currentScore += increment;
+                if (currentScore >= targetScore) {
+                    currentScore = targetScore;
+                    clearInterval(animation);
+                }
+                scoreElement.textContent = Math.round(currentScore);
+            }, 30);
+        }
+
+        // Quick Action Functions
+        function openSymptomChecker() {
+            showToast('Opening AI Symptom Checker...', 'info');
+            setTimeout(() => {
+                const symptoms = prompt('Describe your symptoms:');
+                if (symptoms) {
+                    showToast('Analyzing symptoms... This is a demo feature.', 'info');
+                }
+            }, 500);
+        }
+
+        function recordVitals() {
+            showToast('Opening vitals recorder...', 'info');
+            const vitals = {
+                bloodPressure: prompt('Blood Pressure (e.g., 120/80):'),
+                heartRate: prompt('Heart Rate (BPM):'),
+                weight: prompt('Weight (lbs):')
+            };
+            
+            if (vitals.bloodPressure || vitals.heartRate || vitals.weight) {
+                showToast('Vitals recorded successfully!', 'success');
+            }
+        }
+
+        function bookAppointment() {
+            showToast('Redirecting to appointments...', 'info');
+            window.location.href = 'user-appointments.html';
+        }
+
+        function viewMedications() {
+            showToast('Opening medication manager...', 'info');
+            alert('Medications:\n• Lisinopril 10mg - Once daily\n• Metformin 500mg - Twice daily');
+        }
+
+        function emergencyContact() {
+            showToast('Emergency contacts ready', 'warning');
+            if (confirm('Do you need emergency assistance?')) {
+                alert('Emergency Contacts:\n• 911 - Emergency Services\n• Dr. Johnson: (555) 123-4567\n• Pharmacy: (555) 987-6543');
+            }
+        }
+
+        function healthReports() {
+            showToast('Loading health reports...', 'info');
+            alert('Health Reports:\n• Blood work: Normal\n• Cholesterol: 180 mg/dL\n• Blood sugar: 95 mg/dL\n• Last updated: 3 days ago');
+        }
+
+        // Toast notification system
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            
+            if (!toast || !toastMessage) return;
+            
+            toastMessage.textContent = message;
+            toast.className = `toast ${type} show`;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('day-detail-modal');
+            if (event.target === modal) {
+                closeDayDetail();
+            }
+        });
+
+        // Simple real-time updates
+        setInterval(() => {
+            const stepsElement = document.querySelector('.metric-item .metric-value');
+            if (stepsElement && stepsElement.textContent.includes(',')) {
+                const currentSteps = parseInt(stepsElement.textContent.replace(',', ''));
+                const newSteps = currentSteps + Math.floor(Math.random() * 10);
+                stepsElement.textContent = newSteps.toLocaleString();
+            }
+        }, 30000);
+    </script>
+</body>
+</html> 
