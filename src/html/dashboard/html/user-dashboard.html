@@ -778,25 +778,20 @@
         // Dashboard functionality
         let healthTrendsChart;
         
-        // Check authentication status
+        // Simple authentication check
         async function checkAuth() {
             try {
-                console.log('🔍 Checking authentication status...');
                 const { data: { session } } = await supabase.auth.getSession();
                 
-                if (!session) {
-                    console.log('❌ No session found, redirecting to auth...');
-                    // Redirect to login if not authenticated
+                if (!session || !session.user) {
+                    console.log('❌ No valid session found, redirecting to auth...');
                     window.location.href = '/src/html/auth.html';
                     return false;
                 }
                 
                 currentUser = session.user;
-                console.log('✅ User authenticated:', currentUser.email);
-                console.log('📊 Dashboard should load now...');
-                
-                // Update UI with user information
-                updateUserInfo(currentUser);
+                console.log('✅ User authenticated:', session.user.email);
+                updateUserInfo(session.user);
                 
                 return true;
             } catch (error) {
@@ -865,15 +860,6 @@
             initializeHealthTrendsChart();
             loadDashboardData();
             animateCounters();
-            
-            // Setup auth state listener
-            supabase.auth.onAuthStateChange((event, session) => {
-                console.log('Auth state changed:', event);
-                
-                if (event === 'SIGNED_OUT' || !session) {
-                    window.location.href = '/src/html/auth.html';
-                }
-            });
             
             console.log('✅ Dashboard initialized successfully');
         });
@@ -1082,5 +1068,4 @@
         setInterval(loadDashboardData, 5 * 60 * 1000);
     </script>
 </body>
-</html> 
 </html> 

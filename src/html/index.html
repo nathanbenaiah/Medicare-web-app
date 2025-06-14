@@ -17907,115 +17907,35 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjaGducndxaWx5bHl5a3BwaXpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTIyNDI1MzgsImV4cCI6MjAyNzgxODUzOH0.GtHQVOl7NSmNWE6u6wqYSN8EZwrBw4yyJ5fK4Lr0n2k';
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
         
-        // Check if user is authenticated and redirect to dashboard
+        // Simple session check - only redirect if explicitly coming from OAuth
         async function checkAuthAndRedirect() {
             try {
-                console.log('🔍 Checking authentication status...');
-                console.log('Current URL:', window.location.href);
-                console.log('URL Hash:', window.location.hash);
-                
-                // Check URL for OAuth tokens (after successful Google login)
+                // Only check for OAuth tokens, don't auto-redirect existing sessions
                 const hash = window.location.hash;
                 const urlParams = new URLSearchParams(window.location.search);
                 
                 if (hash.includes('access_token') || hash.includes('refresh_token') || urlParams.get('code')) {
-                    console.log('🎯 OAuth tokens detected in URL, processing authentication...');
+                    console.log('🎯 OAuth callback detected, processing...');
                     
-                    // Show loading message
-                    const authButton = document.querySelector('.auth-sign-btn');
-                    if (authButton) {
-                        authButton.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Completing sign in...';
-                        authButton.style.pointerEvents = 'none';
-                        authButton.style.opacity = '0.8';
-                    }
+                    // Wait for Supabase to process tokens
+                    await new Promise(resolve => setTimeout(resolve, 2000));
                     
-                    // Show page-wide loading notification
-                    showNotification('🔐 Completing your sign in...', 'info');
-                    
-                    // Wait longer for Supabase to process tokens
-                    await new Promise(resolve => setTimeout(resolve, 3000));
-                    
-                    // Get session after OAuth
-                    const { data: { session }, error } = await supabase.auth.getSession();
-                    console.log('Session data:', session);
-                    console.log('Session error:', error);
-                    
+                    const { data: { session } } = await supabase.auth.getSession();
                     if (session && session.user) {
-                        console.log('✅ OAuth session established for:', session.user.email);
+                        console.log('✅ OAuth session established');
                         localStorage.setItem('medicare_user', JSON.stringify(session.user));
                         
-                        // Show success
-                        showNotification('✨ Sign in successful! Redirecting to dashboard...', 'success');
-                        if (authButton) {
-                            authButton.innerHTML = '<i class="bx bx-check-circle"></i> Sign in successful!';
-                            authButton.style.background = '#10b981';
-                        }
-                        
-                        // Clear the URL and redirect
+                        // Clear URL and redirect immediately
                         window.history.replaceState({}, document.title, window.location.pathname);
-                        setTimeout(() => {
-                            console.log('🚀 Redirecting to dashboard...');
-                            window.location.href = 'html/dashboard/html/user-dashboard.html';
-                        }, 1500);
-                        return;
-                    } else {
-                        console.error('❌ No session found after OAuth tokens detected');
-                        console.log('🔄 Attempting direct redirect to dashboard as fallback...');
-                        
-                        // Extract user info from URL hash if possible
-                        const hashParams = new URLSearchParams(hash.substring(1));
-                        const accessToken = hashParams.get('access_token');
-                        
-                        if (accessToken) {
-                            console.log('📝 Access token found, attempting direct redirect...');
-                            showNotification('🔄 Redirecting to dashboard...', 'info');
-                            
-                            // Store a temporary flag
-                            localStorage.setItem('oauth_redirect', 'true');
-                            localStorage.setItem('access_token', accessToken);
-                            
-                            // Clear URL and redirect
-                            window.history.replaceState({}, document.title, window.location.pathname);
-                            setTimeout(() => {
-                                window.location.href = 'html/dashboard/html/user-dashboard.html';
-                            }, 1000);
-                            return;
-                        }
-                        
-                        showNotification('❌ Authentication failed. Please try again.', 'error');
-                        if (authButton) {
-                            authButton.innerHTML = '<i class="bx bx-error"></i> Authentication failed';
-                            authButton.style.background = '#ef4444';
-                            authButton.style.pointerEvents = 'auto';
-                            authButton.style.opacity = '1';
-                        }
+                        window.location.href = 'html/dashboard/html/user-dashboard.html';
                     }
                 }
-                
-                // Check for existing session
-                const { data: { session }, error } = await supabase.auth.getSession();
-                if (session && session.user) {
-                    console.log('🔄 Active session found, redirecting to dashboard...');
-                    localStorage.setItem('medicare_user', JSON.stringify(session.user));
-                    showNotification('Welcome back! Redirecting to dashboard...', 'success');
-                    setTimeout(() => {
-                        window.location.href = 'html/dashboard/html/user-dashboard.html';
-                    }, 1000);
-                }
             } catch (error) {
-                console.error('❌ Session check error:', error);
-                showNotification('❌ Error checking authentication. Please try again.', 'error');
-                const authButton = document.querySelector('.auth-sign-btn');
-                if (authButton) {
-                    authButton.innerHTML = '<i class="bx bx-error"></i> Error occurred';
-                    authButton.style.background = '#ef4444';
-                    authButton.style.pointerEvents = 'auto';
-                    authButton.style.opacity = '1';
-                }
+                console.error('Session check error:', error);
             }
         }
         
-        // Run session check when page loads
+        // Only run OAuth check on page load
         document.addEventListener('DOMContentLoaded', checkAuthAndRedirect);
     </script>
     
