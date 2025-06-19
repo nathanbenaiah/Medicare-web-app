@@ -1,8 +1,7 @@
 {
-  "buildCommand": "",
-  "outputDirectory": ".",
-  "installCommand": "echo 'No build needed for static site'",
-  "framework": null,
+  "version": 2,
+  "name": "medicare-plus",
+  "public": true,
   "rewrites": [
     {
       "source": "/auth",
@@ -76,6 +75,24 @@
         {
           "key": "Permissions-Policy",
           "value": "camera=(), microphone=(), geolocation=()"
+        }
+      ]
+    },
+    {
+      "source": "/(.*\\.(css|js|png|jpg|jpeg|gif|ico|svg))",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.*\\.html)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
         }
       ]
     }
