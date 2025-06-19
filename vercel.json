@@ -1,0 +1,109 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "**/*",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/auth",
+      "dest": "/html/auth.html"
+    },
+    {
+      "src": "/dashboard",
+      "dest": "/html/user-dashboard.html"
+    },
+    {
+      "src": "/features",
+      "dest": "/html/features.html"
+    },
+    {
+      "src": "/ai-features",
+      "dest": "/html/ai-features.html"
+    },
+    {
+      "src": "/about",
+      "dest": "/html/about.html"
+    },
+    {
+      "src": "/contact",
+      "dest": "/html/contact.html"
+    },
+    {
+      "src": "/blog",
+      "dest": "/html/blog.html"
+    },
+    {
+      "src": "/help",
+      "dest": "/html/help-center.html"
+    },
+    {
+      "src": "/privacy",
+      "dest": "/html/privacy-policy.html"
+    },
+    {
+      "src": "/terms",
+      "dest": "/html/terms-of-use.html"
+    },
+    {
+      "src": "/provider-signup",
+      "dest": "/html/provider-signup.html"
+    },
+    {
+      "src": "/provider-registration",
+      "dest": "/html/provider-registration.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/signin",
+      "destination": "/html/auth.html",
+      "permanent": true
+    },
+    {
+      "source": "/signup",
+      "destination": "/html/auth.html",
+      "permanent": true
+    },
+    {
+      "source": "/login",
+      "destination": "/html/auth.html",
+      "permanent": true
+    }
+  ]
+} 
