@@ -17,6 +17,9 @@
     <!-- Chart.js for health metrics -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
+    <!-- Supabase for authentication and data -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
     <style>
         :root {
             --primary-blue: #3B82F6;
@@ -4262,6 +4265,10 @@
                         <i class="fas fa-bell"></i>
                         <span class="notification-badge" id="topNotificationCount">3</span>
                     </div>
+                    <a href="#" class="quick-action-btn" onclick="signOut()" title="Sign Out">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Sign Out</span>
+                    </a>
                     <div class="user-profile" onclick="loadSection('profile')">
                         <div class="user-avatar">
                             <span id="userInitials">JD</span>
@@ -7315,9 +7322,210 @@
             document.getElementById('currentTime').textContent = now.toLocaleTimeString('en-US', timeOptions);
         }
 
+        // 🏥 Supabase Configuration
+        const supabaseUrl = 'https://gcggnrwqilylyykppizb.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjZ2ducndxaWx5bHl5a3BwaXpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk0ODA1NjAsImV4cCI6MjA2NTA1NjU2MH0.9ayDDoyjUiYA3Hmir_A92U2i7QNkIuER-94kDNVVgoE';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        // 🔐 Authentication State Management
+        let currentUser = null;
+        let userProfile = null;
+
+        // Check authentication status
+        async function checkAuthentication() {
+            try {
+                const { data: { session }, error } = await supabase.auth.getSession();
+                
+                if (error) {
+                    console.error('Session error:', error);
+                    redirectToAuth();
+                    return false;
+                }
+
+                if (!session) {
+                    console.log('No active session found');
+                    redirectToAuth();
+                    return false;
+                }
+
+                currentUser = session.user;
+                console.log('✅ User authenticated:', currentUser.email);
+                
+                // Load user profile
+                await loadUserProfile();
+                return true;
+            } catch (error) {
+                console.error('Authentication check failed:', error);
+                redirectToAuth();
+                return false;
+            }
+        }
+
+        // Load user profile from database
+        async function loadUserProfile() {
+            try {
+                const { data: profile, error } = await supabase
+                    .from('user_profiles')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .single();
+
+                if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+                    console.error('Profile load error:', error);
+                    // Create basic profile if it doesn't exist
+                    await createUserProfile();
+                    return;
+                }
+
+                if (profile) {
+                    userProfile = profile;
+                    updateUIWithUserData();
+                } else {
+                    await createUserProfile();
+                }
+            } catch (error) {
+                console.error('Failed to load user profile:', error);
+                await createUserProfile();
+            }
+        }
+
+        // Create user profile
+        async function createUserProfile() {
+            try {
+                const profileData = {
+                    user_id: currentUser.id,
+                    email: currentUser.email,
+                    full_name: currentUser.user_metadata?.full_name || 'User',
+                    first_name: currentUser.user_metadata?.full_name?.split(' ')[0] || 'User',
+                    last_name: currentUser.user_metadata?.full_name?.split(' ').slice(1).join(' ') || '',
+                    phone_number: currentUser.user_metadata?.phone || '',
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
+                };
+
+                const { data: newProfile, error } = await supabase
+                    .from('user_profiles')
+                    .insert(profileData)
+                    .select()
+                    .single();
+
+                if (error) {
+                    console.error('Profile creation error:', error);
+                    return;
+                }
+
+                userProfile = newProfile;
+                updateUIWithUserData();
+                console.log('✅ User profile created');
+            } catch (error) {
+                console.error('Failed to create user profile:', error);
+            }
+        }
+
+        // Update UI with user data
+        function updateUIWithUserData() {
+            if (userProfile) {
+                const userName = userProfile.full_name || userProfile.first_name || 'User';
+                const initials = userName.split(' ').map(n => n[0]).join('').toUpperCase();
+                
+                document.getElementById('userName').textContent = userName;
+                document.getElementById('userDisplayName').textContent = userName;
+                document.getElementById('userInitials').textContent = initials;
+                
+                console.log('✅ UI updated with user data');
+            }
+        }
+
+        // Load real dashboard data from database
+        async function loadRealDashboardData() {
+            if (!currentUser) return;
+
+            try {
+                // Load appointments
+                const { data: appointments, error: appointmentsError } = await supabase
+                    .from('appointments')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('scheduled_date', { ascending: true });
+
+                if (!appointmentsError && appointments) {
+                    document.getElementById('appointmentCount').textContent = appointments.length;
+                    console.log('✅ Appointments loaded:', appointments.length);
+                }
+
+                // Load prescriptions
+                const { data: prescriptions, error: prescriptionsError } = await supabase
+                    .from('prescriptions')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .eq('status', 'active');
+
+                if (!prescriptionsError && prescriptions) {
+                    document.getElementById('medicationCount').textContent = prescriptions.length;
+                    console.log('✅ Prescriptions loaded:', prescriptions.length);
+                }
+
+                // Load vital signs
+                const { data: vitals, error: vitalsError } = await supabase
+                    .from('vital_signs')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false })
+                    .limit(1);
+
+                if (!vitalsError && vitals && vitals.length > 0) {
+                    const latestVitals = vitals[0];
+                    if (latestVitals.heart_rate) {
+                        document.getElementById('avgHeartRate').textContent = latestVitals.heart_rate;
+                    }
+                    if (latestVitals.blood_pressure_systolic && latestVitals.blood_pressure_diastolic) {
+                        document.getElementById('avgBloodPressure').textContent = 
+                            `${latestVitals.blood_pressure_systolic}/${latestVitals.blood_pressure_diastolic}`;
+                    }
+                    if (latestVitals.weight) {
+                        document.getElementById('currentWeight').textContent = latestVitals.weight;
+                    }
+                    console.log('✅ Vital signs loaded');
+                }
+
+            } catch (error) {
+                console.error('Failed to load dashboard data:', error);
+            }
+        }
+
+        // Sign out function
+        async function signOut() {
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) {
+                    console.error('Sign out error:', error);
+                    return;
+                }
+                
+                console.log('✅ User signed out');
+                redirectToAuth();
+            } catch (error) {
+                console.error('Sign out failed:', error);
+            }
+        }
+
+        // Redirect to authentication page
+        function redirectToAuth() {
+            window.location.href = '/html/auth.html';
+        }
+
         // Load initial data
-        document.addEventListener('DOMContentLoaded', function() {
-            loadDashboardData();
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check authentication first
+            const isAuthenticated = await checkAuthentication();
+            
+            if (!isAuthenticated) {
+                return; // Will redirect to auth page
+            }
+
+            // Load dashboard data
+            await loadRealDashboardData();
+            loadDashboardData(); // Keep existing mock data for demo
             initializeCalendar();
             addVoiceSearchCapability();
             updateDateTime();

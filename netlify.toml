@@ -3,7 +3,7 @@
   command = "echo 'Static site deployment - no build required'"
   
   # Publish directory - where your main HTML files are located
-  publish = "src/html"
+  publish = "."
 
 [build.environment]
   # Node.js version
@@ -38,48 +38,48 @@
 # Auth pages
 [[redirects]]
   from = "/auth*"
-  to = "/auth.html"
+  to = "/html/auth.html"
   status = 200
   force = true
 
 # Dashboard routes - SECOND PRIORITY
 [[redirects]]
   from = "/user-dashboard*"
-  to = "/dashboard/html/user-dashboard.html"
+  to = "/html/user-dashboard.html"
   status = 200
   force = true
 
 [[redirects]]
   from = "/dashboard*"
-  to = "/dashboard/html/user-dashboard.html"
+  to = "/html/user-dashboard.html"
   status = 200
   force = true
 
 # Static pages
 [[redirects]]
   from = "/privacy-policy*"
-  to = "/privacy-policy.html"
+  to = "/html/privacy-policy.html"
   status = 200
 
 [[redirects]]
   from = "/terms-of-use*"
-  to = "/terms-of-use.html"
+  to = "/html/terms-of-use.html"
   status = 200
 
-# Dashboard assets and resources
+# Static assets
 [[redirects]]
-  from = "/dashboard/css/*"
-  to = "/dashboard/css/:splat"
-  status = 200
-
-[[redirects]]
-  from = "/dashboard/js/*"
-  to = "/dashboard/js/:splat"
+  from = "/css/*"
+  to = "/css/:splat"
   status = 200
 
 [[redirects]]
-  from = "/dashboard/assets/*"
-  to = "/dashboard/assets/:splat"
+  from = "/js/*"
+  to = "/js/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/assets/*"
+  to = "/assets/:splat"
   status = 200
 
 # API routes (if any)
@@ -122,7 +122,7 @@
 
 # Special headers for auth pages
 [[headers]]
-  for = "/auth.html"
+  for = "/html/auth.html"
   [headers.values]
     Cache-Control = "no-cache, no-store, must-revalidate"
 
@@ -132,7 +132,7 @@
     Cache-Control = "no-cache, no-store, must-revalidate"
 
 [[headers]]
-  for = "/dashboard/*"
+  for = "/html/user-dashboard.html"
   [headers.values]
     Cache-Control = "no-cache, no-store, must-revalidate"
 

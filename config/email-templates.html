@@ -1,0 +1,489 @@
+<!-- 
+Email Templates for MediCare+ Supabase Authentication
+These templates should be added to your Supabase Dashboard > Authentication > Email Templates
+-->
+
+<!-- 1. CONFIRM SIGNUP TEMPLATE -->
+<template id="confirm-signup">
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to MediCare+</title>
+    <style>
+        body { font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #007BFF 0%, #0056b3 100%); padding: 50px 30px; text-align: center; position: relative; overflow: hidden; }
+        .header::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.1) rotate(180deg); } }
+        .logo { display: inline-flex; align-items: center; gap: 12px; color: white; position: relative; z-index: 2; }
+        .logo-icon { width: 56px; height: 56px; background: rgba(255,255,255,0.2); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 32px; backdrop-filter: blur(10px); border: 2px solid rgba(255,255,255,0.3); box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        .logo-text { font-size: 32px; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .logo-plus { color: #FFD700; }
+        .tagline { color: rgba(255,255,255,0.9); font-size: 14px; margin-top: 8px; font-weight: 500; }
+        .content { padding: 50px 40px; background: linear-gradient(to bottom, #ffffff 0%, #f8fafc 100%); }
+        .welcome-badge { display: inline-block; background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 8px 20px; border-radius: 50px; font-size: 12px; font-weight: 600; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3); }
+        .button { display: inline-block; background: linear-gradient(135deg, #007BFF 0%, #0056b3 100%); color: white; padding: 18px 40px; text-decoration: none; border-radius: 50px; font-weight: 600; margin: 30px 0; box-shadow: 0 8px 20px rgba(0, 123, 255, 0.3); transition: all 0.3s ease; font-size: 16px; }
+        .button:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0, 123, 255, 0.4); }
+        .features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 30px 0; }
+        .feature-item { text-align: center; padding: 20px; background: white; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        .feature-icon { width: 40px; height: 40px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; color: white; font-size: 18px; }
+        .feature-title { font-weight: 600; color: #1e293b; font-size: 14px; margin-bottom: 4px; }
+        .feature-desc { color: #64748b; font-size: 12px; }
+        .footer { padding: 40px 30px; background: #f8fafc; text-align: center; color: #64748b; font-size: 14px; border-top: 1px solid #e2e8f0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">🏥</div>
+                <div class="logo-text">MediCare<span class="logo-plus">+</span></div>
+            </div>
+            <div class="tagline">An all-in-one AI-powered healthcare platform for Sri Lankans</div>
+        </div>
+        <div class="content">
+            <div style="text-align: center;">
+                <div class="welcome-badge">🎉 Welcome to the Future of Healthcare!</div>
+                <h1 style="color: #1e293b; margin-bottom: 16px; font-size: 28px; font-weight: 700;">Your MediCare+ Journey Begins!</h1>
+                <p style="color: #64748b; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+                    Thank you for joining Sri Lanka's most advanced healthcare platform. We're excited to help you manage your health with AI-powered assistance and seamless appointment booking.
+                </p>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #e0f2fe 0%, #f3e5f5 100%); padding: 30px; border-radius: 20px; margin: 30px 0; border: 1px solid #b3e5fc;">
+                <p style="color: #1e293b; font-size: 16px; line-height: 1.6; text-align: center; margin-bottom: 20px;">
+                    <strong>🚀 Ready to transform your healthcare experience?</strong><br>
+                    Click below to confirm your email and unlock all features:
+                </p>
+                <div style="text-align: center;">
+                    <a href="{{ .ConfirmationURL }}" class="button">✨ Confirm Email & Get Started</a>
+                </div>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">🗓️</div>
+                    <div class="feature-title">Instant Booking</div>
+                    <div class="feature-desc">Book appointments with doctors instantly</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🤖</div>
+                    <div class="feature-title">AI Health Assistant</div>
+                    <div class="feature-desc">Get 24/7 AI-powered health advice</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">💊</div>
+                    <div class="feature-title">Smart Reminders</div>
+                    <div class="feature-desc">Never miss medications again</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🏥</div>
+                    <div class="feature-title">Hospital Network</div>
+                    <div class="feature-desc">Access 600+ hospitals island-wide</div>
+                </div>
+            </div>
+
+            <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 16px; margin: 30px 0;">
+                <p style="color: #856404; font-size: 14px; line-height: 1.6; margin: 0;">
+                    <strong>🔐 Privacy Notice:</strong> If you didn't create this account, you can safely ignore this email. Your data is protected with 256-bit encryption and HIPAA compliance.
+                </p>
+            </div>
+        </div>
+        <div class="footer">
+            <div style="margin-bottom: 20px;">
+                <div style="display: inline-flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <div style="width: 24px; height: 24px; background: #007BFF; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px;">🏥</div>
+                    <strong style="color: #1e293b;">MediCare+</strong>
+                </div>
+                <div style="color: #64748b; font-size: 12px;">Healthcare Made Simple for Sri Lankans</div>
+            </div>
+            <p style="margin: 8px 0; color: #10b981;">🔒 Your data is protected with enterprise-grade security</p>
+            <p style="margin: 8px 0;">📧 Need help? Reply to this email or visit our <a href="https://medicare-plus.lk/help" style="color: #007BFF;">Help Center</a></p>
+            <p style="margin: 16px 0 0 0; font-size: 12px; color: #9ca3af;">© 2024 MediCare+ | Colombo, Sri Lanka</p>
+        </div>
+    </div>
+</body>
+</html>
+</template>
+
+<!-- 2. MAGIC LINK TEMPLATE -->
+<template id="magic-link">
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your MediCare+ Magic Link</title>
+    <style>
+        body { font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #6f42c1 0%, #5a3590 100%); padding: 50px 30px; text-align: center; position: relative; overflow: hidden; }
+        .header::before { content: '✨'; position: absolute; top: 20px; right: 30px; font-size: 60px; opacity: 0.3; animation: sparkle 3s ease-in-out infinite; }
+        .header::after { content: '🪄'; position: absolute; bottom: 20px; left: 30px; font-size: 40px; opacity: 0.4; animation: float 4s ease-in-out infinite; }
+        @keyframes sparkle { 0%, 100% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.2); } }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .logo { display: inline-flex; align-items: center; gap: 12px; color: white; position: relative; z-index: 2; }
+        .logo-icon { width: 56px; height: 56px; background: rgba(255,255,255,0.2); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 32px; backdrop-filter: blur(10px); border: 2px solid rgba(255,255,255,0.3); box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        .logo-text { font-size: 32px; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .logo-plus { color: #FFD700; }
+        .tagline { color: rgba(255,255,255,0.9); font-size: 14px; margin-top: 8px; font-weight: 500; }
+        .content { padding: 50px 40px; background: linear-gradient(to bottom, #ffffff 0%, #f8fafc 100%); }
+        .magic-badge { display: inline-block; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; padding: 8px 20px; border-radius: 50px; font-size: 12px; font-weight: 600; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(139, 92, 246, 0.3); }
+        .magic-button { display: inline-block; background: linear-gradient(135deg, #6f42c1 0%, #5a3590 100%); color: white; padding: 24px 48px; text-decoration: none; border-radius: 50px; font-weight: 600; margin: 30px 0; font-size: 18px; box-shadow: 0 12px 30px rgba(111, 66, 193, 0.4); transition: all 0.3s ease; position: relative; overflow: hidden; }
+        .magic-button:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(111, 66, 193, 0.5); }
+        .magic-button::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transition: left 0.5s; }
+        .magic-button:hover::before { left: 100%; }
+        .security-box { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 1px solid #f59e0b; padding: 25px; border-radius: 20px; margin: 30px 0; position: relative; }
+        .security-box::before { content: '🔐'; position: absolute; top: -10px; right: 20px; background: #f59e0b; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        .tip-box { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border: 1px solid #3b82f6; padding: 25px; border-radius: 20px; margin: 30px 0; position: relative; }
+        .tip-box::before { content: '💡'; position: absolute; top: -10px; left: 20px; background: #3b82f6; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        .footer { padding: 40px 30px; background: #f8fafc; text-align: center; color: #64748b; font-size: 14px; border-top: 1px solid #e2e8f0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">🏥</div>
+                <div class="logo-text">MediCare<span class="logo-plus">+</span></div>
+            </div>
+            <div class="tagline">An all-in-one AI-powered healthcare platform for Sri Lankans</div>
+        </div>
+        <div class="content">
+            <div style="text-align: center;">
+                <div class="magic-badge">🪄 Magic Link Authentication</div>
+                <h1 style="color: #1e293b; margin-bottom: 16px; font-size: 28px; font-weight: 700;">Your Instant Access Link is Ready! ✨</h1>
+                <p style="color: #64748b; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+                    No passwords, no hassle! Click the magic button below to instantly sign in to your MediCare+ account.
+                </p>
+            </div>
+            
+            <div style="text-align: center; margin: 40px 0;">
+                <a href="{{ .ConfirmationURL }}" class="magic-button">🚀 Sign In Instantly</a>
+            </div>
+
+            <div class="security-box">
+                <p style="color: #92400e; font-weight: 600; margin: 0 0 8px 0; font-size: 16px;">⏰ Time-Sensitive Link</p>
+                <p style="color: #92400e; margin: 0; font-size: 14px; line-height: 1.6;">
+                    This magic link will expire in 1 hour for your security. If you didn't request this link, please ignore this email and your account will remain secure.
+                </p>
+            </div>
+
+            <div class="tip-box">
+                <p style="color: #1e40af; font-weight: 600; margin: 0 0 8px 0; font-size: 16px;">💡 Pro Tips for Better Healthcare</p>
+                <p style="color: #1e40af; margin: 0; font-size: 14px; line-height: 1.6;">
+                    • Bookmark MediCare+ for quick access to your health dashboard<br>
+                    • Enable browser notifications for medication reminders<br>
+                    • Set up your AI health assistant for personalized care
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 25px; border-radius: 20px; border: 1px solid #0ea5e9; text-align: center;">
+                <h3 style="color: #0c4a6e; margin: 0 0 12px 0; font-size: 18px;">🌟 Why Choose Magic Links?</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 15px;">
+                    <div style="text-align: center;">
+                        <div style="color: #0ea5e9; font-size: 20px; margin-bottom: 5px;">🛡️</div>
+                        <div style="color: #0c4a6e; font-size: 12px; font-weight: 600;">More Secure</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="color: #0ea5e9; font-size: 20px; margin-bottom: 5px;">⚡</div>
+                        <div style="color: #0c4a6e; font-size: 12px; font-weight: 600;">Lightning Fast</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="color: #0ea5e9; font-size: 20px; margin-bottom: 5px;">🧠</div>
+                        <div style="color: #0c4a6e; font-size: 12px; font-weight: 600;">No Memory Needed</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="color: #0ea5e9; font-size: 20px; margin-bottom: 5px;">📱</div>
+                        <div style="color: #0c4a6e; font-size: 12px; font-weight: 600;">Works Everywhere</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div style="margin-bottom: 20px;">
+                <div style="display: inline-flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <div style="width: 24px; height: 24px; background: #6f42c1; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px;">🏥</div>
+                    <strong style="color: #1e293b;">MediCare+</strong>
+                </div>
+                <div style="color: #64748b; font-size: 12px;">Passwordless, Seamless, Secure Healthcare</div>
+            </div>
+            <p style="margin: 8px 0; color: #8b5cf6;">🪄 Magic links are the future of secure authentication</p>
+            <p style="margin: 16px 0 0 0; font-size: 12px; color: #9ca3af;">© 2024 MediCare+ | Colombo, Sri Lanka</p>
+        </div>
+    </div>
+</body>
+</html>
+</template>
+
+<!-- 3. RESET PASSWORD TEMPLATE -->
+<template id="reset-password">
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Your MediCare+ Password</title>
+    <style>
+        body { font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); padding: 50px 30px; text-align: center; position: relative; overflow: hidden; }
+        .header::before { content: '🔒'; position: absolute; top: 20px; right: 30px; font-size: 60px; opacity: 0.3; animation: bounce 2s ease-in-out infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
+        .logo { display: inline-flex; align-items: center; gap: 12px; color: white; position: relative; z-index: 2; }
+        .logo-icon { width: 56px; height: 56px; background: rgba(255,255,255,0.2); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 32px; backdrop-filter: blur(10px); border: 2px solid rgba(255,255,255,0.3); box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        .logo-text { font-size: 32px; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .logo-plus { color: #FFD700; }
+        .tagline { color: rgba(255,255,255,0.9); font-size: 14px; margin-top: 8px; font-weight: 500; }
+        .content { padding: 50px 40px; background: linear-gradient(to bottom, #ffffff 0%, #f8fafc 100%); }
+        .reset-badge { display: inline-block; background: linear-gradient(135deg, #ef4444, #dc2626); color: white; padding: 8px 20px; border-radius: 50px; font-size: 12px; font-weight: 600; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3); }
+        .reset-button { display: inline-block; background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; padding: 20px 40px; text-decoration: none; border-radius: 50px; font-weight: 600; margin: 30px 0; font-size: 16px; box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3); transition: all 0.3s ease; }
+        .reset-button:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(220, 53, 69, 0.4); }
+        .security-notice { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 1px solid #f59e0b; padding: 25px; border-radius: 20px; margin: 30px 0; position: relative; }
+        .security-notice::before { content: '🛡️'; position: absolute; top: -10px; right: 20px; background: #f59e0b; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        .tips-box { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border: 1px solid #3b82f6; padding: 25px; border-radius: 20px; margin: 30px 0; }
+        .footer { padding: 40px 30px; background: #f8fafc; text-align: center; color: #64748b; font-size: 14px; border-top: 1px solid #e2e8f0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">🏥</div>
+                <div class="logo-text">MediCare<span class="logo-plus">+</span></div>
+            </div>
+            <div class="tagline">An all-in-one AI-powered healthcare platform for Sri Lankans</div>
+        </div>
+        <div class="content">
+            <div style="text-align: center;">
+                <div class="reset-badge">🔐 Password Reset Request</div>
+                <h1 style="color: #1e293b; margin-bottom: 16px; font-size: 28px; font-weight: 700;">Reset Your Password</h1>
+                <p style="color: #64748b; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+                    We received a request to reset your MediCare+ account password. Click the button below to create a new, secure password.
+                </p>
+            </div>
+            
+            <div style="text-align: center; margin: 40px 0;">
+                <a href="{{ .ConfirmationURL }}" class="reset-button">🔑 Reset Password Now</a>
+            </div>
+
+            <div class="security-notice">
+                <p style="color: #92400e; font-weight: 600; margin: 0 0 12px 0; font-size: 16px;">⏰ Important Security Information</p>
+                <p style="color: #92400e; margin: 0; font-size: 14px; line-height: 1.6;">
+                    This reset link will expire in 1 hour for your security. If you didn't request a password reset, please ignore this email and consider enabling two-factor authentication for enhanced protection.
+                </p>
+            </div>
+
+            <div class="tips-box">
+                <h3 style="color: #1e40af; margin: 0 0 15px 0; font-size: 18px;">🔐 Password Security Tips</h3>
+                <ul style="color: #1e40af; margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.8;">
+                    <li>Use a strong, unique password (8+ characters)</li>
+                    <li>Consider enabling magic link sign-in for convenience</li>
+                    <li>Keep your recovery email address updated</li>
+                    <li>Enable browser password manager for security</li>
+                </ul>
+            </div>
+
+            <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 16px; margin: 30px 0;">
+                <p style="color: #856404; font-size: 14px; line-height: 1.6; margin: 0;">
+                    <strong>🏥 Healthcare Privacy:</strong> Your medical data remains encrypted and secure. Password resets only affect account access, not your health records.
+                </p>
+            </div>
+        </div>
+        <div class="footer">
+            <div style="margin-bottom: 20px;">
+                <div style="display: inline-flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <div style="width: 24px; height: 24px; background: #dc3545; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px;">🏥</div>
+                    <strong style="color: #1e293b;">MediCare+</strong>
+                </div>
+                <div style="color: #64748b; font-size: 12px;">Your Health, Secured & Protected</div>
+            </div>
+            <p style="margin: 8px 0; color: #dc3545;">🔐 Protecting your health data with enterprise-grade security</p>
+            <p style="margin: 16px 0 0 0; font-size: 12px; color: #9ca3af;">© 2024 MediCare+ | Colombo, Sri Lanka</p>
+        </div>
+    </div>
+</body>
+</html>
+</template>
+
+<!-- 4. INVITE USER TEMPLATE -->
+<template id="invite-user">
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You're Invited to MediCare+</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f8f9fa; }
+        .container { max-width: 600px; margin: 0 auto; background: white; }
+        .header { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); padding: 40px 30px; text-align: center; }
+        .logo { display: inline-flex; align-items: center; gap: 12px; color: white; }
+        .logo-icon { width: 48px; height: 48px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .logo-text { font-size: 28px; font-weight: 800; }
+        .content { padding: 40px 30px; }
+        .invite-button { display: inline-block; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; padding: 18px 36px; text-decoration: none; border-radius: 10px; font-weight: 600; margin: 20px 0; font-size: 16px; }
+        .footer { padding: 30px; background: #f8f9fa; text-align: center; color: #6c757d; font-size: 14px; }
+        .benefits { background: #f8fff9; border: 1px solid #d4edda; padding: 20px; border-radius: 8px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">🎉</div>
+                <div class="logo-text">MediCare+</div>
+            </div>
+        </div>
+        <div class="content">
+            <h1 style="color: #343a40; margin-bottom: 20px;">You're Invited to Join MediCare+!</h1>
+            <p style="color: #6c757d; font-size: 16px; line-height: 1.6;">
+                Congratulations! You've been invited to join Sri Lanka's most advanced healthcare platform. MediCare+ makes managing your health simple, smart, and secure.
+            </p>
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{ .ConfirmationURL }}" class="invite-button">Accept Invitation</a>
+            </div>
+            <div class="benefits">
+                <h3 style="color: #28a745; margin: 0 0 15px 0;">🌟 What's included in your invitation:</h3>
+                <ul style="color: #6c757d; margin: 0; padding-left: 20px;">
+                    <li>Free access to AI health assistant</li>
+                    <li>Priority appointment booking</li>
+                    <li>Secure health record management</li>
+                    <li>Medicine reminders and tracking</li>
+                    <li>Access to 600+ hospitals island-wide</li>
+                </ul>
+            </div>
+            <p style="color: #6c757d; font-size: 14px; line-height: 1.6;">
+                This invitation will expire in 7 days. If you have any questions, our support team is here to help.
+            </p>
+        </div>
+        <div class="footer">
+            <p><strong>MediCare+</strong> - Healthcare Made Simple</p>
+            <p>🏥 Join thousands of satisfied patients across Sri Lanka</p>
+        </div>
+    </div>
+</body>
+</html>
+</template>
+
+<!-- 5. CHANGE EMAIL TEMPLATE -->
+<template id="change-email">
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Your New Email - MediCare+</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f8f9fa; }
+        .container { max-width: 600px; margin: 0 auto; background: white; }
+        .header { background: linear-gradient(135deg, #17a2b8 0%, #138496 100%); padding: 40px 30px; text-align: center; }
+        .logo { display: inline-flex; align-items: center; gap: 12px; color: white; }
+        .logo-icon { width: 48px; height: 48px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .logo-text { font-size: 28px; font-weight: 800; }
+        .content { padding: 40px 30px; }
+        .confirm-button { display: inline-block; background: linear-gradient(135deg, #17a2b8 0%, #138496 100%); color: white; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 20px 0; }
+        .footer { padding: 30px; background: #f8f9fa; text-align: center; color: #6c757d; font-size: 14px; }
+        .email-change { background: #e2f7ff; border-left: 4px solid #17a2b8; padding: 15px; margin: 20px 0; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">📧</div>
+                <div class="logo-text">MediCare+</div>
+            </div>
+        </div>
+        <div class="content">
+            <h1 style="color: #343a40; margin-bottom: 20px;">Confirm Your New Email Address</h1>
+            <p style="color: #6c757d; font-size: 16px; line-height: 1.6;">
+                You recently requested to change your email address for your MediCare+ account. To complete this change, please confirm your new email address:
+            </p>
+            <div class="email-change">
+                <p style="color: #17a2b8; font-weight: 600; margin: 0;">📬 New Email Address:</p>
+                <p style="color: #6c757d; margin: 5px 0 0 0;">{{ .Email }}</p>
+            </div>
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{ .ConfirmationURL }}" class="confirm-button">Confirm New Email</a>
+            </div>
+            <p style="color: #6c757d; font-size: 14px; line-height: 1.6;">
+                <strong>Important:</strong> Until you confirm this new email address, your account will continue to use your previous email for all communications and sign-in.
+            </p>
+            <p style="color: #6c757d; font-size: 14px; line-height: 1.6;">
+                If you didn't request this change, please contact our support team immediately.
+            </p>
+        </div>
+        <div class="footer">
+            <p><strong>MediCare+</strong> - Keeping Your Account Secure</p>
+            <p>🔐 We take your account security seriously</p>
+        </div>
+    </div>
+</body>
+</html>
+</template>
+
+<!-- 6. REAUTHENTICATION TEMPLATE -->
+<template id="reauthentication">
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Identity - MediCare+</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f8f9fa; }
+        .container { max-width: 600px; margin: 0 auto; background: white; }
+        .header { background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%); padding: 40px 30px; text-align: center; }
+        .logo { display: inline-flex; align-items: center; gap: 12px; color: #212529; }
+        .logo-icon { width: 48px; height: 48px; background: rgba(0,0,0,0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .logo-text { font-size: 28px; font-weight: 800; }
+        .content { padding: 40px 30px; }
+        .verify-button { display: inline-block; background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%); color: #212529; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 20px 0; }
+        .footer { padding: 30px; background: #f8f9fa; text-align: center; color: #6c757d; font-size: 14px; }
+        .security-alert { background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 8px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">🛡️</div>
+                <div class="logo-text">MediCare+</div>
+            </div>
+        </div>
+        <div class="content">
+            <h1 style="color: #343a40; margin-bottom: 20px;">Verify Your Identity</h1>
+            <p style="color: #6c757d; font-size: 16px; line-height: 1.6;">
+                For your security, we need to verify your identity before you can access sensitive health information or make account changes.
+            </p>
+            <div class="security-alert">
+                <p style="color: #856404; font-weight: 600; margin: 0 0 10px 0;">🔐 Security Check Required</p>
+                <p style="color: #856404; margin: 0; font-size: 14px;">
+                    This verification helps protect your medical records and personal health information.
+                </p>
+            </div>
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{ .ConfirmationURL }}" class="verify-button">Verify My Identity</a>
+            </div>
+            <p style="color: #6c757d; font-size: 14px; line-height: 1.6;">
+                This verification link will expire in 30 minutes. If you didn't request this verification, please contact our security team immediately.
+            </p>
+            <p style="color: #6c757d; font-size: 14px; line-height: 1.6;">
+                <strong>Why do we do this?</strong><br>
+                • Protect your medical records<br>
+                • Prevent unauthorized access<br>
+                • Comply with healthcare privacy laws<br>
+                • Keep your account secure
+            </p>
+        </div>
+        <div class="footer">
+            <p><strong>MediCare+</strong> - Your Health, Your Privacy</p>
+            <p>🏥 HIPAA-compliant healthcare platform</p>
+        </div>
+    </div>
+</body>
+</html>
+</template> 
