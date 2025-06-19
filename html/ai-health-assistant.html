@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Health Assistant - MediCare+</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        /* Modern Variables */
+        :root {
+            --primary-color: #007BFF;
+            --primary-hover: #0056b3;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #06b6d4;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --text-muted: #9ca3af;
+            --bg-light: #f8fafc;
+            --bg-white: #ffffff;
+            --border-color: #e5e7eb;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 16px 40px;
+            min-height: 100vh;
+        }
+
+        /* Back Button */
+        .back-button {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--primary-color);
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+            box-shadow: var(--shadow-md);
+        }
+
+        .back-button:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            text-decoration: none;
+        }
+
+        /* Page Hero Section - Reduced spacing */
+        .page-hero {
+            background: linear-gradient(135deg, #e7f3ff 0%, white 100%);
+            padding: 1.5rem 0;
+            margin-bottom: 1.5rem;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .page-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(0, 123, 255, 0.1) 0%, transparent 70%);
+            z-index: 1;
+        }
+
+        .hero-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0, 123, 255, 0.1);
+            color: var(--primary-color);
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(0, 123, 255, 0.2);
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+
+        /* Blue glow effect for main title */
+        .hero-title:hover {
+            color: var(--primary-color);
+            text-shadow: 0 0 20px rgba(0, 123, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .hero-title .highlight {
+            color: var(--primary-color);
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .hero-features {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .hero-feature {
+            text-align: center;
+        }
+
+        .hero-feature-icon {
+            width: 3rem;
+            height: 3rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            margin: 0 auto 0.5rem;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+
+        .hero-feature-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        /* Assessment Cards Grid - Consistent hover effects */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .assessment-card {
+            background: var(--bg-white);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Consistent hover effects - background glow only */
+        .assessment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 123, 255, 0.2);
+            border-color: var(--primary-color);
+            background: rgba(0, 123, 255, 0.02);
+            text-decoration: none;
+        }
+
+        .assessment-card:hover .assessment-title {
+            color: var(--primary-color);
+        }
+
+        .assessment-icon {
+            width: 4rem;
+            height: 4rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 20px rgba(0, 123, 255, 0.3);
+        }
+
+        .assessment-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+
+        .assessment-description {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .assessment-arrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .assessment-card:hover .assessment-arrow {
+            transform: translateX(5px);
+        }
+
+        /* Previous Assessments Section */
+        .previous-assessments-section {
+            margin-top: 3rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        .assessments-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .assessments-header h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .assessments-container {
+            padding: 2rem;
+        }
+
+        .assessments-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .take-new-btn, .export-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .take-new-btn {
+            background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+            color: white;
+        }
+
+        .take-new-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .export-btn {
+            background: linear-gradient(135deg, var(--info-color) 0%, #0891b2 100%);
+            color: white;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(6, 182, 212, 0.3);
+        }
+
+        .assessments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .assessment-card-history {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .assessment-card-history:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 123, 255, 0.15);
+            border-color: var(--primary-color);
+        }
+
+        .assessment-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .assessment-type {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .assessment-icon-small {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: white;
+        }
+
+        .assessment-type-name {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .assessment-date {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .assessment-score {
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .score-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: white;
+        }
+
+        .score-excellent { background: linear-gradient(135deg, #10b981, #059669); }
+        .score-good { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+        .score-fair { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+        .score-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .assessment-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: white;
+            color: var(--text-dark);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .action-btn.primary {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .action-btn.primary:hover {
+            background: var(--primary-hover);
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .header-content {
+                text-align: center;
+                padding: 2rem 1rem;
+            }
+
+            .header-content h1 {
+                font-size: 2rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .assessment-card {
+                padding: 1.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .assessment-title {
+                font-size: 1.3rem;
+            }
+
+            .assessment-description {
+                font-size: 0.9rem;
+            }
+
+            .previous-assessments-section {
+                margin-top: 2rem;
+            }
+
+            .assessments-header {
+                padding: 1.5rem;
+            }
+
+            .assessments-header h3 {
+                font-size: 1.5rem;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+
+            .assessments-container {
+                padding: 1rem;
+            }
+
+            .assessments-actions {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .take-new-btn, .export-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .assessments-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .assessment-card-history {
+                padding: 1rem;
+            }
+
+            .assessment-card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .assessment-date {
+                align-self: flex-end;
+            }
+
+            .score-circle {
+                width: 50px;
+                height: 50px;
+                font-size: 1rem;
+            }
+
+            .assessment-actions {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .action-btn {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Back Button -->
+        <a href="user-dashboard.html" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard
+        </a>
+
+        <!-- Page Hero Section -->
+        <section class="page-hero">
+            <div class="hero-container">
+                <div class="hero-badge">
+                    <i class="fas fa-robot"></i>
+                    AI-Powered Health Assistant
+                </div>
+
+                <h1 class="hero-title">
+                    Your AI Health <span class="highlight">Assistant</span>
+                </h1>
+
+                <p class="hero-subtitle">
+                    Advanced AI-powered health assessments with comprehensive analysis and professional recommendations for better health management
+                </p>
+
+                <div class="hero-features">
+                    <div class="hero-feature">
+                        <div class="hero-feature-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="hero-feature-title">AI Powered</div>
+                    </div>
+                    <div class="hero-feature">
+                        <div class="hero-feature-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="hero-feature-title">24/7 Available</div>
+                    </div>
+                    <div class="hero-feature">
+                        <div class="hero-feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="hero-feature-title">Safe & Secure</div>
+                    </div>
+                    <div class="hero-feature">
+                        <div class="hero-feature-icon">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="hero-feature-title">Medical Grade</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Assessment Cards Grid -->
+        <section class="cards-grid">
+            <a href="new-ai-assessment.html?type=symptom-checker" class="assessment-card">
+                <div class="assessment-icon">
+                    <i class="fas fa-stethoscope"></i>
+                </div>
+                <h3 class="assessment-title">AI Symptom Checker</h3>
+                <p class="assessment-description">
+                    Advanced symptom analysis with AI-powered medical guidance. Get instant insights and recommendations for your health concerns.
+                </p>
+                <span class="assessment-arrow">
+                    Check Symptoms <i class="fas fa-arrow-right"></i>
+                </span>
+            </a>
+
+            <a href="new-ai-assessment.html?type=diet-planner" class="assessment-card">
+                <div class="assessment-icon">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <h3 class="assessment-title">Smart Diet Planner</h3>
+                <p class="assessment-description">
+                    Personalized nutrition plans and meal recommendations based on your health goals and dietary preferences.
+                </p>
+                <span class="assessment-arrow">
+                    Plan Diet <i class="fas fa-arrow-right"></i>
+                </span>
+            </a>
+
+            <a href="new-ai-assessment.html?type=mental-health" class="assessment-card">
+                <div class="assessment-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3 class="assessment-title">Mental Health Support</h3>
+                <p class="assessment-description">
+                    Access mental wellness support, stress management tools, and emotional health guidance with AI-powered recommendations.
+                </p>
+                <span class="assessment-arrow">
+                    Get Support <i class="fas fa-arrow-right"></i>
+                </span>
+            </a>
+
+            <a href="new-ai-assessment.html?type=fitness-coach" class="assessment-card">
+                <div class="assessment-icon">
+                    <i class="fas fa-dumbbell"></i>
+                </div>
+                <h3 class="assessment-title">AI Fitness Coach</h3>
+                <p class="assessment-description">
+                    Personalized workout plans and expert fitness guidance tailored to your goals and health conditions.
+                </p>
+                <span class="assessment-arrow">
+                    Start Training <i class="fas fa-arrow-right"></i>
+                </span>
+            </a>
+
+            <a href="new-ai-assessment.html?type=sleep-analyzer" class="assessment-card">
+                <div class="assessment-icon">
+                    <i class="fas fa-bed"></i>
+                </div>
+                <h3 class="assessment-title">Sleep Quality Analyzer</h3>
+                <p class="assessment-description">
+                    Comprehensive sleep analysis with personalized recommendations to improve your sleep quality and rest patterns.
+                </p>
+                <span class="assessment-arrow">
+                    Analyze Sleep <i class="fas fa-arrow-right"></i>
+                </span>
+            </a>
+
+            <a href="new-ai-assessment.html?type=medicine-advisor" class="assessment-card">
+                <div class="assessment-icon">
+                    <i class="fas fa-pills"></i>
+                </div>
+                <h3 class="assessment-title">Medicine Advisor</h3>
+                <p class="assessment-description">
+                    Expert guidance about medications, drug interactions, proper usage, and side effects with AI-powered safety checks.
+                </p>
+                <span class="assessment-arrow">
+                    Get Advice <i class="fas fa-arrow-right"></i>
+                </span>
+            </a>
+        </section>
+
+        <!-- Previous Assessments Section -->
+        <section class="previous-assessments-section">
+            <div class="assessments-header">
+                <h3><i class="fas fa-history"></i> Previous Health Assessments</h3>
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <span class="stat-number">12</span>
+                        <span class="stat-label">Total Assessments</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">3</span>
+                        <span class="stat-label">This Month</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">85%</span>
+                        <span class="stat-label">Average Score</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="assessments-container">
+                <div class="assessments-actions">
+                    <button class="take-new-btn" onclick="window.location.href='new-ai-assessment.html'">
+                        <i class="fas fa-plus"></i>
+                        Take New Assessment
+                    </button>
+                    <button class="export-btn" onclick="exportAllAssessments()">
+                        <i class="fas fa-download"></i>
+                        Export Data
+                    </button>
+                </div>
+
+                <div class="assessments-grid" id="assessmentsGrid">
+                    <!-- Assessments will be generated by JavaScript -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Initialize Supabase client
+        const SUPABASE_URL = 'https://gcggnrwqilylyykppizb.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjZ2ducndxaWx5bHl5a3BwaXpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk0ODA1NjAsImV4cCI6MjA2NTA1NjU2MH0.9ayDDoyjUiYA3Hmir_A92U2i7QNkIuER-94kDNVVgoE';
+        
+        // Initialize Supabase (will be configured by user)
+        let supabase = null;
+        try {
+            if (typeof window.supabase !== 'undefined' && SUPABASE_URL !== 'https://your-project.supabase.co') {
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                console.log('✅ Supabase client initialized');
+            } else {
+                console.log('ℹ️ Supabase not configured - using demo mode');
+            }
+        } catch (error) {
+            console.log('ℹ️ Supabase initialization failed - using demo mode');
+        }
+
+        // Global variables
+        let userId = getUserId();
+
+        // Utility functions
+        function getUserId() {
+            // Get user ID from localStorage or generate anonymous ID
+            let userId = localStorage.getItem('medicare_user_id');
+            if (!userId) {
+                userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('medicare_user_id', userId);
+            }
+            return userId;
+        }
+
+        // Generate previous 12 assessments
+        function generatePrevious12Assessments() {
+            const assessments = [
+                {
+                    id: 1,
+                    type: 'General Health',
+                    icon: 'fas fa-heartbeat',
+                    iconColor: 'linear-gradient(135deg, #10b981, #059669)',
+                    score: 88,
+                    status: 'Excellent',
+                    date: '2025-01-15',
+                    time: '10:30 AM'
+                },
+                {
+                    id: 2,
+                    type: 'Mental Health',
+                    icon: 'fas fa-brain',
+                    iconColor: 'linear-gradient(135deg, #06b6d4, #0891b2)',
+                    score: 82,
+                    status: 'Good',
+                    date: '2025-01-12',
+                    time: '2:15 PM'
+                },
+                {
+                    id: 3,
+                    type: 'Cardiovascular',
+                    icon: 'fas fa-heart',
+                    iconColor: 'linear-gradient(135deg, #ef4444, #dc2626)',
+                    score: 90,
+                    status: 'Excellent',
+                    date: '2025-01-10',
+                    time: '9:45 AM'
+                },
+                {
+                    id: 4,
+                    type: 'Nutrition',
+                    icon: 'fas fa-utensils',
+                    iconColor: 'linear-gradient(135deg, #10b981, #059669)',
+                    score: 75,
+                    status: 'Good',
+                    date: '2025-01-08',
+                    time: '1:20 PM'
+                },
+                {
+                    id: 5,
+                    type: 'Symptom Check',
+                    icon: 'fas fa-stethoscope',
+                    iconColor: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                    score: 85,
+                    status: 'Good',
+                    date: '2025-01-05',
+                    time: '11:00 AM'
+                },
+                {
+                    id: 6,
+                    type: 'Sleep Quality',
+                    icon: 'fas fa-bed',
+                    iconColor: 'linear-gradient(135deg, #6366f1, #4f46e5)',
+                    score: 78,
+                    status: 'Fair',
+                    date: '2025-01-03',
+                    time: '8:30 PM'
+                },
+                {
+                    id: 7,
+                    type: 'Physical Activity',
+                    icon: 'fas fa-dumbbell',
+                    iconColor: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                    score: 92,
+                    status: 'Excellent',
+                    date: '2025-01-01',
+                    time: '7:15 AM'
+                },
+                {
+                    id: 8,
+                    type: 'General Health',
+                    icon: 'fas fa-heartbeat',
+                    iconColor: 'linear-gradient(135deg, #10b981, #059669)',
+                    score: 86,
+                    status: 'Good',
+                    date: '2024-12-28',
+                    time: '3:45 PM'
+                },
+                {
+                    id: 9,
+                    type: 'Stress Level',
+                    icon: 'fas fa-cloud-rain',
+                    iconColor: 'linear-gradient(135deg, #64748b, #475569)',
+                    score: 71,
+                    status: 'Fair',
+                    date: '2024-12-25',
+                    time: '12:30 PM'
+                },
+                {
+                    id: 10,
+                    type: 'Medication Review',
+                    icon: 'fas fa-pills',
+                    iconColor: 'linear-gradient(135deg, #06b6d4, #0891b2)',
+                    score: 95,
+                    status: 'Excellent',
+                    date: '2024-12-22',
+                    time: '4:00 PM'
+                },
+                {
+                    id: 11,
+                    type: 'Vision Screening',
+                    icon: 'fas fa-eye',
+                    iconColor: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                    score: 89,
+                    status: 'Excellent',
+                    date: '2024-12-20',
+                    time: '10:15 AM'
+                },
+                {
+                    id: 12,
+                    type: 'Diabetes Risk',
+                    icon: 'fas fa-tint',
+                    iconColor: 'linear-gradient(135deg, #ef4444, #dc2626)',
+                    score: 83,
+                    status: 'Good',
+                    date: '2024-12-18',
+                    time: '1:45 PM'
+                }
+            ];
+
+            return assessments;
+        }
+
+        // Render assessment cards
+        function renderAssessments() {
+            const assessments = generatePrevious12Assessments();
+            const grid = document.getElementById('assessmentsGrid');
+            
+            grid.innerHTML = assessments.map(assessment => {
+                const scoreClass = assessment.score >= 85 ? 'score-excellent' : 
+                                 assessment.score >= 70 ? 'score-good' : 'score-fair';
+                
+                return `
+                    <div class="assessment-card-history" onclick="viewAssessmentDetails(${assessment.id})">
+                        <div class="assessment-card-header">
+                            <div class="assessment-type">
+                                <div class="assessment-icon-small" style="background: ${assessment.iconColor}">
+                                    <i class="${assessment.icon}"></i>
+                                </div>
+                                <span class="assessment-type-name">${assessment.type}</span>
+                            </div>
+                            <div class="assessment-date">${assessment.date}<br>${assessment.time}</div>
+                        </div>
+                        
+                        <div class="assessment-score">
+                            <div class="score-circle ${scoreClass}">
+                                ${assessment.score}%
+                            </div>
+                            <div class="score-label">${assessment.status}</div>
+                        </div>
+                        
+                        <div class="assessment-actions">
+                            <button class="action-btn primary" onclick="event.stopPropagation(); viewAssessmentDetails(${assessment.id})">
+                                <i class="fas fa-eye"></i> View Details
+                            </button>
+                            <button class="action-btn" onclick="event.stopPropagation(); downloadAssessment(${assessment.id})">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Assessment functions
+        function viewAssessmentDetails(assessmentId) {
+            console.log('Viewing assessment details for ID:', assessmentId);
+            // Here you could open a modal or navigate to a details page
+            alert(`Opening detailed view for Assessment #${assessmentId}`);
+        }
+
+        function downloadAssessment(assessmentId) {
+            console.log('Downloading assessment:', assessmentId);
+            // Here you would trigger a PDF download
+            alert(`Downloading Assessment #${assessmentId} report...`);
+        }
+
+        function exportAllAssessments() {
+            console.log('Exporting all assessments');
+            // Here you would export all assessment data
+            alert('Exporting all assessment data...');
+        }
+
+        // Enhanced assessment card functionality
+        function openAssessment(type) {
+            // Track assessment start
+            if (supabase) {
+                supabase
+                    .from('assessment_starts')
+                    .insert([{
+                        user_id: userId,
+                        assessment_type: type,
+                        started_at: new Date().toISOString()
+                    }]);
+            }
+            
+            // Navigate to assessment
+            window.location.href = `new-ai-assessment.html?type=${type}&userId=${userId}`;
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Render previous assessments
+            renderAssessments();
+            
+            // Update assessment cards to use new function
+            document.querySelectorAll('.assessment-card').forEach(card => {
+                card.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const href = this.getAttribute('href');
+                    const type = new URL(href, window.location.origin).searchParams.get('type');
+                    if (type) {
+                        openAssessment(type);
+                    }
+                });
+            });
+
+            console.log('🚀 AI Health Assistant initialized');
+            console.log('👤 User ID:', userId);
+        });
+
+        // Export functions for debugging
+        window.healthAssistant = {
+            getUserId: () => userId,
+            renderAssessments: renderAssessments,
+            viewAssessmentDetails: viewAssessmentDetails,
+            exportAllAssessments: exportAllAssessments
+        };
+    </script>
+</body>
+</html> 

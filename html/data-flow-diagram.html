@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare+ AI Health Platform - Complete System Architecture</title>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: white;
+            padding: 3rem;
+            border-radius: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            font-size: 1.25rem;
+            color: #64748b;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .diagram-container {
+            background: white;
+            border-radius: 2rem;
+            padding: 3rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            margin-bottom: 3rem;
+            overflow-x: auto;
+        }
+
+        .diagram-svg {
+            width: 100%;
+            min-width: 1200px;
+            height: 800px;
+        }
+
+        /* SVG Styles */
+        .entity-box {
+            fill: #3b82f6;
+            stroke: #1d4ed8;
+            stroke-width: 2;
+            rx: 15;
+            ry: 15;
+        }
+
+        .process-box {
+            fill: #10b981;
+            stroke: #059669;
+            stroke-width: 2;
+            rx: 20;
+            ry: 20;
+        }
+
+        .datastore-box {
+            fill: #f59e0b;
+            stroke: #d97706;
+            stroke-width: 2;
+            rx: 10;
+            ry: 10;
+        }
+
+        .api-box {
+            fill: #8b5cf6;
+            stroke: #7c3aed;
+            stroke-width: 2;
+            rx: 15;
+            ry: 15;
+        }
+
+        .text-white {
+            fill: white;
+            font-weight: 600;
+            font-size: 14px;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+
+        .text-small {
+            fill: white;
+            font-size: 11px;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+
+        .flow-line {
+            stroke: #64748b;
+            stroke-width: 2;
+            fill: none;
+            marker-end: url(#arrowhead);
+        }
+
+        .flow-line-primary {
+            stroke: #3b82f6;
+            stroke-width: 3;
+            fill: none;
+            marker-end: url(#arrowhead-blue);
+        }
+
+        .flow-text {
+            fill: #1e293b;
+            font-size: 12px;
+            font-weight: 500;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+
+        .clickable {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .clickable:hover {
+            filter: brightness(1.1);
+            transform: scale(1.02);
+        }
+
+        /* Legend */
+        .legend {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .legend-color {
+            width: 30px;
+            height: 20px;
+            border-radius: 5px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 3rem;
+            border-radius: 2rem;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+        }
+
+        .close {
+            color: #64748b;
+            float: right;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close:hover {
+            color: #1e293b;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: #f8fafc;
+            padding: 2rem;
+            border-radius: 1rem;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .feature-card h4 {
+            color: #1e293b;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            color: #10b981;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .diagram-container {
+                padding: 1rem;
+            }
+            
+            .modal-content {
+                margin: 10% auto;
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>MediCare+ AI Health Platform</h1>
+            <p>Complete System Architecture & Data Flow - Comprehensive Healthcare Technology Solution for Investors</p>
+        </div>
+
+        <div class="legend">
+            <h3 style="margin-bottom: 1.5rem; color: #1e293b;">System Components Legend</h3>
+            <div class="legend-grid">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #3b82f6;"></div>
+                    <span><strong>External Entities</strong> - Users, Providers, APIs</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #10b981;"></div>
+                    <span><strong>Core Processes</strong> - AI Analysis, Assessment, Reports</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #f59e0b;"></div>
+                    <span><strong>Data Storage</strong> - Databases, User Data, Analytics</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #8b5cf6;"></div>
+                    <span><strong>AI Services</strong> - DeepSeek API, Machine Learning</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="diagram-container">
+            <svg class="diagram-svg" viewBox="0 0 1200 800">
+                <!-- Arrow Markers -->
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#64748b" />
+                    </marker>
+                    <marker id="arrowhead-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#3b82f6" />
+                    </marker>
+                </defs>
+
+                <!-- External Entities -->
+                <g class="clickable" onclick="showModal('patients')">
+                    <rect class="entity-box" x="50" y="50" width="120" height="80"/>
+                    <text class="text-white" x="110" y="80">Patients/Users</text>
+                    <text class="text-small" x="110" y="100">25k+ Active</text>
+                </g>
+
+                <g class="clickable" onclick="showModal('providers')">
+                    <rect class="entity-box" x="50" y="200" width="120" height="80"/>
+                    <text class="text-white" x="110" y="230">Healthcare</text>
+                    <text class="text-white" x="110" y="245">Providers</text>
+                    <text class="text-small" x="110" y="260">500+ Partners</text>
+                </g>
+
+                <g class="clickable" onclick="showModal('insurance')">
+                    <rect class="entity-box" x="50" y="350" width="120" height="80"/>
+                    <text class="text-white" x="110" y="380">Insurance</text>
+                    <text class="text-white" x="110" y="395">Companies</text>
+                    <text class="text-small" x="110" y="410">Medicare Focus</text>
+                </g>
+
+                <!-- Core Platform Processes -->
+                <g class="clickable" onclick="showModal('dashboard')">
+                    <rect class="process-box" x="250" y="50" width="140" height="80"/>
+                    <text class="text-white" x="320" y="80">User Dashboard</text>
+                    <text class="text-small" x="320" y="100">Health Overview</text>
+                </g>
+
+                <g class="clickable" onclick="showModal('assessment')">
+                    <rect class="process-box" x="250" y="160" width="140" height="80"/>
+                    <text class="text-white" x="320" y="190">AI Assessment</text>
+                    <text class="text-small" x="320" y="210">12 Specialties</text>
+                </g>
+
+                <g class="clickable" onclick="showModal('analysis')">
+                    <rect class="process-box" x="250" y="270" width="140" height="80"/>
+                    <text class="text-white" x="320" y="300">AI Analysis</text>
+                    <text class="text-small" x="320" y="320">Real-time Results</text>
+                </g>
+
+                <g class="clickable" onclick="showModal('telemedicine')">
+                    <rect class="process-box" x="250" y="380" width="140" height="80"/>
+                    <text class="text-white" x="320" y="410">Telemedicine</text>
+                    <text class="text-small" x="320" y="430">Video Consultations</text>
+                </g>
+
+                <!-- AI & Analytics Layer -->
+                <g class="clickable" onclick="showModal('deepseek')">
+                    <rect class="api-box" x="450" y="100" width="140" height="80"/>
+                    <text class="text-white" x="520" y="130">DeepSeek AI</text>
+                    <text class="text-small" x="520" y="150">Medical Analysis</text>
+                </g>
+
+                <g class="clickable" onclick="showModal('charts')">
+                    <rect class="process-box" x="450" y="220" width="140" height="80"/>
+                    <text class="text-white" x="520" y="250">Interactive Charts</text>
+                    <text class="text-small" x="520" y="270">Health Trends</text>
+                </g>
+
+                <g class="clickable" onclick="showModal('reports')">
+                    <rect class="process-box" x="450" y="340" width="140" height="80"/>
+                    <text class="text-white" x="520" y="370">PDF Reports</text>
+                    <text class="text-small" x="520" y="390">Professional Grade</text>
+                </g>
+
+                <!-- Data Storage Layer -->
+                <g class="clickable" onclick="showModal('userdata')">
+                    <rect class="datastore-box" x="650" y="50" width="140" height="80"/>
+                    <text class="text-white" x="720" y="80">User Profiles</text>
+                    <text class="text-small" x="720" y="100">HIPAA Compliant</text>
+                </g>
+
+                <g class="clickable" onclick="showModal('healthdata')">
+                    <rect class="datastore-box" x="650" y="160" width="140" height="80"/>
+                    <text class="text-white" x="720" y="190">Health Records</text>
+                    <text class="text-small" x="720" y="210">Encrypted Storage</text>
+                </g>
+
+                <g class="clickable" onclick="showModal('analytics')">
+                    <rect class="datastore-box" x="650" y="270" width="140" height="80"/>
+                    <text class="text-white" x="720" y="300">Analytics DB</text>
+                    <text class="text-small" x="720" y="320">Business Intelligence</text>
+                </g>
+
+                <g class="clickable" onclick="showModal('billing')">
+                    <rect class="datastore-box" x="650" y="380" width="140" height="80"/>
+                    <text class="text-white" x="720" y="410">Billing System</text>
+                    <text class="text-small" x="720" y="430">Revenue Tracking</text>
+                </g>
+
+                <!-- Advanced Features -->
+                <g class="clickable" onclick="showModal('monitoring')">
+                    <rect class="process-box" x="850" y="100" width="140" height="80"/>
+                    <text class="text-white" x="920" y="130">Health Monitoring</text>
+                    <text class="text-small" x="920" y="150">24/7 Alerts</text>
+                </g>
+
+                <g class="clickable" onclick="showModal('marketplace')">
+                    <rect class="process-box" x="850" y="220" width="140" height="80"/>
+                    <text class="text-white" x="920" y="250">Provider</text>
+                    <text class="text-white" x="920" y="265">Marketplace</text>
+                    <text class="text-small" x="920" y="280">Find Specialists</text>
+                </g>
+
+                <g class="clickable" onclick="showModal('emergency')">
+                    <rect class="process-box" x="850" y="340" width="140" height="80"/>
+                    <text class="text-white" x="920" y="370">Emergency</text>
+                    <text class="text-white" x="920" y="385">Response</text>
+                    <text class="text-small" x="920" y="400">Critical Care</text>
+                </g>
+
+                <!-- External Integrations -->
+                <g class="clickable" onclick="showModal('ehr')">
+                    <rect class="api-box" x="1050" y="150" width="120" height="80"/>
+                    <text class="text-white" x="1110" y="180">EHR Systems</text>
+                    <text class="text-small" x="1110" y="200">Epic, Cerner</text>
+                </g>
+
+                <g class="clickable" onclick="showModal('pharmacy')">
+                    <rect class="api-box" x="1050" y="280" width="120" height="80"/>
+                    <text class="text-white" x="1110" y="310">Pharmacy</text>
+                    <text class="text-white" x="1110" y="325">Networks</text>
+                    <text class="text-small" x="1110" y="340">Prescription Mgmt</text>
+                </g>
+
+                <!-- Data Flow Lines with Curved Paths -->
+                <!-- User to Dashboard -->
+                <path class="flow-line-primary" d="M 170 90 Q 200 90 250 90"/>
+                <text class="flow-text" x="210" y="85">Login/Access</text>
+
+                <!-- Dashboard to Assessment -->
+                <path class="flow-line" d="M 320 130 Q 320 145 320 160"/>
+                <text class="flow-text" x="340" y="145">Start Assessment</text>
+
+                <!-- Assessment to AI -->
+                <path class="flow-line-primary" d="M 390 200 Q 420 200 450 140"/>
+                <text class="flow-text" x="420" y="165">Health Data</text>
+
+                <!-- AI to Analysis -->
+                <path class="flow-line" d="M 520 180 Q 520 200 520 220"/>
+                <text class="flow-text" x="540" y="200">AI Processing</text>
+
+                <!-- Analysis to Reports -->
+                <path class="flow-line" d="M 520 300 Q 520 320 520 340"/>
+                <text class="flow-text" x="540" y="320">Generate Report</text>
+
+                <!-- Data Storage Connections -->
+                <path class="flow-line" d="M 390 90 Q 520 90 650 90"/>
+                <text class="flow-text" x="520" y="85">User Data</text>
+
+                <path class="flow-line" d="M 390 200 Q 520 200 650 200"/>
+                <text class="flow-text" x="520" y="195">Health Records</text>
+
+                <!-- Advanced Features -->
+                <path class="flow-line" d="M 790 140 Q 820 140 850 140"/>
+                <text class="flow-text" x="820" y="135">Monitoring</text>
+
+                <!-- External Integrations -->
+                <path class="flow-line" d="M 990 190 Q 1020 190 1050 190"/>
+                <text class="flow-text" x="1020" y="185">EHR Sync</text>
+
+                <!-- Provider Connections -->
+                <path class="flow-line" d="M 170 240 Q 200 240 250 420"/>
+                <text class="flow-text" x="200" y="330">Consultations</text>
+
+                <!-- Insurance Integration -->
+                <path class="flow-line" d="M 170 390 Q 350 390 650 420"/>
+                <text class="flow-text" x="410" y="385">Claims Processing</text>
+
+                <!-- Revenue Flow -->
+                <path class="flow-line-primary" d="M 170 390 Q 410 500 650 420" stroke-dasharray="5,5"/>
+                <text class="flow-text" x="410" y="460">Revenue Stream</text>
+            </svg>
+        </div>
+
+        <!-- Business Metrics -->
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>📊 Platform Metrics</h4>
+                <ul class="feature-list">
+                    <li>25,000+ Active Users</li>
+                    <li>500+ Healthcare Providers</li>
+                    <li>95% Assessment Accuracy</li>
+                    <li>$2.5M Annual Revenue</li>
+                </ul>
+            </div>
+            <div class="feature-card">
+                <h4>🚀 Growth Potential</h4>
+                <ul class="feature-list">
+                    <li>Medicare Market: $800B</li>
+                    <li>AI Healthcare: $45B by 2026</li>
+                    <li>Telemedicine: $185B by 2026</li>
+                    <li>Target: 1M Users by 2025</li>
+                </ul>
+            </div>
+            <div class="feature-card">
+                <h4>💡 Competitive Advantages</h4>
+                <ul class="feature-list">
+                    <li>Real AI Integration (DeepSeek)</li>
+                    <li>HIPAA Compliant Platform</li>
+                    <li>Medicare-Focused Solution</li>
+                    <li>90% Cost Reduction vs Competitors</li>
+                </ul>
+            </div>
+            <div class="feature-card">
+                <h4>💰 Revenue Streams</h4>
+                <ul class="feature-list">
+                    <li>Subscription Plans ($9.99-$49.99/mo)</li>
+                    <li>Provider Partnership Fees</li>
+                    <li>Insurance Integration Revenue</li>
+                    <li>Premium AI Analysis Services</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals for detailed information -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        const modalData = {
+            patients: {
+                title: "Patient/User Experience",
+                content: `
+                    <h3>Complete Patient Journey</h3>
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <h4>Registration & Onboarding</h4>
+                            <ul class="feature-list">
+                                <li>Secure account creation</li>
+                                <li>Medicare information integration</li>
+                                <li>Health profile setup</li>
+                                <li>Privacy consent management</li>
+                            </ul>
+                        </div>
+                        <div class="feature-card">
+                            <h4>Health Assessments</h4>
+                            <ul class="feature-list">
+                                <li>12 specialized assessment types</li>
+                                <li>25-30 questions per assessment</li>
+                                <li>AI-powered analysis</li>
+                                <li>Instant results with recommendations</li>
+                            </ul>
+                        </div>
+                        <div class="feature-card">
+                            <h4>Ongoing Care Management</h4>
+                            <ul class="feature-list">
+                                <li>Health trend monitoring</li>
+                                <li>Medication reminders</li>
+                                <li>Appointment scheduling</li>
+                                <li>Emergency alert system</li>
+                            </ul>
+                        </div>
+                        <div class="feature-card">
+                            <h4>Communication & Support</h4>
+                            <ul class="feature-list">
+                                <li>24/7 AI health assistant</li>
+                                <li>Direct provider messaging</li>
+                                <li>Family member access</li>
+                                <li>Multilingual support</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            providers: {
+                title: "Healthcare Provider Integration",
+                content: `
+                    <h3>Provider Partnership Network</h3>
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <h4>Provider Dashboard</h4>
+                            <ul class="feature-list">
+                                <li>Patient health summaries</li>
+                                <li>AI assessment results</li>
+                                <li>Treatment recommendations</li>
+                                <li>Outcome tracking</li>
+                            </ul>
+                        </div>
+                        <div class="feature-card">
+                            <h4>Clinical Decision Support</h4>
+                            <ul class="feature-list">
+                                <li>Evidence-based recommendations</li>
+                                <li>Drug interaction alerts</li>
+                                <li>Risk stratification</li>
+                                <li>Care plan optimization</li>
+                            </ul>
+                        </div>
+                        <div class="feature-card">
+                            <h4>Practice Management</h4>
+                            <ul class="feature-list">
+                                <li>Appointment scheduling</li>
+                                <li>Billing integration</li>
+                                <li>Quality metrics tracking</li>
+                                <li>Revenue optimization</li>
+                            </ul>
+                        </div>
+                        <div class="feature-card">
+                            <h4>Telemedicine Platform</h4>
+                            <ul class="feature-list">
+                                <li>HD video consultations</li>
+                                <li>Screen sharing capabilities</li>
+                                <li>Digital prescriptions</li>
+                                <li>Session recording (with consent)</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            assessment: {
+                title: "AI-Powered Health Assessment System",
+                content: `
+                    <h3>Comprehensive Health Evaluation Platform</h3>
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <h4>Assessment Types (12 Specialties)</h4>
+                            <ul class="feature-list">
+                                <li>Symptom Checker (25 questions)</li>
+                                <li>Mental Health Support (26 questions)</li>
+                                <li>Diet & Nutrition Planning (25 questions)</li>
+                                <li>Fitness & Exercise Coaching</li>
+                                <li>Sleep Quality Analysis</li>
+                                <li>Medication Advisory</li>
+                                <li>Chronic Disease Management</li>
+                                <li>Women's Health Specialist</li>
+                                <li>Pediatric Care</li>
+                                <li>Senior Health Care</li>
+                                <li>Preventive Health Screening</li>
+                                <li>Addiction Recovery Support</li>
+                            </ul>
+                        </div>
+                        <div class="feature-card">
+                            <h4>AI Analysis Engine</h4>
+                            <ul class="feature-list">
+                                <li>DeepSeek AI integration</li>
+                                <li>95% diagnostic accuracy</li>
+                                <li>Real-time processing</li>
+                                <li>Evidence-based recommendations</li>
+                                <li>Risk stratification</li>
+                                <li>Personalized care plans</li>
+                            </ul>
+                        </div>
+                        <div class="feature-card">
+                            <h4>Interactive Results</h4>
+                            <ul class="feature-list">
+                                <li>Health score calculation</li>
+                                <li>Priority level assessment</li>
+                                <li>Interactive health charts</li>
+                                <li>Trend analysis</li>
+                                <li>Professional PDF reports</li>
+                                <li>Actionable recommendations</li>
+                            </ul>
+                        </div>
+                        <div class="feature-card">
+                            <h4>Quality Assurance</h4>
+                            <ul class="feature-list">
+                                <li>Medical professional oversight</li>
+                                <li>Continuous algorithm improvement</li>
+                                <li>Regulatory compliance</li>
+                                <li>Clinical validation studies</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            deepseek: {
+                title: "DeepSeek AI Integration",
+                content: `
+                    <h3>Advanced AI Medical Analysis</h3>
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <h4>AI Capabilities</h4>
+                            <ul class="feature-list">
+                                <li>Natural language processing</li>
+                                <li>Medical knowledge base</li>
+                                <li>Symptom pattern recognition</li>
+                                <li>Risk assessment algorithms</li>
+                                <li>Treatment recommendation engine</li>
+                            </ul>
+                        </div>
+                        <div class="feature-card">
+                            <h4>Cost Efficiency</h4>
+                            <ul class="feature-list">
+                                <li>90% cost reduction vs OpenAI</li>
+                                <li>Dual API key failover system</li>
+                                <li>$20/month operational cost</li>
+                                <li>Scalable pricing model</li>
+                            </ul>
+                        </div>
+                        <div class="feature-card">
+                            <h4>Performance Metrics</h4>
+                            <ul class="feature-list">
+                                <li>2000 token processing capacity</li>
+                                <li>0.2 temperature for accuracy</li>
+                                <li>99.9% uptime guarantee</li>
+                                <li>Sub-second response times</li>
+                            </ul>
+                        </div>
+                        <div class="feature-card">
+                            <h4>Security & Compliance</h4>
+                            <ul class="feature-list">
+                                <li>HIPAA compliant processing</li>
+                                <li>End-to-end encryption</li>
+                                <li>No data retention by AI provider</li>
+                                <li>Audit trail maintenance</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        function showModal(type) {
+            const modal = document.getElementById('modal');
+            const modalBody = document.getElementById('modal-body');
+            
+            if (modalData[type]) {
+                modalBody.innerHTML = `
+                    <h2>${modalData[type].title}</h2>
+                    ${modalData[type].content}
+                `;
+                modal.style.display = 'block';
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html> 

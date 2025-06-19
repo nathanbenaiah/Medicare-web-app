@@ -16,6 +16,25 @@
   status = 200
   force = true
 
+# Ensure OAuth callbacks go directly to redirect-handler
+[[redirects]]
+  from = "/#*"
+  to = "/redirect-handler.html"
+  status = 200
+  conditions = {Query = {access_token = ":access_token"}}
+
+[[redirects]]
+  from = "/#*"
+  to = "/redirect-handler.html"
+  status = 200
+  conditions = {Query = {token_type = ":token_type"}}
+
+[[redirects]]
+  from = "/*"
+  to = "/redirect-handler.html"
+  status = 200
+  conditions = {Query = {code = ":code"}}
+
 # Auth pages
 [[redirects]]
   from = "/auth*"

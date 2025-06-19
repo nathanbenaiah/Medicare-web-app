@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Center - MediCare</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8fafc;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        .help-center-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .help-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .help-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #007BFF;
+            margin-bottom: 1rem;
+        }
+
+        .help-subtitle {
+            font-size: 1.2rem;
+            color: #6b7280;
+        }
+
+        .faq-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1.5rem 0;
+        }
+
+        .faq-question {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-answer {
+            margin-top: 1rem;
+            color: #6b7280;
+            display: none;
+        }
+
+        .contact-support {
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .support-button {
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .support-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+        }
+
+        .back-button {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-size: 0.9rem;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .back-button i {
+            font-size: 1rem;
+        }
+    
+        /* Enhanced Modern Navigation */
+        .navbar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10001;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 60px;
+            padding: 18px 40px;
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            max-width: 95vw;
+            min-width: 1300px;
+        }
+
+        .navbar-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3rem;
+            width: 100%;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .navbar-brand i {
+            font-size: 1.5rem;
+            color: var(--primary-blue);
+        }
+
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: nowrap;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--text-gray);
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 25px;
+            white-space: nowrap;
+            min-width: fit-content;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary-blue);
+            background: rgba(0, 123, 255, 0.1);
+        }
+
+        .nav-link span {
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .navbar-auth {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .auth-sign-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+            min-width: 220px;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        .auth-sign-btn:hover {
+            background: linear-gradient(135deg, #0056b3, #003d82);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+        }
+
+        /* Navigation Dropdowns */
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-width: 220px;
+            padding: 0.5rem 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+        }
+
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 12px 16px;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(0, 123, 255, 0.1);
+            color: var(--primary-blue);
+            padding-left: 20px;
+        }
+
+        .dropdown-arrow {
+            transition: transform 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .nav-dropdown.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .mobile-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .mobile-toggle span {
+            width: 20px;
+            height: 2px;
+            background: var(--primary-blue);
+            border-radius: 2px;
+            transition: var(--transition);
+        }
+    </style>
+</head>
+<body>
+    <!-- Enhanced Modern Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="../index.html" class="navbar-brand">
+                <i class="bx bx-health"></i>
+                <span>MediCare<span style="color: var(--primary-blue);">+</span></span>
+            </a>
+            
+            <div class="navbar-nav">
+                <a href="../index.html" class="nav-link">
+                    <i class="bx bx-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="features.html" class="nav-link">
+                    <i class="bx bx-grid-alt"></i>
+                    <span>Features</span>
+                </a>
+                <a href="ai-features.html" class="nav-link">
+                    <i class="bx bx-brain"></i>
+                    <span>AI Features</span>
+                </a>
+                <a href="about.html" class="nav-link">
+                    <i class="bx bx-info-circle"></i>
+                    <span>About</span>
+                </a>
+                <a href="blog.html" class="nav-link">
+                    <i class="bx bx-book-open"></i>
+                    <span>Blog</span>
+                </a>
+                <div class="nav-dropdown">
+                    <a href="#" class="nav-link">
+                        <i class="bx bx-user-plus"></i>
+                        <span>Provider</span>
+                        <i class="bx bx-chevron-down dropdown-arrow"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="provider-registration.html" class="dropdown-item">Join as Provider</a>
+                        <a href="provider-policy.html" class="dropdown-item">Provider Policy</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="navbar-auth">
+                <a href="authnew.html" class="btn-auth btn-sign-up">
+                    <i class="bx bx-user"></i>
+                    Sign In / Sign Up
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <a href="../index.html" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Back to Home
+    </a>
+    
+    <div class="help-center-container">
+        <div class="help-header">
+            <h1 class="help-title">Help Center</h1>
+            <p class="help-subtitle">Find answers to frequently asked questions</p>
+        </div>
+
+        <div class="faq-section">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    How do I create an account?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    You can create an account by clicking the "Sign In / Sign Up" button and following the registration process.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    How do I set medication reminders?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    Go to the Reminders section, click "Add Reminder", and enter your medication details including time and frequency.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    Can I book appointments through the platform?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    Yes, you can book appointments with registered healthcare providers through our Appointments section.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    Is my health data secure?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    Yes, we use bank-level encryption and comply with international healthcare data protection standards to keep your information secure.
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-support">
+            <p>Can't find what you're looking for?</p>
+            <button class="support-button" onclick="window.location.href='contact.html'">
+                <i class="fas fa-envelope"></i>
+                Contact Support
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function toggleFAQ(element) {
+            const answer = element.nextElementSibling;
+            const icon = element.querySelector('i');
+            
+            if (answer.style.display === 'block') {
+                answer.style.display = 'none';
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            } else {
+                answer.style.display = 'block';
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            }
+        }
+    </script>
+
+<script>
+// Navigation dropdown functions
+function toggleFeatures(event) {
+    event.preventDefault();
+    const dropdown = document.getElementById('featuresDropdown');
+    const parent = event.target.closest('.nav-dropdown');
+    
+    // Close other dropdowns
+    document.querySelectorAll('.dropdown-menu').forEach(menu => {
+        if (menu !== dropdown) {
+            menu.classList.remove('show');
+            menu.closest('.nav-dropdown').classList.remove('active');
+        }
+    });
+    
+    dropdown.classList.toggle('show');
+    parent.classList.toggle('active');
+}
+
+function toggleProvider(event) {
+    event.preventDefault();
+    const dropdown = document.getElementById('providerDropdown');
+    const parent = event.target.closest('.nav-dropdown');
+    
+    // Close other dropdowns
+    document.querySelectorAll('.dropdown-menu').forEach(menu => {
+        if (menu !== dropdown) {
+            menu.classList.remove('show');
+            menu.closest('.nav-dropdown').classList.remove('active');
+        }
+    });
+    
+    dropdown.classList.toggle('show');
+    parent.classList.toggle('active');
+}
+
+function toggleMobileMenu() {
+    // Mobile menu functionality
+    console.log('Mobile menu toggle');
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', function(event) {
+    if (!event.target.closest('.nav-dropdown')) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.classList.remove('show');
+            menu.closest('.nav-dropdown').classList.remove('active');
+        });
+    }
+});
+</script>
+</body>
+</html> 

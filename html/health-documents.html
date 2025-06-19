@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Document AI - Medicare AI Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .card h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .upload-section {
+            border: 2px dashed #3498db;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-section:hover {
+            border-color: #2980b9;
+            background: rgba(52, 152, 219, 0.05);
+        }
+
+        .upload-section.dragover {
+            border-color: #27ae60;
+            background: rgba(46, 204, 113, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .document-type-select {
+            margin: 20px 0;
+        }
+
+        .document-type-select select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+        }
+
+        .processing-indicator {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .processing-indicator.active {
+            display: block;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results-section {
+            grid-column: 1 / -1;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .result-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-button {
+            padding: 12px 24px;
+            border: none;
+            background: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button.active {
+            background: #3498db;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .json-viewer {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .insights-card {
+            margin-bottom: 20px;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            background: rgba(52, 152, 219, 0.05);
+            border-radius: 8px;
+        }
+
+        .insights-card h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .risk-level {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .risk-low { background: #2ecc71; color: white; }
+        .risk-moderate { background: #f39c12; color: white; }
+        .risk-high { background: #e74c3c; color: white; }
+        .risk-critical { background: #c0392b; color: white; }
+
+        .chat-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+        }
+
+        .chat-messages {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #bdc3c7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: white;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .message.user {
+            background: #3498db;
+            color: white;
+            margin-left: 20%;
+        }
+
+        .message.ai {
+            background: #ecf0f1;
+            color: #2c3e50;
+            margin-right: 20%;
+        }
+
+        .chat-input-section {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .chat-send-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .disclaimer {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid #e74c3c;
+            color: #c0392b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    
+        /* Enhanced Modern Navigation */
+        .navbar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10001;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 60px;
+            padding: 18px 40px;
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            max-width: 95vw;
+            min-width: 1300px;
+        }
+
+        .navbar-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3rem;
+            width: 100%;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .navbar-brand i {
+            font-size: 1.5rem;
+            color: var(--primary-blue);
+        }
+
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: nowrap;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--text-gray);
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 25px;
+            white-space: nowrap;
+            min-width: fit-content;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary-blue);
+            background: rgba(0, 123, 255, 0.1);
+        }
+
+        .nav-link span {
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .navbar-auth {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .auth-sign-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+            min-width: 220px;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        .auth-sign-btn:hover {
+            background: linear-gradient(135deg, #0056b3, #003d82);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+        }
+
+        /* Navigation Dropdowns */
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-width: 220px;
+            padding: 0.5rem 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+        }
+
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 12px 16px;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(0, 123, 255, 0.1);
+            color: var(--primary-blue);
+            padding-left: 20px;
+        }
+
+        .dropdown-arrow {
+            transition: transform 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .nav-dropdown.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .mobile-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .mobile-toggle span {
+            width: 20px;
+            height: 2px;
+            background: var(--primary-blue);
+            border-radius: 2px;
+            transition: var(--transition);
+        }
+</style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 Health Document AI</h1>
+            <p>Advanced medical document processing and AI analysis inspired by Doctor Dok</p>
+        </div>
+
+        <div class="main-content">
+            <div class="card">
+                <h2>📄 Upload Health Document</h2>
+                
+                <div class="upload-section" id="uploadSection">
+                    <div class="upload-icon">📁</div>
+                    <p>Drag and drop your health document here or click to browse</p>
+                    <p><small>Supported formats: PDF, JPG, PNG, TIFF (Max 10MB)</small></p>
+                    <input type="file" class="file-input" id="fileInput" accept=".pdf,.png,.jpg,.jpeg,.tiff">
+                    <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                        Choose File
+                    </button>
+                </div>
+
+                <div class="document-type-select">
+                    <label for="documentType">Document Type:</label>
+                    <select id="documentType">
+                        <option value="blood_test">Blood Test Results</option>
+                        <option value="mri_scan">MRI Scan Report</option>
+                        <option value="xray">X-Ray Report</option>
+                        <option value="lab_report">Lab Report</option>
+                        <option value="prescription">Prescription</option>
+                        <option value="discharge_summary">Discharge Summary</option>
+                        <option value="pathology">Pathology Report</option>
+                        <option value="radiology">Radiology Report</option>
+                        <option value="ecg">ECG Report</option>
+                        <option value="unknown">Unknown/Other</option>
+                    </select>
+                </div>
+
+                <div class="processing-indicator" id="processingIndicator">
+                    <div class="spinner"></div>
+                    <p>Processing your health document...</p>
+                    <p><small>This may take a few moments while we extract and analyze the medical data</small></p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>💬 AI Chat</h2>
+                <p>Ask questions about your processed health documents</p>
+                
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message ai">
+                        <strong>Health AI Assistant:</strong> Hello! Once you upload and process a health document, you can ask me questions about it. I can help explain medical terms, analyze results, and provide insights based on the data.
+                    </div>
+                </div>
+
+                <div class="chat-input-section">
+                    <input type="text" class="chat-input" id="chatInput" placeholder="Ask about your health document..." disabled>
+                    <button class="chat-send-btn" id="chatSendBtn" disabled onclick="sendChatMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <div class="card">
+                <h2>📊 Analysis Results</h2>
+                
+                <div class="result-tabs">
+                    <button class="tab-button active" onclick="showTab('overview')">Overview</button>
+                    <button class="tab-button" onclick="showTab('structured')">Structured Data</button>
+                    <button class="tab-button" onclick="showTab('insights')">AI Insights</button>
+                    <button class="tab-button" onclick="showTab('fhir')">FHIR Format</button>
+                </div>
+
+                <div class="tab-content active" id="overview-tab">
+                    <div id="overviewContent"></div>
+                </div>
+
+                <div class="tab-content" id="structured-tab">
+                    <div id="structuredContent"></div>
+                </div>
+
+                <div class="tab-content" id="insights-tab">
+                    <div id="insightsContent"></div>
+                </div>
+
+                <div class="tab-content" id="fhir-tab">
+                    <div id="fhirContent"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h3>OCR Processing</h3>
+                <p>Advanced AI-powered text extraction from medical documents</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <h3>AI Analysis</h3>
+                <p>Intelligent medical insights and risk assessment</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <h3>FHIR Compliance</h3>
+                <p>Standardized healthcare data format</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>Privacy Protected</h3>
+                <p>PII removal and secure processing</p>
+            </div>
+        </div>
+
+        <div class="disclaimer">
+            <strong>⚠️ Medical Disclaimer:</strong> This AI system is for informational and research purposes only. NEVER rely on AI-generated medical analysis for healthcare decisions. Always consult qualified healthcare professionals for medical advice, diagnosis, or treatment.
+        </div>
+    </div>
+
+    <script>
+        let currentDocumentData = null;
+        let processingInProgress = false;
+
+        // File upload handling
+        document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+        
+        // Drag and drop functionality
+        const uploadSection = document.getElementById('uploadSection');
+        
+        uploadSection.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadSection.classList.add('dragover');
+        });
+        
+        uploadSection.addEventListener('dragleave', () => {
+            uploadSection.classList.remove('dragover');
+        });
+        
+        uploadSection.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadSection.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                document.getElementById('fileInput').files = files;
+                handleFileUpload({ target: { files: files } });
+            }
+        });
+
+        // Chat input handling
+        document.getElementById('chatInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendChatMessage();
+            }
+        });
+
+        async function handleFileUpload(event) {
+            if (processingInProgress) {
+                alert('Please wait for the current document to finish processing.');
+                return;
+            }
+
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const documentType = document.getElementById('documentType').value;
+            
+            // Show processing indicator
+            showProcessingIndicator(true);
+            processingInProgress = true;
+
+            try {
+                const formData = new FormData();
+                formData.append('healthDocument', file);
+                formData.append('documentType', documentType);
+
+                const response = await fetch('/api/health-docs/process', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentDocumentData = result.result;
+                    displayResults(result.result);
+                    enableChat();
+                    showNotification('Document processed successfully!', 'success');
+                } else {
+                    showNotification(`Error: ${result.error}`, 'error');
+                }
+
+            } catch (error) {
+                console.error('Upload error:', error);
+                showNotification('Failed to process document. Please try again.', 'error');
+            } finally {
+                showProcessingIndicator(false);
+                processingInProgress = false;
+            }
+        }
+
+        function showProcessingIndicator(show) {
+            const indicator = document.getElementById('processingIndicator');
+            if (show) {
+                indicator.classList.add('active');
+            } else {
+                indicator.classList.remove('active');
+            }
+        }
+
+        function displayResults(data) {
+            const resultsSection = document.getElementById('resultsSection');
+            resultsSection.classList.add('active');
+
+            // Overview tab
+            displayOverview(data);
+            
+            // Structured data tab
+            displayStructuredData(data.parsedData);
+            
+            // AI insights tab
+            displayInsights(data.aiAnalysis);
+            
+            // FHIR tab
+            displayFHIR(data.structuredData);
+        }
+
+        function displayOverview(data) {
+            const content = document.getElementById('overviewContent');
+            content.innerHTML = `
+                <div class="insights-card">
+                    <h3>📄 Document Information</h3>
+                    <p><strong>Type:</strong> ${data.documentType}</p>
+                    <p><strong>OCR Confidence:</strong> ${data.confidence}%</p>
+                    <p><strong>Processing Time:</strong> ${new Date(data.processingTime).toLocaleString()}</p>
+                    <p><strong>File Size:</strong> ${data.metadata?.fileSize ? (data.metadata.fileSize / 1024).toFixed(1) + ' KB' : 'Unknown'}</p>
+                </div>
+                
+                <div class="insights-card">
+                    <h3>🔍 Extracted Text Preview</h3>
+                    <div style="max-height: 200px; overflow-y: auto; background: #f8f9fa; padding: 15px; border-radius: 5px;">
+                        ${data.originalText ? data.originalText.substring(0, 500) + (data.originalText.length > 500 ? '...' : '') : 'No text extracted'}
+                    </div>
+                </div>
+            `;
+        }
+
+        function displayStructuredData(data) {
+            const content = document.getElementById('structuredContent');
+            content.innerHTML = `
+                <div class="json-viewer">
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>
+            `;
+        }
+
+        function displayInsights(insights) {
+            const content = document.getElementById('insightsContent');
+            
+            if (!insights || insights.fallback) {
+                content.innerHTML = `
+                    <div class="insights-card">
+                        <h3>⚠️ AI Analysis Unavailable</h3>
+                        <p>AI insights could not be generated for this document. This might be due to:</p>
+                        <ul>
+                            <li>Poor image quality or unclear text</li>
+                            <li>Unsupported document format</li>
+                            <li>API limitations</li>
+                        </ul>
+                        <p>Please try uploading a clearer image or consult the original document.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            
+            if (insights.overallAssessment) {
+                html += `
+                    <div class="insights-card">
+                        <h3>📊 Overall Assessment</h3>
+                        <p>${insights.overallAssessment.summary}</p>
+                        <div class="risk-level risk-${insights.overallAssessment.riskLevel}">
+                            Risk Level: ${insights.overallAssessment.riskLevel.toUpperCase()}
+                        </div>
+                        <p><small>Confidence: ${(insights.overallAssessment.confidence * 100).toFixed(1)}%</small></p>
+                    </div>
+                `;
+            }
+
+            if (insights.keyFindings && insights.keyFindings.length > 0) {
+                html += `
+                    <div class="insights-card">
+                        <h3>🔍 Key Findings</h3>
+                        ${insights.keyFindings.map(finding => `
+                            <div style="margin-bottom: 10px; padding: 10px; background: white; border-radius: 5px;">
+                                <strong>${finding.category}:</strong> ${finding.finding}
+                                <br><small style="color: #666;">${finding.explanation}</small>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            if (insights.actionItems && insights.actionItems.length > 0) {
+                html += `
+                    <div class="insights-card">
+                        <h3>📋 Recommended Actions</h3>
+                        ${insights.actionItems.map(action => `
+                            <div style="margin-bottom: 10px; padding: 10px; background: white; border-radius: 5px; border-left: 3px solid #3498db;">
+                                <strong>${action.action}</strong>
+                                <br><small>Priority: ${action.priority} | Timeframe: ${action.timeframe}</small>
+                                <br><small style="color: #666;">${action.reason}</small>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            content.innerHTML = html || '<p>No AI insights available for this document.</p>';
+        }
+
+        function displayFHIR(data) {
+            const content = document.getElementById('fhirContent');
+            content.innerHTML = `
+                <div class="json-viewer">
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>
+            `;
+        }
+
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function enableChat() {
+            document.getElementById('chatInput').disabled = false;
+            document.getElementById('chatSendBtn').disabled = false;
+            
+            // Add system message
+            addChatMessage('ai', 'Document processed successfully! I can now answer questions about your health document. What would you like to know?');
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const question = input.value.trim();
+            
+            if (!question || !currentDocumentData) return;
+
+            // Add user message
+            addChatMessage('user', question);
+            input.value = '';
+
+            // Add thinking indicator
+            const thinkingId = addChatMessage('ai', 'Thinking...');
+
+            try {
+                const response = await fetch('/api/health-docs/ai-chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        question: question,
+                        documentContext: currentDocumentData
+                    })
+                });
+
+                const result = await response.json();
+                
+                // Remove thinking indicator
+                document.getElementById(thinkingId).remove();
+
+                if (result.success) {
+                    addChatMessage('ai', result.response);
+                } else {
+                    addChatMessage('ai', result.fallback || 'I apologize, I cannot answer that question right now.');
+                }
+
+            } catch (error) {
+                console.error('Chat error:', error);
+                document.getElementById(thinkingId).remove();
+                addChatMessage('ai', 'I apologize, there was an error processing your question. Please try again.');
+            }
+        }
+
+        function addChatMessage(sender, message) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageId = 'msg-' + Date.now();
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            messageDiv.id = messageId;
+            messageDiv.innerHTML = `
+                <strong>${sender === 'user' ? 'You' : 'Health AI Assistant'}:</strong> ${message}
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            return messageId;
+        }
+
+        function showNotification(message, type) {
+            // Simple notification system
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                z-index: 1000;
+                font-weight: bold;
+                ${type === 'success' ? 'background: #2ecc71; color: white;' : 'background: #e74c3c; color: white;'}
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🏥 Health Document AI initialized');
+            
+            // Check if uploads directory exists
+            fetch('/api/ml/health')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('✅ ML service is healthy');
+                    }
+                })
+                .catch(error => {
+                    console.warn('⚠️ ML service check failed:', error);
+                });
+        });
+    </script>
+
+<script>
+// Navigation dropdown functions
+function toggleFeatures(event) {
+    event.preventDefault();
+    const dropdown = document.getElementById('featuresDropdown');
+    const parent = event.target.closest('.nav-dropdown');
+    
+    // Close other dropdowns
+    document.querySelectorAll('.dropdown-menu').forEach(menu => {
+        if (menu !== dropdown) {
+            menu.classList.remove('show');
+            menu.closest('.nav-dropdown').classList.remove('active');
+        }
+    });
+    
+    dropdown.classList.toggle('show');
+    parent.classList.toggle('active');
+}
+
+function toggleProvider(event) {
+    event.preventDefault();
+    const dropdown = document.getElementById('providerDropdown');
+    const parent = event.target.closest('.nav-dropdown');
+    
+    // Close other dropdowns
+    document.querySelectorAll('.dropdown-menu').forEach(menu => {
+        if (menu !== dropdown) {
+            menu.classList.remove('show');
+            menu.closest('.nav-dropdown').classList.remove('active');
+        }
+    });
+    
+    dropdown.classList.toggle('show');
+    parent.classList.toggle('active');
+}
+
+function toggleMobileMenu() {
+    // Mobile menu functionality
+    console.log('Mobile menu toggle');
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', function(event) {
+    if (!event.target.closest('.nav-dropdown')) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.classList.remove('show');
+            menu.closest('.nav-dropdown').classList.remove('active');
+        });
+    }
+});
+</script>
+</body>
+</html> 

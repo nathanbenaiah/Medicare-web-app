@@ -1,0 +1,266 @@
+{
+  "template_configurations": {
+    "diet_planner_custom": {
+      "template_name": "Custom Diet Planner Template",
+      "template_file": "templates/diet_planner_custom.pdf",
+      "assessment_type": "diet-planner",
+      "version": "1.0",
+      "description": "Professional diet assessment report with custom branding",
+      
+      "field_mappings": {
+        "patient_name": "responses.1",
+        "patient_age": "responses.2",
+        "patient_gender": "responses.3",
+        "patient_contact": "responses.4",
+        "patient_district": "responses.5",
+        
+        "current_weight": "responses.7",
+        "current_height": "responses.8",
+        "activity_level": "responses.9",
+        "health_goal": "responses.6",
+        
+        "bmi_value": "calculated.bmi",
+        "bmi_category": "calculated.bmi_category",
+        "daily_calories": "calculated.daily_calories",
+        "protein_needs": "calculated.protein_grams",
+        "carb_needs": "calculated.carb_grams",
+        "fat_needs": "calculated.fat_grams",
+        
+        "breakfast_time": "responses.23",
+        "lunch_time": "responses.24", 
+        "dinner_time": "responses.25",
+        
+        "health_score": "analysis.health_score",
+        "recommendation_1": "analysis.recommendations.0.action",
+        "recommendation_2": "analysis.recommendations.1.action",
+        "recommendation_3": "analysis.recommendations.2.action",
+        "recommendation_4": "analysis.recommendations.3.action",
+        "recommendation_5": "analysis.recommendations.4.action",
+        
+        "report_date": "metadata.generated_date",
+        "assessment_id": "metadata.assessment_id"
+      },
+      
+      "checkbox_mappings": {
+        "has_diabetes": "responses.18.includes('diabetes')",
+        "has_hypertension": "responses.18.includes('hypertension')",
+        "has_heart_disease": "responses.18.includes('heart_disease')",
+        "has_thyroid": "responses.18.includes('thyroid')",
+        
+        "is_vegetarian": "responses.10.includes('vegetarian')",
+        "is_vegan": "responses.10.includes('vegan')",
+        "gluten_free": "responses.10.includes('gluten_free')",
+        "dairy_free": "responses.10.includes('dairy_free')",
+        
+        "allergy_nuts": "responses.11.includes('nuts')",
+        "allergy_dairy": "responses.11.includes('dairy')",
+        "allergy_eggs": "responses.11.includes('eggs')",
+        "allergy_seafood": "responses.11.includes('seafood')"
+      },
+      
+      "dynamic_content": {
+        "bmi_gauge_chart": {
+          "type": "gauge_chart",
+          "position": {"x": 400, "y": 600, "width": 150, "height": 100},
+          "data_source": "calculated.bmi",
+          "config": {
+            "min_value": 15,
+            "max_value": 40,
+            "ranges": [
+              {"min": 15, "max": 18.5, "color": "#ffc107", "label": "Underweight"},
+              {"min": 18.5, "max": 25, "color": "#28a745", "label": "Normal"},
+              {"min": 25, "max": 30, "color": "#fd7e14", "label": "Overweight"},
+              {"min": 30, "max": 40, "color": "#dc3545", "label": "Obese"}
+            ]
+          }
+        },
+        
+        "macronutrient_pie_chart": {
+          "type": "pie_chart",
+          "position": {"x": 50, "y": 400, "width": 200, "height": 150},
+          "data_source": "calculated.macronutrients",
+          "config": {
+            "colors": ["#0066ff", "#ffc107", "#28a745"],
+            "labels": ["Protein", "Carbs", "Fats"],
+            "show_percentages": true
+          }
+        },
+        
+        "meal_schedule_table": {
+          "type": "table",
+          "position": {"x": 50, "y": 200, "width": 500, "height": 150},
+          "data_source": "analysis.meal_plan",
+          "config": {
+            "columns": ["Time", "Meal", "Foods", "Calories"],
+            "header_style": {
+              "background_color": "#0066ff",
+              "text_color": "#ffffff",
+              "font_size": 12
+            },
+            "row_style": {
+              "alternating_colors": ["#f8f9fa", "#ffffff"],
+              "text_color": "#333333",
+              "font_size": 10
+            }
+          }
+        },
+        
+        "health_score_progress_bar": {
+          "type": "progress_bar",
+          "position": {"x": 300, "y": 700, "width": 250, "height": 20},
+          "data_source": "analysis.health_score",
+          "config": {
+            "max_value": 100,
+            "color_scheme": {
+              "0-40": "#dc3545",
+              "41-60": "#ffc107", 
+              "61-80": "#fd7e14",
+              "81-100": "#28a745"
+            },
+            "show_percentage": true
+          }
+        }
+      },
+      
+      "conditional_content": {
+        "diabetes_warning": {
+          "condition": "responses.18.includes('diabetes')",
+          "content": {
+            "type": "text_box",
+            "position": {"x": 50, "y": 50, "width": 500, "height": 30},
+            "text": "⚠️ DIABETES ALERT: Follow diabetic-friendly meal recommendations",
+            "style": {
+              "background_color": "#fff3cd",
+              "border_color": "#ffc107",
+              "text_color": "#856404",
+              "font_size": 10
+            }
+          }
+        },
+        
+        "high_bmi_alert": {
+          "condition": "calculated.bmi > 30",
+          "content": {
+            "type": "text_box", 
+            "position": {"x": 50, "y": 80, "width": 500, "height": 30},
+            "text": "🚨 HIGH BMI: Consult healthcare provider for weight management",
+            "style": {
+              "background_color": "#f8d7da",
+              "border_color": "#dc3545",
+              "text_color": "#721c24",
+              "font_size": 10
+            }
+          }
+        }
+      }
+    },
+    
+    "symptom_checker_custom": {
+      "template_name": "Custom Symptom Checker Template",
+      "template_file": "templates/symptom_checker_custom.pdf",
+      "assessment_type": "symptom-checker",
+      "version": "1.0",
+      
+      "field_mappings": {
+        "patient_name": "responses.1",
+        "patient_age": "responses.2",
+        "patient_gender": "responses.3",
+        "patient_contact": "responses.4",
+        "patient_district": "responses.5",
+        
+        "primary_symptom": "responses.6",
+        "symptom_duration": "responses.7",
+        "symptom_severity": "responses.8",
+        "current_medications": "responses.14",
+        "urgency_assessment": "responses.27",
+        
+        "health_score": "analysis.health_score",
+        "risk_level": "analysis.risk_assessment.urgency_level",
+        "confidence_score": "analysis.risk_assessment.confidence",
+        
+        "recommendation_1": "analysis.recommendations.immediate_actions.0",
+        "recommendation_2": "analysis.recommendations.immediate_actions.1",
+        "recommendation_3": "analysis.recommendations.monitoring_advice.0",
+        "follow_up_timeline": "analysis.recommendations.follow_up_timeline",
+        
+        "disclaimer_text": "analysis.disclaimer"
+      },
+      
+      "checkbox_mappings": {
+        "has_fever": "responses.9.includes('fever')",
+        "has_fatigue": "responses.9.includes('fatigue')",
+        "has_nausea": "responses.9.includes('nausea')",
+        "has_headache": "responses.9.includes('headache')",
+        
+        "resp_cough": "responses.10.includes('cough')",
+        "resp_shortness": "responses.10.includes('shortness_breath')",
+        "resp_chest_pain": "responses.10.includes('chest_pain')",
+        
+        "urgent_care_needed": "analysis.risk_assessment.urgency_level === 'urgent'",
+        "emergency_care_needed": "analysis.risk_assessment.urgency_level === 'emergency'"
+      },
+      
+      "dynamic_content": {
+        "urgency_indicator": {
+          "type": "status_indicator",
+          "position": {"x": 450, "y": 700, "width": 100, "height": 30},
+          "data_source": "analysis.risk_assessment.urgency_level",
+          "config": {
+            "indicators": {
+              "not_urgent": {"color": "#28a745", "text": "LOW RISK"},
+              "somewhat_urgent": {"color": "#ffc107", "text": "MODERATE"},
+              "urgent": {"color": "#fd7e14", "text": "HIGH RISK"},
+              "very_urgent": {"color": "#dc3545", "text": "URGENT"},
+              "emergency": {"color": "#6f42c1", "text": "EMERGENCY"}
+            }
+          }
+        },
+        
+        "symptom_timeline": {
+          "type": "timeline",
+          "position": {"x": 50, "y": 500, "width": 500, "height": 100},
+          "data_source": "responses.7",
+          "config": {
+            "timeline_points": {
+              "today": {"position": 0, "label": "Today"},
+              "yesterday": {"position": 1, "label": "Yesterday"},
+              "few_days": {"position": 3, "label": "Few Days"},
+              "week": {"position": 7, "label": "1 Week"},
+              "weeks": {"position": 21, "label": "3 Weeks"},
+              "month": {"position": 30, "label": "1 Month"},
+              "longer": {"position": 60, "label": "2+ Months"}
+            }
+          }
+        }
+      }
+    }
+  },
+  
+  "template_usage_instructions": {
+    "step_1": "Create your PDF template using Adobe Acrobat Pro or similar tool",
+    "step_2": "Add fillable form fields with the names specified in field_mappings",
+    "step_3": "Save the template as a fillable PDF",
+    "step_4": "Update the template_file path in this configuration",
+    "step_5": "Test the integration with sample assessment data"
+  },
+  
+  "supported_field_types": [
+    "text_field",
+    "checkbox", 
+    "dropdown",
+    "radio_button",
+    "signature_field"
+  ],
+  
+  "supported_dynamic_content": [
+    "gauge_chart",
+    "pie_chart",
+    "bar_chart", 
+    "progress_bar",
+    "table",
+    "timeline",
+    "status_indicator",
+    "text_box",
+    "image_placeholder"
+  ]
+} 

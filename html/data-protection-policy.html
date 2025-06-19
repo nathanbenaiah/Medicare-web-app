@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Protection Policy - MediCare+</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8fafc;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        .policy-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .policy-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 20px;
+        }
+
+        .policy-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .policy-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .policy-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            color: #007BFF;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title i {
+            font-size: 1.2rem;
+        }
+
+        .section-content h3 {
+            color: #1a1a1a;
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.5rem;
+        }
+
+        .section-content p {
+            color: #6b7280;
+            margin-bottom: 1rem;
+        }
+
+        .section-content ul {
+            color: #6b7280;
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-left: 4px solid #007BFF;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+
+        .data-flow {
+            background: linear-gradient(135deg, #f3e8ff, #fce7f3);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+        }
+
+        .data-flow h3 {
+            color: #7c3aed;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-section {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .contact-btn {
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        .contact-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+        }
+
+        .back-button {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-size: 0.9rem;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .back-button i {
+            font-size: 1rem;
+        }
+    
+        /* Enhanced Modern Navigation */
+        .navbar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10001;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 60px;
+            padding: 18px 40px;
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            max-width: 95vw;
+            min-width: 1300px;
+        }
+
+        .navbar-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3rem;
+            width: 100%;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .navbar-brand i {
+            font-size: 1.5rem;
+            color: var(--primary-blue);
+        }
+
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: nowrap;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--text-gray);
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 25px;
+            white-space: nowrap;
+            min-width: fit-content;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary-blue);
+            background: rgba(0, 123, 255, 0.1);
+        }
+
+        .nav-link span {
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .navbar-auth {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .auth-sign-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+            min-width: 220px;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        .auth-sign-btn:hover {
+            background: linear-gradient(135deg, #0056b3, #003d82);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+        }
+
+        /* Navigation Dropdowns */
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-width: 220px;
+            padding: 0.5rem 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+        }
+
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 12px 16px;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(0, 123, 255, 0.1);
+            color: var(--primary-blue);
+            padding-left: 20px;
+        }
+
+        .dropdown-arrow {
+            transition: transform 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .nav-dropdown.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .mobile-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .mobile-toggle span {
+            width: 20px;
+            height: 2px;
+            background: var(--primary-blue);
+            border-radius: 2px;
+            transition: var(--transition);
+        }
+</style>
+</head>
+<body>
+    <a href="../index.html" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Back to Home
+    </a>
+    
+    <div class="policy-container">
+        <!-- Policy Header -->
+        <div class="policy-header">
+            <h1 class="policy-title">Data Protection Policy</h1>
+            <p class="policy-subtitle">
+                How we protect and manage your personal and health information
+            </p>
+        </div>
+
+        <!-- Introduction -->
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="bx bx-shield-check"></i>
+                Data Protection Overview
+            </h2>
+            <div class="section-content">
+                <p>
+                    At MediCare+, we are committed to protecting your personal and health information. This Data Protection 
+                    Policy explains how we collect, use, store, and safeguard your data in compliance with Sri Lankan data 
+                    protection laws and international healthcare privacy standards.
+                </p>
+                
+                <div class="highlight-box">
+                    <h3>Your Privacy Rights</h3>
+                    <p>
+                        You have the right to know what data we collect, how it's used, who it's shared with, and how to 
+                        control your information. This policy ensures transparency in all our data handling practices.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Collection -->
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="bx bx-data"></i>
+                What Data We Collect
+            </h2>
+            <div class="section-content">
+                <h3>Personal Information</h3>
+                <ul>
+                    <li>Name, date of birth, gender, and contact details</li>
+                    <li>National ID number and emergency contact information</li>
+                    <li>Insurance information and billing details</li>
+                    <li>Login credentials and account preferences</li>
+                </ul>
+
+                <h3>Health Information</h3>
+                <ul>
+                    <li>Medical history, symptoms, and diagnoses</li>
+                    <li>Medication records and treatment plans</li>
+                    <li>Laboratory results and medical imaging</li>
+                    <li>Appointment history and provider notes</li>
+                </ul>
+
+                <h3>Technical Data</h3>
+                <ul>
+                    <li>Device information and IP addresses</li>
+                    <li>Usage analytics and app performance data</li>
+                    <li>Location data (only when explicitly consented)</li>
+                    <li>Communication logs and support interactions</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Data Usage -->
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="bx bx-cog"></i>
+                How We Use Your Data
+            </h2>
+            <div class="section-content">
+                <h3>Primary Healthcare Purposes</h3>
+                <ul>
+                    <li>Providing medical consultations and treatment recommendations</li>
+                    <li>Facilitating communication between patients and healthcare providers</li>
+                    <li>Managing appointments and medication schedules</li>
+                    <li>Generating health reports and tracking progress</li>
+                </ul>
+
+                <h3>Platform Improvement</h3>
+                <ul>
+                    <li>Enhancing AI diagnostic capabilities through anonymized data</li>
+                    <li>Improving user experience and platform functionality</li>
+                    <li>Developing new features and services</li>
+                    <li>Ensuring platform security and preventing fraud</li>
+                </ul>
+
+                <h3>Legal and Regulatory Compliance</h3>
+                <ul>
+                    <li>Meeting healthcare regulatory requirements</li>
+                    <li>Responding to legal requests and court orders</li>
+                    <li>Protecting against legal liability</li>
+                    <li>Conducting internal audits and quality assessments</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Data Security -->
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="bx bx-lock-alt"></i>
+                Data Security Measures
+            </h2>
+            <div class="section-content">
+                <h3>Technical Safeguards</h3>
+                <ul>
+                    <li>End-to-end encryption for all data transmission</li>
+                    <li>Advanced encryption at rest for stored data</li>
+                    <li>Multi-factor authentication and access controls</li>
+                    <li>Regular security audits and penetration testing</li>
+                </ul>
+
+                <h3>Administrative Safeguards</h3>
+                <ul>
+                    <li>Strict employee access controls and training programs</li>
+                    <li>Regular security awareness training</li>
+                    <li>Incident response procedures and breach protocols</li>
+                    <li>Third-party security assessments and certifications</li>
+                </ul>
+
+                <h3>Physical Safeguards</h3>
+                <ul>
+                    <li>Secure data centers with 24/7 monitoring</li>
+                    <li>Biometric access controls and surveillance systems</li>
+                    <li>Environmental controls and backup power systems</li>
+                    <li>Secure disposal of physical storage media</li>
+                </ul>
+
+                <div class="data-flow">
+                    <h3>Data Security Architecture</h3>
+                    <p>
+                        Our multi-layered security approach includes network firewalls, intrusion detection systems, 
+                        data loss prevention tools, and continuous monitoring to ensure your health information 
+                        remains protected at all times.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Sharing -->
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="bx bx-share"></i>
+                Data Sharing and Disclosure
+            </h2>
+            <div class="section-content">
+                <h3>Authorized Healthcare Providers</h3>
+                <p>
+                    We share your health information with healthcare providers in our network only as necessary 
+                    for your treatment, with your explicit consent or as permitted by law.
+                </p>
+
+                <h3>Third-Party Service Providers</h3>
+                <p>
+                    Limited data may be shared with vetted service providers who help us operate the platform, 
+                    such as cloud hosting, payment processing, and customer support services. All third parties 
+                    are bound by strict confidentiality agreements.
+                </p>
+
+                <h3>Legal Requirements</h3>
+                <p>
+                    We may disclose information when required by law, court order, or regulatory authority, 
+                    or to protect the safety of individuals or the public health.
+                </p>
+
+                <div class="highlight-box">
+                    <h3>No Unauthorized Sharing</h3>
+                    <p>
+                        We never sell, rent, or share your personal health information for marketing purposes 
+                        without your explicit consent. Your data is used solely for healthcare and platform 
+                        improvement purposes.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Your Rights -->
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="bx bx-user-check"></i>
+                Your Data Rights
+            </h2>
+            <div class="section-content">
+                <h3>Access and Portability</h3>
+                <ul>
+                    <li>Request copies of your personal and health data</li>
+                    <li>Export your data in a portable format</li>
+                    <li>Receive data usage reports and access logs</li>
+                </ul>
+
+                <h3>Correction and Updates</h3>
+                <ul>
+                    <li>Correct inaccurate or incomplete information</li>
+                    <li>Update your personal details and preferences</li>
+                    <li>Request amendments to your health records</li>
+                </ul>
+
+                <h3>Deletion and Restriction</h3>
+                <ul>
+                    <li>Request deletion of your account and data</li>
+                    <li>Restrict processing for specific purposes</li>
+                    <li>Withdraw consent for data processing</li>
+                </ul>
+
+                <h3>How to Exercise Your Rights</h3>
+                <p>
+                    To exercise any of these rights, contact our Data Protection Officer through the platform 
+                    or email us at privacy@medicare-plus.lk. We will respond to your request within 30 days.
+                </p>
+            </div>
+        </div>
+
+        <!-- Data Retention -->
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="bx bx-time"></i>
+                Data Retention
+            </h2>
+            <div class="section-content">
+                <h3>Retention Periods</h3>
+                <ul>
+                    <li>Active user data: Retained while account is active</li>
+                    <li>Health records: 7 years after last treatment (as per Sri Lankan law)</li>
+                    <li>Billing information: 7 years for tax and audit purposes</li>
+                    <li>Support communications: 3 years for quality assurance</li>
+                </ul>
+
+                <h3>Secure Deletion</h3>
+                <p>
+                    When data is no longer needed, it is securely deleted using industry-standard methods 
+                    that ensure information cannot be recovered or reconstructed.
+                </p>
+
+                <h3>Legal Holds</h3>
+                <p>
+                    In cases of legal proceedings or regulatory investigations, data may be retained 
+                    beyond normal retention periods as required by law.
+                </p>
+            </div>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="contact-section">
+            <h2>Questions About Data Protection?</h2>
+            <p>
+                Our Data Protection Officer is available to address any concerns about how we handle 
+                your personal and health information.
+            </p>
+            <a href="contact.html" class="contact-btn">
+                <i class="bx bx-envelope"></i>
+                Contact Data Protection Team
+            </a>
+        </div>
+    </div>
+
+<script>
+// Navigation dropdown functions
+function toggleFeatures(event) {
+    event.preventDefault();
+    const dropdown = document.getElementById('featuresDropdown');
+    const parent = event.target.closest('.nav-dropdown');
+    
+    // Close other dropdowns
+    document.querySelectorAll('.dropdown-menu').forEach(menu => {
+        if (menu !== dropdown) {
+            menu.classList.remove('show');
+            menu.closest('.nav-dropdown').classList.remove('active');
+        }
+    });
+    
+    dropdown.classList.toggle('show');
+    parent.classList.toggle('active');
+}
+
+function toggleProvider(event) {
+    event.preventDefault();
+    const dropdown = document.getElementById('providerDropdown');
+    const parent = event.target.closest('.nav-dropdown');
+    
+    // Close other dropdowns
+    document.querySelectorAll('.dropdown-menu').forEach(menu => {
+        if (menu !== dropdown) {
+            menu.classList.remove('show');
+            menu.closest('.nav-dropdown').classList.remove('active');
+        }
+    });
+    
+    dropdown.classList.toggle('show');
+    parent.classList.toggle('active');
+}
+
+function toggleMobileMenu() {
+    // Mobile menu functionality
+    console.log('Mobile menu toggle');
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', function(event) {
+    if (!event.target.closest('.nav-dropdown')) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.classList.remove('show');
+            menu.closest('.nav-dropdown').classList.remove('active');
+        });
+    }
+});
+</script>
+</body>
+</html> 

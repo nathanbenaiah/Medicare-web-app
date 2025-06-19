@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Health Assessment - MediCare+</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="pdf-generator.js"></script>
+    <script src="diet-planner-assessment.js"></script>
+    <script src="symptom-checker-assessment.js"></script>
+    
+    <style>
+        :root {
+            --primary-50: #eff6ff;
+            --primary-100: #dbeafe;
+            --primary-200: #bfdbfe;
+            --primary-300: #93c5fd;
+            --primary-400: #60a5fa;
+            --primary-500: #3b82f6;
+            --primary-600: #2563eb;
+            --primary-700: #1d4ed8;
+            --primary-800: #1e40af;
+            --primary-900: #1e3a8a;
+            
+            --success-50: #ecfdf5;
+            --success-500: #10b981;
+            --success-600: #059669;
+            
+            --warning-50: #fffbeb;
+            --warning-500: #f59e0b;
+            --warning-600: #d97706;
+            
+            --danger-50: #fef2f2;
+            --danger-500: #ef4444;
+            --danger-600: #dc2626;
+            
+            --info-50: #f0f9ff;
+            --info-500: #06b6d4;
+            --info-600: #0891b2;
+            
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-800);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Hero Section - Updated to match appointments.html style */
+        .hero-section {
+            background: linear-gradient(135deg, #e7f3ff 0%, white 100%);
+            min-height: 25vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            margin: 2rem 0;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(0, 123, 255, 0.1) 0%, transparent 70%);
+            z-index: 1;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            margin-top: -3rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-content {
+            text-align: center;
+            color: var(--gray-800);
+            z-index: 2;
+            max-width: 800px;
+            padding: 2rem;
+        }
+
+        .assessment-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0, 123, 255, 0.1);
+            color: #007BFF;
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0, 123, 255, 0.2);
+        }
+
+        .assessment-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 1.5rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .assessment-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--gray-800);
+            margin-bottom: 0.5rem;
+        }
+
+        .assessment-subtitle {
+            font-size: 1rem;
+            color: var(--gray-600);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .progress-container {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: var(--gray-200);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-500), var(--primary-600));
+            width: 0%;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+        }
+
+        .question-container {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 2rem;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+        }
+
+        .question-container:hover {
+            box-shadow: var(--shadow-glow);
+            border-color: var(--primary-300);
+        }
+
+        .question-number {
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .question-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--gray-800);
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .question-description {
+            color: var(--gray-600);
+            margin-bottom: 2rem;
+            font-size: 1.125rem;
+            line-height: 1.6;
+        }
+
+        .answer-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .answer-options.single-column {
+            grid-template-columns: 1fr;
+        }
+
+        .answer-option {
+            background: white;
+            border: 2px solid var(--gray-200);
+            border-radius: 1.5rem;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .answer-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(147, 197, 253, 0.05));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 2rem;
+        }
+
+        .answer-option:hover {
+            border-color: var(--primary-300);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+        }
+
+        .answer-option:hover::before {
+            opacity: 1;
+        }
+
+        .answer-option.selected {
+            border-color: var(--primary-500);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 197, 253, 0.05));
+            box-shadow: 
+                0 0 0 1px var(--primary-500),
+                0 0 20px rgba(59, 130, 246, 0.3),
+                0 8px 25px rgba(59, 130, 246, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .answer-option.selected::before {
+            opacity: 1;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 197, 253, 0.05));
+        }
+
+        .option-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .option-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .option-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            transition: color 0.3s ease;
+        }
+
+        .answer-option.selected .option-label {
+            color: var(--primary-700);
+        }
+
+        .option-indicator {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--gray-300);
+            border-radius: 50%;
+            position: relative;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .answer-option.checkbox .option-indicator {
+            border-radius: 8px;
+        }
+
+        .answer-option:hover .option-indicator {
+            border-color: var(--primary-400);
+        }
+
+        .answer-option.selected .option-indicator {
+            border-color: var(--primary-500);
+            background: var(--primary-500);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+        }
+
+        .answer-option.selected .option-indicator::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .option-description {
+            color: var(--gray-600);
+            font-size: 0.75rem;
+            line-height: 1.4;
+            margin: 0;
+            transition: color 0.3s ease;
+        }
+
+        .answer-option.selected .option-description {
+            color: var(--gray-700);
+        }
+
+        .text-input-container textarea {
+            width: 100%;
+            padding: 1.5rem;
+            border: 2px solid var(--gray-200);
+            border-radius: 1.5rem;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 120px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .text-input-container textarea:focus {
+            outline: none;
+            border-color: var(--primary-500);
+            box-shadow: 
+                0 0 0 1px var(--primary-500),
+                0 0 20px rgba(59, 130, 246, 0.2);
+        }
+
+        .text-input-container textarea::placeholder {
+            color: var(--gray-400);
+        }
+
+        .question-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .progress-container {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 2rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: var(--gray-200);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-500), var(--primary-600));
+            border-radius: 6px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 3rem;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 2rem;
+            font-weight: 700;
+            font-size: 1.125rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+            transform: translateY(-3px);
+            box-shadow: 
+                var(--shadow-lg),
+                0 0 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-primary:disabled {
+            background: var(--gray-300);
+            color: var(--gray-500);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--gray-700);
+            border: 2px solid var(--gray-200);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-300);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .results-section {
+            display: none;
+        }
+
+        .results-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 3rem;
+            background: white;
+            border-radius: 2rem;
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .results-header h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--gray-800);
+            margin-bottom: 1rem;
+        }
+
+        .results-header p {
+            font-size: 1.25rem;
+            color: var(--gray-600);
+        }
+
+        .analysis-grid {
+            display: grid;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .analysis-box {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 2rem;
+            padding: 3rem;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+        }
+
+        .analysis-box:hover {
+            box-shadow: var(--shadow-glow);
+            border-color: var(--primary-300);
+            transform: translateY(-2px);
+        }
+
+        .analysis-box-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--gray-100);
+        }
+
+        .analysis-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+            border-radius: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .analysis-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--gray-800);
+        }
+
+        .analysis-content {
+            color: var(--gray-700);
+            line-height: 1.8;
+            font-size: 1.125rem;
+        }
+
+        .pdf-download-section {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: 1px solid #dee2e6;
+            border-radius: 2rem;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .pdf-download-section h3 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--gray-800);
+            margin-bottom: 1rem;
+        }
+
+        .pdf-download-section p {
+            font-size: 1.125rem;
+            color: var(--gray-600);
+            margin-bottom: 2rem;
+        }
+
+        .pdf-download-btn {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: white;
+            padding: 1.25rem 3rem;
+            border: none;
+            border-radius: 2rem;
+            font-weight: 800;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 4px 20px rgba(220, 38, 38, 0.4);
+        }
+
+        .pdf-download-btn:hover {
+            background: linear-gradient(135deg, #b91c1c, #991b1b);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(220, 38, 38, 0.6), 0 0 20px rgba(220, 38, 38, 0.3);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 2rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; max-height: 0; }
+            to { opacity: 1; max-height: 200px; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                min-height: 50vh;
+                padding: 2rem 1rem;
+            }
+            
+            .hero-content {
+                padding: 1rem;
+            }
+            
+            .assessment-title {
+                font-size: 2.5rem;
+            }
+            
+            .assessment-subtitle {
+                font-size: 1.125rem;
+            }
+            
+            .stats-display {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .container {
+                padding: 1rem;
+                margin-top: -2rem;
+            }
+            
+            .back-button {
+                position: static;
+                margin-bottom: 1rem;
+                align-self: flex-start;
+            }
+            
+            .question-container {
+                padding: 2rem;
+            }
+            
+            .question-title {
+                font-size: 1.5rem;
+            }
+            
+            .answer-options {
+                grid-template-columns: 1fr !important;
+                gap: 1rem;
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .btn {
+                justify-content: center;
+                padding: 1rem 2rem;
+            }
+            
+            .analysis-box {
+                padding: 2rem;
+            }
+            
+            .results-header {
+                padding: 2rem;
+            }
+            
+            .results-header h2 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .assessment-title {
+                font-size: 2rem;
+            }
+            
+            .question-container {
+                padding: 1.5rem;
+            }
+            
+            .analysis-box {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Assessment Type Specific Styling */
+        .assessment-type-symptom .assessment-icon { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .assessment-type-diet .assessment-icon { background: linear-gradient(135deg, #10b981, #059669); }
+        .assessment-type-mental .assessment-icon { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+    </style>
+</head>
+
+<body>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <a href="ai-health-assistant.html" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            Back
+        </a>
+
+        <div class="hero-content">
+            <div class="assessment-badge">
+                <i class="fas fa-robot"></i>
+                AI-Powered Assessment
+            </div>
+            <div class="assessment-icon" id="assessmentIcon">
+                <i class="fas fa-stethoscope"></i>
+            </div>
+            <h1 class="assessment-title" id="assessmentTitle">AI Health Assessment</h1>
+            <p class="assessment-subtitle" id="assessmentSubtitle">
+                Complete this comprehensive health assessment to receive personalized insights, detailed analysis, and professional recommendations with downloadable PDF reports.
+            </p>
+
+        </div>
+    </section>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div>
+            <div class="spinner"></div>
+            <h3>Analyzing Your Responses</h3>
+            <p>Our AI is processing your information...</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="assessment-section" id="assessmentSection">
+
+            <div class="progress-container">
+                <div class="progress-info">
+                    <span>Assessment Progress</span>
+                    <span id="progressPercentage">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <div class="question-container" id="questionContainer">
+                <!-- Questions loaded dynamically -->
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()" style="display: none;">
+                    <i class="fas fa-arrow-left"></i>
+                    Previous
+                </button>
+                <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>
+                    Next
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <div class="ai-policy-note" style="margin-top: 2rem; padding: 1.5rem; background: linear-gradient(135deg, rgba(0, 102, 255, 0.05) 0%, rgba(255, 255, 255, 1) 100%); border: 2px solid rgba(0, 102, 255, 0.2); border-radius: 1rem; text-align: center; box-shadow: 0 4px 15px rgba(0, 102, 255, 0.1);">
+                <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 0.75rem;">
+                    <i class="fas fa-shield-alt" style="font-size: 1.5rem; color: var(--primary-color); margin-right: 0.75rem;"></i>
+                    <h4 style="color: var(--primary-color); font-weight: 600; margin: 0;">Important Notice</h4>
+                </div>
+                <p style="color: var(--text-dark); font-size: 0.9rem; margin: 0; line-height: 1.6;">
+                    By completing this AI assessment, you agree to our 
+                    <a href="ai-assistant-policy.html" style="color: var(--primary-color); text-decoration: none; font-weight: 600; border-bottom: 1px solid var(--primary-color);">AI Usage Policy</a>
+                    and understand that this tool provides general health information and should not replace professional medical advice.
+                </p>
+            </div>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <div class="results-header">
+                <h2>Your Personalized Health Analysis</h2>
+                <p>Based on your responses, here's your comprehensive assessment</p>
+            </div>
+
+            <div class="analysis-grid" id="analysisGrid">
+                <!-- Analysis boxes loaded dynamically -->
+            </div>
+
+            <div class="pdf-download-section">
+                <h3 style="margin-bottom: 1rem;">Download Your Report</h3>
+                <p style="margin-bottom: 2rem; color: var(--text-light);">
+                    Get a comprehensive PDF report with all your results
+                </p>
+                <button class="pdf-download-btn" onclick="downloadPDF()">
+                    <i class="fas fa-download"></i>
+                    Download PDF Report
+                </button>
+            </div>
+
+            <!-- Post-Assessment Disclaimer -->
+            <div class="post-assessment-disclaimer" style="margin: 2rem 0; padding: 1.5rem; background: linear-gradient(135deg, rgba(0, 102, 255, 0.05) 0%, rgba(255, 255, 255, 1) 100%); border: 2px solid rgba(0, 102, 255, 0.2); border-radius: 1rem; text-align: center; box-shadow: 0 4px 15px rgba(0, 102, 255, 0.1);">
+                <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 0.75rem;">
+                    <i class="fas fa-shield-alt" style="font-size: 1.5rem; color: var(--primary-color); margin-right: 0.75rem;"></i>
+                    <h4 style="color: var(--primary-color); font-weight: 600; margin: 0;">Important Notice</h4>
+                </div>
+                <p style="color: var(--text-dark); font-size: 0.9rem; margin: 0; line-height: 1.6;">
+                    By completing this AI assessment, you agree to our 
+                    <a href="ai-assistant-policy.html" style="color: var(--primary-color); text-decoration: none; font-weight: 600; border-bottom: 1px solid var(--primary-color);">AI Usage Policy</a>
+                    and understand that this tool provides general health information and should not replace professional medical advice.
+                </p>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-secondary" onclick="startNewAssessment()">
+                    <i class="fas fa-redo"></i>
+                    New Assessment
+                </button>
+                <a href="user-dashboard.html" class="btn btn-primary">
+                    <i class="fas fa-home"></i>
+                    Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="../js/assessment-configs.js"></script>
+    <script>
+        // Enhanced AI Health Assessment System
+        class EnhancedAIHealthSystem {
+            constructor() {
+                this.currentQuestion = 0;
+                this.responses = {};
+                this.assessmentType = this.getAssessmentType();
+                this.questions = this.getQuestionsForType(this.assessmentType);
+                this.analysisResults = null;
+                this.init();
+            }
+
+            init() {
+                console.log(`🧠 Loading ${this.assessmentType} assessment with ${this.questions.length} questions`);
+                this.updateAssessmentHeader();
+                this.loadQuestion();
+                this.updateProgress();
+                this.updateNavigationButtons();
+            }
+
+            getAssessmentType() {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get('type') || 'symptom-checker';
+            }
+
+            getQuestionsForType(type) {
+                // Use the comprehensive 30-question configuration from assessment-configs.js
+                if (window.ASSESSMENT_CONFIGS && window.ASSESSMENT_CONFIGS[type]) {
+                    const config = window.ASSESSMENT_CONFIGS[type];
+                    console.log(`✅ Loaded ${config.questions.length} questions for ${type}`);
+                    return config.questions;
+                }
+                
+                console.warn(`⚠️ Assessment config not found for ${type}, using fallback`);
+                // Fallback to basic questions if config not available
+                return [
+                    { id: 1, type: 'text', question: 'Q1. What is your full name?', description: 'Please enter your complete name.', required: true, placeholder: 'Enter your full name' },
+                    { id: 2, type: 'text', question: 'Q2. What is your age?', description: 'Please enter your age in years.', required: true, placeholder: 'Enter your age (e.g., 25)' },
+                    { id: 3, type: 'multiple', question: 'Q3. What is your gender?', description: 'Please select your gender.', options: [{ value: 'male', label: 'Male' }, { value: 'female', label: 'Female' }], required: true },
+                    { id: 4, type: 'text', question: 'Q4. What is your contact number?', description: 'Please enter your phone number.', required: true, placeholder: 'Enter your contact number (e.g., 0771234567)' },
+                    { id: 5, type: 'multiple', question: 'Q5. Which province are you from?', description: 'Select your province in Sri Lanka.', options: [{ value: 'western', label: 'Western Province' }, { value: 'central', label: 'Central Province' }, { value: 'southern', label: 'Southern Province' }], required: true },
+                    { id: 6, type: 'multiple', question: 'Q6. What is your primary concern?', description: 'Select your main health issue.', options: [{ value: 'general', label: 'General Health Check' }, { value: 'specific', label: 'Specific Health Issue' }], required: true }
+                ];
+            }
+
+            updateAssessmentHeader() {
+                const config = this.getAssessmentConfig(this.assessmentType);
+                const titleElement = document.getElementById('assessmentTitle');
+                const subtitleElement = document.getElementById('assessmentSubtitle');
+                const iconElement = document.getElementById('assessmentIcon');
+                
+                if (titleElement) titleElement.textContent = config.title;
+                if (subtitleElement) subtitleElement.textContent = config.subtitle;
+                if (iconElement) iconElement.innerHTML = `<i class="${config.icon}"></i>`;
+            }
+
+            getAssessmentConfig(type) {
+                // Use configuration from assessment-configs.js if available
+                if (window.ASSESSMENT_CONFIGS && window.ASSESSMENT_CONFIGS[type]) {
+                    return window.ASSESSMENT_CONFIGS[type];
+                }
+                
+                // Fallback configurations
+                const fallbackConfigs = {
+                    'symptom-checker': { title: 'AI Symptom Checker', subtitle: 'Advanced symptom analysis with AI-powered medical guidance', icon: 'fas fa-stethoscope' },
+                    'diet-planner': { title: 'Personalized Diet Planner', subtitle: 'AI-powered nutrition guidance tailored to your health needs', icon: 'fas fa-utensils' },
+                    'mental-health': { title: 'Mental Health Support', subtitle: 'Comprehensive mental wellness assessment and support', icon: 'fas fa-brain' },
+                    'fitness-coach': { title: 'AI Fitness Coach', subtitle: 'Personalized workout plans and fitness guidance', icon: 'fas fa-dumbbell' },
+                    'sleep-analyzer': { title: 'Sleep Quality Analyzer', subtitle: 'Comprehensive sleep analysis with personalized recommendations', icon: 'fas fa-moon' },
+                    'medicine-advisor': { title: 'Medicine Information Advisor', subtitle: 'Expert guidance about medications and drug interactions', icon: 'fas fa-pills' }
+                };
+                return fallbackConfigs[type] || fallbackConfigs['symptom-checker'];
+            }
+
+            loadQuestion() {
+                const question = this.questions[this.currentQuestion];
+                if (!question) return;
+                
+                const container = document.getElementById('questionContainer');
+                if (!container) return;
+                
+                container.innerHTML = `
+                    <div class="question-number">${this.currentQuestion + 1}</div>
+                    <div class="question-header">
+                        <h2 class="question-title">${question.question}</h2>
+                        <p class="question-description">${question.description}</p>
+                    </div>
+                    <div class="question-content">${this.renderQuestionInput(question)}</div>
+                `;
+                
+                // Restore previous response if exists
+                if (this.responses[this.currentQuestion + 1]) {
+                    if (question.type === 'text') {
+                        const textInput = document.getElementById('textInput');
+                        if (textInput) textInput.value = this.responses[this.currentQuestion + 1];
+                    } else {
+                        this.updateOptionDisplay();
+                    }
+                }
+            }
+
+            renderQuestionInput(question) {
+                if (question.type === 'text') {
+                    return `
+                        <div class="text-input-container">
+                            <textarea 
+                                id="textInput" 
+                                placeholder="${question.placeholder || 'Enter your response...'}" 
+                                rows="4" 
+                                oninput="window.assessment.handleTextInput(this.value)"
+                            ></textarea>
+                        </div>
+                    `;
+                } else if (question.type === 'multiple') {
+                    const optionsClass = question.options.length > 4 ? 'single-column' : '';
+                    return `
+                        <div class="answer-options ${optionsClass}">
+                            ${question.options.map(option => `
+                                <div class="answer-option ${question.multiple ? 'checkbox' : 'radio'}" 
+                                     onclick="window.assessment.selectOption('${option.value}', ${question.multiple || false})" 
+                                     data-value="${option.value}">
+                                    <div class="option-content">
+                                        <div class="option-header">
+                                            <span class="option-label">${option.label}</span>
+                                            <div class="option-indicator"></div>
+                                        </div>
+                                        ${option.description ? `<p class="option-description">${option.description}</p>` : ''}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+            }
+
+            selectOption(value, isMultiple = false) {
+                if (isMultiple) {
+                    if (!this.responses[this.currentQuestion + 1]) {
+                        this.responses[this.currentQuestion + 1] = [];
+                    }
+                    const responses = this.responses[this.currentQuestion + 1];
+                    const index = responses.indexOf(value);
+                    if (index > -1) {
+                        responses.splice(index, 1);
+                    } else {
+                        responses.push(value);
+                    }
+                } else {
+                    this.responses[this.currentQuestion + 1] = value;
+                }
+                
+                this.updateOptionDisplay();
+                this.updateNavigationButtons();
+            }
+
+            handleTextInput(value) {
+                this.responses[this.currentQuestion + 1] = value;
+                this.updateNavigationButtons();
+            }
+
+            updateOptionDisplay() {
+                const options = document.querySelectorAll('.answer-option');
+                const currentResponse = this.responses[this.currentQuestion + 1];
+                
+                options.forEach(option => {
+                    const value = option.dataset.value;
+                    const isSelected = Array.isArray(currentResponse) 
+                        ? currentResponse.includes(value) 
+                        : currentResponse === value;
+                    
+                    option.classList.toggle('selected', isSelected);
+                });
+            }
+
+            updateProgress() {
+                const progressPercentage = Math.round((this.currentQuestion / this.questions.length) * 100);
+                const progressFill = document.getElementById('progressFill');
+                const progressText = document.getElementById('progressPercentage');
+                
+                if (progressFill) progressFill.style.width = `${progressPercentage}%`;
+                if (progressText) progressText.textContent = `${progressPercentage}%`;
+            }
+
+            updateNavigationButtons() {
+                const prevBtn = document.getElementById('prevBtn');
+                const nextBtn = document.getElementById('nextBtn');
+                
+                if (prevBtn) {
+                    prevBtn.style.display = this.currentQuestion > 0 ? 'flex' : 'none';
+                }
+                
+                if (nextBtn) {
+                    const currentResponse = this.responses[this.currentQuestion + 1];
+                    const hasResponse = currentResponse && (
+                        typeof currentResponse === 'string' ? currentResponse.trim() : 
+                        Array.isArray(currentResponse) ? currentResponse.length > 0 : true
+                    );
+                    
+                    nextBtn.disabled = !hasResponse;
+                    
+                    if (this.currentQuestion >= this.questions.length - 1) {
+                        nextBtn.innerHTML = '<i class="fas fa-check"></i> Complete Assessment';
+                        nextBtn.onclick = () => this.completeAssessment();
+                    } else {
+                        nextBtn.innerHTML = 'Next <i class="fas fa-arrow-right"></i>';
+                        nextBtn.onclick = () => this.nextQuestion();
+                    }
+                }
+            }
+
+            nextQuestion() {
+                if (this.currentQuestion < this.questions.length - 1) {
+                    this.currentQuestion++;
+                    this.loadQuestion();
+                    this.updateProgress();
+                    this.updateNavigationButtons();
+                    
+                    // Smooth scroll to top
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }
+
+            previousQuestion() {
+                if (this.currentQuestion > 0) {
+                    this.currentQuestion--;
+                    this.loadQuestion();
+                    this.updateProgress();
+                    this.updateNavigationButtons();
+                    
+                    // Smooth scroll to top
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }
+
+            async completeAssessment() {
+                console.log('🏁 Completing assessment...');
+                
+                try {
+                    const completionData = {
+                        type: this.assessmentType,
+                        responses: this.responses,
+                        totalQuestions: this.questions.length,
+                        completedAt: new Date().toISOString(),
+                        duration: Date.now() - (this.startTime || Date.now())
+                    };
+                    
+                    // Generate comprehensive PDF report
+                    const pdfResponse = await fetch('/api/generate-pdf', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            assessmentType: this.assessmentType,
+                            responses: this.responses,
+                            questions: this.questions
+                        })
+                    });
+                    
+                    if (pdfResponse.ok) {
+                        const pdfData = await pdfResponse.json();
+                        console.log('✅ PDF generated successfully');
+                        
+                        // Show completion message and download PDF
+                        this.showCompletionMessage(pdfData.filename);
+                    } else {
+                        throw new Error('PDF generation failed');
+                    }
+                    
+                } catch (error) {
+                    console.error('Assessment completion error:', error);
+                    this.showCompletionMessage(null, 'There was an issue generating your report. Please try again.');
+                }
+            }
+
+            showCompletionMessage(pdfFilename, errorMessage = null) {
+                const container = document.getElementById('questionContainer');
+                
+                if (errorMessage) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 3rem;">
+                            <div style="font-size: 3rem; color: #ef4444; margin-bottom: 1rem;">⚠️</div>
+                            <h2 style="color: #ef4444; margin-bottom: 1rem;">Assessment Incomplete</h2>
+                            <p style="color: #666; margin-bottom: 2rem;">${errorMessage}</p>
+                            <button class="btn btn-primary" onclick="window.location.reload()">Try Again</button>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 3rem;">
+                            <div style="font-size: 3rem; color: #10b981; margin-bottom: 1rem;">✅</div>
+                            <h2 style="color: #10b981; margin-bottom: 1rem;">Assessment Complete!</h2>
+                            <p style="color: #666; margin-bottom: 2rem;">
+                                Thank you for completing your ${this.questions.length}-question health assessment. 
+                                Your personalized report has been generated.
+                            </p>
+                            ${pdfFilename ? `
+                                <div style="margin-bottom: 2rem;">
+                                    <a href="/uploads/pdf-reports/${pdfFilename}" 
+                                       class="btn btn-primary" 
+                                       download
+                                       style="margin-right: 1rem;">
+                                        <i class="fas fa-download"></i> Download Report
+                                    </a>
+                                    <a href="ai-health-assistant.html" class="btn btn-secondary">
+                                        <i class="fas fa-home"></i> Back to Health Hub
+                                    </a>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }
+                
+                // Hide navigation buttons
+                document.getElementById('prevBtn').style.display = 'none';
+                document.getElementById('nextBtn').style.display = 'none';
+            }
+        }
+
+        // Global functions for navigation
+        function nextQuestion() {
+            if (window.assessment) {
+                window.assessment.nextQuestion();
+            }
+        }
+
+        function previousQuestion() {
+            if (window.assessment) {
+                window.assessment.previousQuestion();
+            }
+        }
+
+        // Initialize assessment when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            window.assessment = new EnhancedAIHealthSystem();
+        });
+    </script>
+</body>
+</html> 

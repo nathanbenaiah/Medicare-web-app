@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provider Registration - MediCare+</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+    
+    <style>
+        :root {
+            --primary-blue: #007BFF;
+            --secondary-blue: #0056b3;
+            --success-green: #10b981;
+            --warning-orange: #f59e0b;
+            --error-red: #ef4444;
+            --text-dark: #1a1a1a;
+            --text-gray: #6b7280;
+            --bg-light: #f8fafc;
+            --bg-white: #ffffff;
+            --border-light: #e5e7eb;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
+            color: #1a1a1a;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-top: 140px;
+        }
+
+        /* Enhanced Modern Navigation */
+        .navbar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10001;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 60px;
+            padding: 18px 40px;
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            max-width: 95vw;
+            min-width: 800px;
+        }
+
+        .navbar-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 3rem;
+            width: 100%;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .navbar-brand i {
+            font-size: 1.5rem;
+            color: var(--primary-blue);
+        }
+
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: nowrap;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--text-gray);
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 25px;
+            white-space: nowrap;
+            min-width: fit-content;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary-blue);
+            background: rgba(0, 123, 255, 0.1);
+        }
+
+        .nav-link span {
+            font-size: 0.9rem;
+        }
+
+        .navbar-auth {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-auth {
+            padding: 10px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-sign-in {
+            background: transparent;
+            color: var(--text-gray);
+            border: 2px solid transparent;
+        }
+
+        .btn-sign-in:hover {
+            color: var(--primary-blue);
+            background: rgba(0, 123, 255, 0.05);
+        }
+
+        .btn-sign-up {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+
+        .btn-sign-up:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+            color: white;
+        }
+
+        /* Navigation Dropdowns */
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 0;
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(-50%) translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+            margin-top: 10px;
+        }
+
+        .nav-dropdown:hover .dropdown-menu,
+        .nav-dropdown.active .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            color: var(--text-gray);
+            font-weight: 500;
+            transition: var(--transition);
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(0, 123, 255, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .dropdown-arrow {
+            margin-left: 0.5rem;
+            transition: transform 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .nav-dropdown:hover .dropdown-arrow,
+        .nav-dropdown.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Back Button */
+        .back-button {
+            position: fixed;
+            top: 100px;
+            left: 2rem;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-size: 0.9rem;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .back-button i {
+            font-size: 1rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 120px;
+            }
+
+            .navbar {
+                min-width: 95vw;
+                padding: 12px 20px;
+                border-radius: 25px;
+            }
+
+            .navbar-container {
+                gap: 1rem;
+            }
+
+            .navbar-nav {
+                display: none;
+            }
+
+            .back-button {
+                top: 80px;
+                left: 1rem;
+                padding: 10px 16px;
+                font-size: 0.8rem;
+            }
+        }
+
+        .registration-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .registration-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .registration-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+        }
+
+        .registration-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .registration-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+        }
+
+        .registration-form {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .registration-form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #007BFF, #10b981, #007BFF);
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { background-position: 200% 0; }
+            50% { background-position: -200% 0; }
+        }
+
+        .form-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #007BFF;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title i {
+            font-size: 1.2rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #007BFF;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+            background: white;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .checkbox-input {
+            width: 20px;
+            height: 20px;
+            accent-color: #007BFF;
+        }
+
+        .checkbox-label {
+            font-size: 0.9rem;
+            color: #6b7280;
+            cursor: pointer;
+        }
+
+        .checkbox-label a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        .checkbox-label a:hover {
+            text-decoration: underline;
+        }
+
+        .submit-section {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #f3f4f6;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            padding: 16px 48px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 123, 255, 0.4);
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .progress-step {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            position: relative;
+            margin: 0 1rem;
+        }
+
+        .progress-step.active {
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+        }
+
+        .progress-step.completed {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .progress-step::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            width: 60px;
+            height: 2px;
+            background: #e5e7eb;
+            z-index: -1;
+        }
+
+        .progress-step:last-child::after {
+            display: none;
+        }
+
+        .progress-step.completed::after {
+            background: #10b981;
+        }
+
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-upload-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-upload-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 2rem;
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            background: #f9fafb;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload-label:hover {
+            border-color: #007BFF;
+            background: #f0f9ff;
+        }
+
+        .file-upload-label i {
+            font-size: 2rem;
+            color: #6b7280;
+        }
+
+        .file-upload-text {
+            color: #6b7280;
+            text-align: center;
+        }
+
+        .uploaded-files {
+            margin-top: 1rem;
+        }
+
+        .uploaded-file {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: #f0f9ff;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .uploaded-file i {
+            color: #007BFF;
+        }
+
+        .error-message {
+            color: #dc2626;
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .form-group.error .form-input,
+        .form-group.error .form-select,
+        .form-group.error .form-textarea {
+            border-color: #dc2626;
+        }
+
+        .form-group.error .error-message {
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .registration-container {
+                padding: 1rem;
+            }
+
+            .registration-title {
+                font-size: 2.2rem;
+            }
+
+            .registration-form {
+                padding: 2rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+
+            .progress-indicator {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .progress-step {
+                margin: 0 0.5rem;
+            }
+
+            .progress-step::after {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Enhanced Modern Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="../index.html" class="navbar-brand">
+                <i class="bx bx-health"></i>
+                <span>MediCare<span style="color: var(--primary-blue);">+</span></span>
+            </a>
+            
+            <div class="navbar-nav">
+                <a href="../index.html" class="nav-link">
+                    <i class="bx bx-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="features.html" class="nav-link">
+                    <i class="bx bx-grid-alt"></i>
+                    <span>Features</span>
+                </a>
+                <a href="ai-features.html" class="nav-link">
+                    <i class="bx bx-brain"></i>
+                    <span>AI Features</span>
+                </a>
+                <a href="about.html" class="nav-link">
+                    <i class="bx bx-info-circle"></i>
+                    <span>About</span>
+                </a>
+                <a href="blog.html" class="nav-link">
+                    <i class="bx bx-book-open"></i>
+                    <span>Blog</span>
+                </a>
+                <div class="nav-dropdown">
+                    <a href="#" class="nav-link">
+                        <i class="bx bx-user-plus"></i>
+                        <span>Provider</span>
+                        <i class="bx bx-chevron-down dropdown-arrow"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="provider-registration.html" class="dropdown-item">Join as Provider</a>
+                        <a href="provider-policy.html" class="dropdown-item">Provider Policy</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="navbar-auth">
+                <a href="authnew.html" class="btn-auth btn-sign-up">
+                    <i class="bx bx-user"></i>
+                    Sign In / Sign Up
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Back Button -->
+    <a href="../index.html" class="back-button">
+        <i class="bx bx-arrow-back"></i>
+        Back to Home
+    </a>
+
+    <div class="registration-container">

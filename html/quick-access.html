@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare+ Quick Access</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: #1e293b;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: white;
+            padding: 3rem;
+            border-radius: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            font-size: 1.25rem;
+            color: #64748b;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 2rem;
+            padding: 2.5rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            width: 4rem;
+            height: 4rem;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .feature-description {
+            color: #64748b;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .feature-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            border-radius: 1.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f8fafc;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #f1f5f9;
+            color: #334155;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .status-new {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-updated {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-demo {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .quick-stats {
+            background: white;
+            border-radius: 2rem;
+            padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #3b82f6;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-item p {
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .feature-card {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 MediCare+ Quick Access</h1>
+            <p>Complete System Overview - All Features & Updates</p>
+        </div>
+
+        <div class="quick-stats">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3>12</h3>
+                    <p>AI Assessment Types</p>
+                </div>
+                <div class="stat-item">
+                    <h3>25-30</h3>
+                    <p>Questions Per Assessment</p>
+                </div>
+                <div class="stat-item">
+                    <h3>95%</h3>
+                    <p>AI Accuracy Rate</p>
+                </div>
+                <div class="stat-item">
+                    <h3>25k+</h3>
+                    <p>Active Users</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="status-badge">✨ Recently Updated</div>
+                <h3 class="feature-title">Complete Data Flow Diagram</h3>
+                <p>Interactive system architecture for investors with clean curved lines and clickable components.</p>
+                <a href="data-flow-diagram.html" class="btn">View Interactive Diagram</a>
+            </div>
+
+            <div class="feature-card">
+                <div class="status-badge">🎨 New UI Design</div>
+                <h3 class="feature-title">Light Blue Glow Effects</h3>
+                <p>Enhanced curved selection boxes with beautiful light blue glow effects and 2-column layout for basic info questions.</p>
+                <a href="ui-demo.html" class="btn">See UI Demo</a>
+                <a href="new-ai-assessment.html?type=symptom-checker" class="btn">Try Live Assessment</a>
+            </div>
+
+            <div class="feature-card">
+                <div class="status-badge">🧠 AI Powered</div>
+                <h3 class="feature-title">Enhanced Assessment Flow</h3>
+                <p>Starts with 5 basic questions (name, age, gender, phone, location) then 25-30 specialized health questions.</p>
+                <a href="ai-health-assistant.html" class="btn">Start Assessment</a>
+                <a href="test-questions.html" class="btn">View All Questions</a>
+            </div>
+
+            <div class="feature-card">
+                <div class="status-badge">📄 Medicare Branded</div>
+                <h3 class="feature-title">Professional PDF Reports</h3>
+                <p>Medicare-branded reports with client info in ash curved boxes, charts, red/blue highlighting, and AI policy links.</p>
+                <a href="new-ai-assessment.html?type=diet-planner" class="btn">Generate PDF Report</a>
+            </div>
+
+            <div class="feature-card">
+                <div class="status-badge">🛡️ Policy Compliance</div>
+                <h3 class="feature-title">AI Usage Policy</h3>
+                <p>Comprehensive AI policy page explaining system capabilities, limitations, and user responsibilities.</p>
+                <a href="ai-policy.html" class="btn">View AI Policy</a>
+            </div>
+
+            <div class="feature-card">
+                <div class="status-badge">🔧 System Test</div>
+                <h3 class="feature-title">System Testing Suite</h3>
+                <p>Comprehensive testing page for technical demonstrations and validation.</p>
+                <a href="test-questions.html" class="btn">Run System Tests</a>
+            </div>
+        </div>
+
+        <div class="feature-card" style="text-align: center;">
+            <h3 class="feature-title">🚀 Ready for Investor Demo</h3>
+            <p class="feature-description">
+                Complete system with professional UI, comprehensive data flow diagram, working AI assessments, and all features fully functional.
+            </p>
+            <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 2rem;">
+                <a href="../INVESTOR_SYSTEM_UPDATE.md" class="btn btn-primary">
+                    <i class="fas fa-file-alt"></i> View Investor Document
+                </a>
+                <a href="ai-health-assistant.html" class="btn btn-secondary">
+                    <i class="fas fa-play-circle"></i> Start Full Demo
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add smooth loading animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.feature-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html> 

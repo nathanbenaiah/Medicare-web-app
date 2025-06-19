@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provider Policy - MediCare+</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+    
+    <style>
+        :root {
+            --primary-blue: #007BFF;
+            --secondary-blue: #0056b3;
+            --success-green: #10b981;
+            --warning-orange: #f59e0b;
+            --error-red: #ef4444;
+            --text-dark: #1a1a1a;
+            --text-gray: #6b7280;
+            --bg-light: #f8fafc;
+            --bg-white: #ffffff;
+            --border-light: #e5e7eb;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8fafc;
+            color: #1a1a1a;
+            line-height: 1.6;
+            padding-top: 120px;
+        }
+
+        .policy-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .policy-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 20px;
+        }
+
+        .policy-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .policy-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .policy-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            color: #007BFF;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title i {
+            font-size: 1.2rem;
+        }
+
+        .section-content h3 {
+            color: #1a1a1a;
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.5rem;
+        }
+
+        .section-content p {
+            color: #6b7280;
+            margin-bottom: 1rem;
+        }
+
+        .section-content ul {
+            color: #6b7280;
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-left: 4px solid #007BFF;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+
+        .provider-benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .provider-benefit {
+            background: linear-gradient(135deg, #f8fafc, #ffffff);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .provider-benefit i {
+            color: #007BFF;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .provider-benefit h4 {
+            color: #1a1a1a;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .provider-benefit p {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .obligations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .obligation-item {
+            background: linear-gradient(135deg, #fef3c7, #fef3c7);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .obligation-item h4 {
+            color: #92400e;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .obligation-item p {
+            color: #92400e;
+            font-size: 0.9rem;
+        }
+
+        .contact-section {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .contact-btn {
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        .contact-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+        }
+
+        .timeline {
+            position: relative;
+            margin: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 30px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #007BFF;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 70px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 22px;
+            top: 0;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #007BFF;
+        }
+
+        .timeline-content {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-description {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .policy-container {
+                padding: 1rem;
+            }
+
+            .policy-title {
+                font-size: 2.2rem;
+            }
+
+            .policy-section {
+                padding: 1.5rem;
+            }
+
+            .provider-benefits-grid,
+            .obligations-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline {
+                margin-left: 1rem;
+            }
+
+            .timeline::before {
+                left: 15px;
+            }
+
+            .timeline-item {
+                padding-left: 50px;
+            }
+
+            .timeline-item::before {
+                left: 7px;
+            }
+        }
+    
+        /* Enhanced Modern Navigation */
+        .navbar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10001;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 60px;
+            padding: 18px 40px;
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            max-width: 95vw;
+            min-width: 800px;
+        }
+
+        .navbar-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 3rem;
+            width: 100%;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .navbar-brand i {
+            font-size: 1.5rem;
+            color: var(--primary-blue);
+        }
+
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: nowrap;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--text-gray);
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 25px;
+            white-space: nowrap;
+            min-width: fit-content;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary-blue);
+            background: rgba(0, 123, 255, 0.1);
+        }
+
+        .nav-link span {
+            font-size: 0.9rem;
+        }
+
+        .navbar-auth {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-auth {
+            padding: 10px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-sign-in {
+            background: transparent;
+            color: var(--text-gray);
+            border: 2px solid transparent;
+        }
+
+        .btn-sign-in:hover {
+            color: var(--primary-blue);
+            background: rgba(0, 123, 255, 0.05);
+        }
+
+        .btn-sign-up {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+
+        .btn-sign-up:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+            color: white;
+        }
+
+        /* Navigation Dropdowns */
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 0;
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(-50%) translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+            margin-top: 10px;
+        }
+
+        .nav-dropdown:hover .dropdown-menu,
+        .nav-dropdown.active .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            color: var(--text-gray);
+            font-weight: 500;
+            transition: var(--transition);
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(0, 123, 255, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .dropdown-arrow {
+            margin-left: 0.5rem;
+            transition: transform 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .nav-dropdown:hover .dropdown-arrow,
+        .nav-dropdown.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Mobile Responsive Navigation */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 100px;
+            }
+
+            .navbar {
+                min-width: 95vw;
+                padding: 12px 20px;
+                border-radius: 25px;
+            }
+
+            .navbar-container {
+                gap: 1rem;
+            }
+
+            .navbar-nav {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Back to Home
+    </a>
+    
+    <div class="policy-container">
+        <!-- Policy Header -->
+        <div class="policy-header">
+            <h1 class="policy-title">Provider Policy</h1>
+            <p class="policy-subtitle">
+                Terms, conditions, and guidelines for MediCare+ healthcare providers
+            </p>
+        </div>
+
+        <!-- Introduction -->
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="bx bx-info-circle"></i>
+                Introduction
+            </h2>
+            <div class="section-content">
+                <p>
+                    Welcome to the MediCare+ Provider Program. This Provider Policy outlines the terms, conditions, 
+                    responsibilities, and benefits for healthcare providers, pharmacies, insurance companies, and 
+                    technology providers who join our ecosystem.
+                </p>
+                <p>
+                    By registering as a MediCare+ provider, you agree to comply with all terms and conditions outlined 
+                    in this policy. This document serves as a binding agreement between your organization and MediCare+.
+                </p>
+
+                <div class="highlight-box">
+                    <h3>Effective Date: January 1, 2025</h3>
+                    <p>
+                        This policy is effective from January 1, 2025, and supersedes all previous provider agreements. 
+                        Regular updates may be made to reflect changes in regulations, technology, or business practices.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Partnership Benefits -->
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="bx bx-gift"></i>
+                Provider Benefits
+            </h2>
+            <div class="section-content">
+                <p>
+                    MediCare+ providers enjoy exclusive benefits and support to grow their healthcare practice 
+                    and improve patient outcomes through our advanced technology platform.
+                </p>
+
+                <div class="provider-benefits-grid">
+                    <div class="provider-benefit">
+                        <i class="bx bx-trending-up"></i>
+                        <h4>Increased Patient Volume</h4>
+                        <p>Access to our growing network of patients across Sri Lanka seeking quality healthcare services.</p>
+                    </div>
+
+                    <div class="provider-benefit">
+                        <i class="bx bx-robot"></i>
+                        <h4>AI-Powered Tools</h4>
+                        <p>Advanced AI assistants, predictive analytics, and automated workflow management systems.</p>
+                    </div>
+
+                    <div class="provider-benefit">
+                        <i class="bx bx-chart-line"></i>
+                        <h4>Revenue Optimization</h4>
+                        <p>Smart pricing insights, capacity optimization, and revenue management tools.</p>
+                    </div>
+
+                    <div class="provider-benefit">
+                        <i class="bx bx-support"></i>
+                        <h4>24/7 Technical Support</h4>
+                        <p>Dedicated support team available around the clock to assist with technical issues.</p>
+                    </div>
+
+                    <div class="provider-benefit">
+                        <i class="bx bx-medal"></i>
+                        <h4>Marketing & Branding</h4>
+                        <p>Co-marketing opportunities and enhanced visibility through our platform and channels.</p>
+                    </div>
+
+                    <div class="provider-benefit">
+                        <i class="bx bx-data"></i>
+                        <h4>Analytics & Insights</h4>
+                        <p>Comprehensive reporting and analytics to track performance and patient satisfaction.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Partner Obligations -->
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="bx bx-task"></i>
+                Provider Obligations
+            </h2>
+            <div class="section-content">
+                <p>
+                    All MediCare+ providers must adhere to specific obligations to maintain provider status 
+                    and ensure high-quality patient care across our network.
+                </p>
+
+                <div class="obligations-grid">
+                    <div class="obligation-item">
+                        <h4>Quality Standards</h4>
+                        <p>Maintain high standards of medical care and patient service as outlined in our quality guidelines.</p>
+                    </div>
+
+                    <div class="obligation-item">
+                        <h4>License Compliance</h4>
+                        <p>Keep all medical licenses, certifications, and permits current and in good standing.</p>
+                    </div>
+
+                    <div class="obligation-item">
+                        <h4>Data Security</h4>
+                        <p>Implement robust data protection measures and comply with healthcare privacy regulations.</p>
+                    </div>
+
+                    <div class="obligation-item">
+                        <h4>Platform Integration</h4>
+                        <p>Properly integrate with MediCare+ systems and maintain accurate, up-to-date information.</p>
+                    </div>
+
+                    <div class="obligation-item">
+                        <h4>Response Time</h4>
+                        <p>Maintain reasonable response times for patient inquiries and appointment requests.</p>
+                    </div>
+
+                    <div class="obligation-item">
+                        <h4>Continuous Training</h4>
+                        <p>Participate in required training programs and stay updated with platform features.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Application Process -->
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="bx bx-clipboard"></i>
+                Application & Approval Process
+            </h2>
+            <div class="section-content">
+                <p>
+                    The provider application process is designed to ensure that all providers meet our quality 
+                    standards and can provide excellent patient care through our platform.
+                </p>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4 class="timeline-title">Application Submission</h4>
+                            <p class="timeline-description">
+                                Submit completed application form with all required documents including business 
+                                registration, medical licenses, and certifications.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4 class="timeline-title">Initial Review</h4>
+                            <p class="timeline-description">
+                                Our team conducts initial review of application and documents within 48-72 hours. 
+                                Additional information may be requested if needed.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4 class="timeline-title">Verification & Site Visit</h4>
+                            <p class="timeline-description">
+                                Verification of credentials and, if applicable, site visit to assess facilities 
+                                and quality standards. This may take 1-2 weeks.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4 class="timeline-title">Integration Planning</h4>
+                            <p class="timeline-description">
+                                Upon approval, our technical team works with you to plan integration, 
+                                customize settings, and provide training.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4 class="timeline-title">Go Live</h4>
+                            <p class="timeline-description">
+                                Launch your partnership and start serving patients through the MediCare+ platform 
+                                with ongoing support and monitoring.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Financial Terms -->
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="bx bx-money"></i>
+                Financial Terms
+            </h2>
+            <div class="section-content">
+                <h3>Revenue Sharing Model</h3>
+                <p>
+                    MediCare+ operates on a transparent revenue-sharing model designed to benefit both partners 
+                    and the platform while maintaining affordable healthcare for patients.
+                </p>
+
+                <ul>
+                    <li>Platform fee: 3-8% of transaction value (varies by partner type and volume)</li>
+                    <li>Payment processing: Standard merchant rates apply</li>
+                    <li>Monthly settlements with detailed reporting</li>
+                    <li>No hidden fees or surprise charges</li>
+                </ul>
+
+                <h3>Payment Terms</h3>
+                <p>
+                    Payments are processed monthly with settlements occurring within 7 business days of month-end. 
+                    All payments include detailed transaction reports for reconciliation.
+                </p>
+
+                <div class="highlight-box">
+                    <h3>Special Pricing for Early Partners</h3>
+                    <p>
+                        Partners joining before March 31, 2025, are eligible for reduced platform fees 
+                        for the first 12 months of partnership.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data & Privacy -->
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="bx bx-shield-check"></i>
+                Data Protection & Privacy
+            </h2>
+            <div class="section-content">
+                <h3>Patient Data Protection</h3>
+                <p>
+                    All partners must comply with Sri Lankan healthcare privacy laws and international 
+                    best practices for patient data protection.
+                </p>
+
+                <ul>
+                    <li>End-to-end encryption for all patient communications</li>
+                    <li>Secure data storage with regular backups</li>
+                    <li>Access controls and audit trails</li>
+                    <li>Regular security assessments and updates</li>
+                </ul>
+
+                <h3>Data Ownership</h3>
+                <p>
+                    Partners retain ownership of their patient data. MediCare+ serves as a secure custodian 
+                    and facilitator, ensuring data is used only for authorized healthcare purposes.
+                </p>
+
+                <h3>Breach Notification</h3>
+                <p>
+                    Any suspected data breach must be reported to MediCare+ within 24 hours. We will 
+                    work together to investigate, contain, and remediate any security incidents.
+                </p>
+            </div>
+        </div>
+
+        <!-- Termination Policy -->
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="bx bx-x-circle"></i>
+                Termination Policy
+            </h2>
+            <div class="section-content">
+                <h3>Voluntary Termination</h3>
+                <p>
+                    Partners may terminate their agreement with 30 days written notice. We will assist 
+                    with data export and transition to ensure minimal disruption to patient care.
+                </p>
+
+                <h3>Termination for Cause</h3>
+                <p>
+                    MediCare+ reserves the right to terminate partnerships immediately for:
+                </p>
+
+                <ul>
+                    <li>Violation of quality standards or patient safety</li>
+                    <li>Loss of required licenses or certifications</li>
+                    <li>Breach of data protection requirements</li>
+                    <li>Fraudulent activities or misrepresentation</li>
+                    <li>Failure to maintain platform integration</li>
+                </ul>
+
+                <h3>Post-Termination</h3>
+                <p>
+                    Following termination, partners will have 90 days to export their data. All platform 
+                    access will be revoked, and any outstanding payments will be settled according to 
+                    standard terms.
+                </p>
+            </div>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="contact-section">
+            <h2>Questions About Our Partner Policy?</h2>
+            <p>
+                Our partner success team is here to help you understand the terms and get the most 
+                out of your MediCare+ partnership.
+            </p>
+            <a href="contact.html" class="contact-btn">
+                <i class="bx bx-phone"></i>
+                Contact Partner Support
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Add smooth scrolling for internal links
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate sections on scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all policy sections
+            document.querySelectorAll('.policy-section').forEach(section => {
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(30px)';
+                section.style.transition = 'all 0.6s ease';
+                observer.observe(section);
+            });
+
+            // Add click effects to buttons
+            document.querySelectorAll('.contact-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    // Create ripple effect
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.cssText = `
+                        position: absolute;
+                        left: ${x}px;
+                        top: ${y}px;
+                        width: ${size}px;
+                        height: ${size}px;
+                        border-radius: 50%;
+                        background: rgba(255, 255, 255, 0.3);
+                        transform: scale(0);
+                        animation: ripple 0.6s ease-out;
+                        pointer-events: none;
+                    `;
+                    
+                    this.style.position = 'relative';
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+
+            // Add CSS animation for ripple
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes ripple {
+                    to {
+                        transform: scale(2);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+
+<script>
+// Navigation dropdown functions
+function toggleFeatures(event) {
+    event.preventDefault();
+    const dropdown = document.getElementById('featuresDropdown');
+    const parent = event.target.closest('.nav-dropdown');
+    
+    // Close other dropdowns
+    document.querySelectorAll('.dropdown-menu').forEach(menu => {
+        if (menu !== dropdown) {
+            menu.classList.remove('show');
+            menu.closest('.nav-dropdown').classList.remove('active');
+        }
+    });
+    
+    dropdown.classList.toggle('show');
+    parent.classList.toggle('active');
+}
+
+function toggleProvider(event) {
+    event.preventDefault();
+    const dropdown = document.getElementById('providerDropdown');
+    const parent = event.target.closest('.nav-dropdown');
+    
+    // Close other dropdowns
+    document.querySelectorAll('.dropdown-menu').forEach(menu => {
+        if (menu !== dropdown) {
+            menu.classList.remove('show');
+            menu.closest('.nav-dropdown').classList.remove('active');
+        }
+    });
+    
+    dropdown.classList.toggle('show');
+    parent.classList.toggle('active');
+}
+
+function toggleMobileMenu() {
+    // Mobile menu functionality
+    console.log('Mobile menu toggle');
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', function(event) {
+    if (!event.target.closest('.nav-dropdown')) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.classList.remove('show');
+            menu.closest('.nav-dropdown').classList.remove('active');
+        });
+    }
+});
+</script>
+</body>
+</html> 

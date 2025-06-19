@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Use - MediCare+</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+    
+    <style>
+        :root {
+            --primary-blue: #007BFF;
+            --secondary-blue: #0056b3;
+            --success-green: #10b981;
+            --warning-orange: #f59e0b;
+            --error-red: #ef4444;
+            --text-dark: #1a1a1a;
+            --text-gray: #6b7280;
+            --bg-light: #f8fafc;
+            --bg-white: #ffffff;
+            --border-light: #e5e7eb;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8fafc;
+            color: #1a1a1a;
+            line-height: 1.6;
+            padding-top: 120px;
+        }
+
+        /* Enhanced Modern Navigation */
+        .navbar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10001;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 60px;
+            padding: 18px 40px;
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            max-width: 95vw;
+            min-width: 800px;
+        }
+
+        .navbar-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 3rem;
+            width: 100%;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .navbar-brand i {
+            font-size: 1.5rem;
+            color: var(--primary-blue);
+        }
+
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: nowrap;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--text-gray);
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 25px;
+            white-space: nowrap;
+            min-width: fit-content;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary-blue);
+            background: rgba(0, 123, 255, 0.1);
+        }
+
+        .nav-link span {
+            font-size: 0.9rem;
+        }
+
+        .navbar-auth {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-auth {
+            padding: 10px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-sign-in {
+            background: transparent;
+            color: var(--text-gray);
+            border: 2px solid transparent;
+        }
+
+        .btn-sign-in:hover {
+            color: var(--primary-blue);
+            background: rgba(0, 123, 255, 0.05);
+        }
+
+        .btn-sign-up {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+
+        .btn-sign-up:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+            color: white;
+        }
+
+        /* Navigation Dropdowns */
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 0;
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(-50%) translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+            margin-top: 10px;
+        }
+
+        .nav-dropdown:hover .dropdown-menu,
+        .nav-dropdown.active .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            color: var(--text-gray);
+            font-weight: 500;
+            transition: var(--transition);
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(0, 123, 255, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .dropdown-arrow {
+            margin-left: 0.5rem;
+            transition: transform 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .nav-dropdown:hover .dropdown-arrow,
+        .nav-dropdown.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Mobile Responsive Navigation */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 100px;
+            }
+
+            .navbar {
+                min-width: 95vw;
+                padding: 12px 20px;
+                border-radius: 25px;
+            }
+
+            .navbar-container {
+                gap: 1rem;
+            }
+
+            .navbar-nav {
+                display: none;
+            }
+        }
+
+        .back-button {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-size: 0.9rem;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .back-button i {
+            font-size: 1rem;
+        }
+
+        .policy-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .policy-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 20px;
+        }
+
+        .policy-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .policy-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .policy-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            color: #007BFF;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title i {
+            font-size: 1.2rem;
+        }
+
+        .section-content h3 {
+            color: #1a1a1a;
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.5rem;
+        }
+
+        .section-content p {
+            color: #6b7280;
+            margin-bottom: 1rem;
+        }
+
+        .section-content ul {
+            color: #6b7280;
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-left: 4px solid #007BFF;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+
+        .highlight-box h3 {
+            color: #007BFF;
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-box p {
+            color: #1a1a1a;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border-left: 4px solid #dc2626;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+
+        .warning-box h3 {
+            color: #dc2626;
+            margin-bottom: 0.5rem;
+        }
+
+        .warning-box p {
+            color: #7f1d1d;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .service {
+            background: linear-gradient(135deg, #f8fafc, #ffffff);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .service i {
+            color: #007BFF;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .service h4 {
+            color: #1a1a1a;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .service p {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .contact-section {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .contact-btn {
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        .contact-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+        }
+
+        .last-updated {
+            background: linear-gradient(135deg, #f3e8ff, #fce7f3);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .last-updated h3 {
+            color: #7c3aed;
+            margin-bottom: 0.5rem;
+        }
+
+        .last-updated p {
+            color: #374151;
+        }
+
+        @media (max-width: 768px) {
+            .policy-title {
+                font-size: 2rem;
+            }
+            
+            .policy-container {
+                padding: 1rem;
+            }
+            
+            .policy-section {
+                padding: 1.5rem;
+            }
+            
+            .back-button {
+                top: 1rem;
+                left: 1rem;
+                padding: 0.75rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Enhanced Modern Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="../index.html" class="navbar-brand">
+                <i class="bx bx-health"></i>
+                <span>MediCare<span style="color: var(--primary-blue);">+</span></span>
+            </a>
+            
+            <div class="navbar-nav">
+                <a href="../index.html" class="nav-link">
+                    <i class="bx bx-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="features.html" class="nav-link">
+                    <i class="bx bx-grid-alt"></i>
+                    <span>Features</span>
+                </a>
+                <a href="ai-features.html" class="nav-link">
+                    <i class="bx bx-brain"></i>
+                    <span>AI Features</span>
+                </a>
+                <a href="about.html" class="nav-link">
+                    <i class="bx bx-info-circle"></i>
+                    <span>About</span>
+                </a>
+                <a href="blog.html" class="nav-link">
+                    <i class="bx bx-book-open"></i>
+                    <span>Blog</span>
+                </a>
+                <div class="nav-dropdown">
+                    <a href="#" class="nav-link">
+                        <i class="bx bx-user-plus"></i>
+                        <span>Provider</span>
+                        <i class="bx bx-chevron-down dropdown-arrow"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="provider-registration.html" class="dropdown-item">Join as Provider</a>
+                        <a href="provider-policy.html" class="dropdown-item">Provider Policy</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="navbar-auth">
+                <a href="authnew.html" class="btn-auth btn-sign-up">
+                    <i class="bx bx-user"></i>
+                    Sign In / Sign Up
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <a href="../index.html" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Back to Home
+    </a>
+    
+    <div class="policy-container">
+        <div class="policy-header">
+            <h1 class="policy-title">
+                <i class="fas fa-file-contract"></i>
+                Terms of Use
+            </h1>
+            <p class="policy-subtitle">Legal terms and conditions for using the MediCare+ platform</p>
+        </div>
+
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="fas fa-handshake"></i>
+                Acceptance of Terms
+            </h2>
+            <div class="section-content">
+                <p>Welcome to MediCare+, the leading AI-powered healthcare platform for Sri Lankans. By accessing or using our platform, you acknowledge that you have read, understood, and agree to be bound by these Terms of Use and our Privacy Policy.</p>
+                
+                <div class="highlight-box">
+                    <h3>
+                        <i class="fas fa-info-circle"></i>
+                        Important Notice
+                    </h3>
+                    <p><strong>These terms constitute a legally binding agreement between you and MediCare+. If you do not agree to these terms, you must not use our platform or services.</strong></p>
+                </div>
+                
+                <p>We reserve the right to modify these terms at any time. Continued use of our services after changes indicates your acceptance of the updated terms.</p>
+            </div>
+        </div>
+
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="fas fa-medical-briefcase"></i>
+                Our Services
+            </h2>
+            <div class="section-content">
+                <p>MediCare+ provides a comprehensive healthcare platform including:</p>
+                
+                <div class="services-grid">
+                    <div class="service">
+                        <i class="fas fa-video"></i>
+                        <h4>Telemedicine Consultations</h4>
+                        <p>Virtual consultations with licensed healthcare professionals registered with the Sri Lanka Medical Council.</p>
+                    </div>
+                    <div class="service">
+                        <i class="fas fa-robot"></i>
+                        <h4>AI Health Assistant</h4>
+                        <p>AI-powered health insights, symptom checking, and personalized health recommendations.</p>
+                    </div>
+                    <div class="service">
+                        <i class="fas fa-pills"></i>
+                        <h4>Medication Management</h4>
+                        <p>Prescription management, medication reminders, and drug interaction checks.</p>
+                    </div>
+                    <div class="service">
+                        <i class="fas fa-calendar-check"></i>
+                        <h4>Appointment Scheduling</h4>
+                        <p>Easy booking and management of healthcare appointments with providers.</p>
+                    </div>
+                    <div class="service">
+                        <i class="fas fa-file-medical"></i>
+                        <h4>Health Records</h4>
+                        <p>Secure storage and management of your personal health information and medical history.</p>
+                    </div>
+                    <div class="service">
+                        <i class="fas fa-pharmacy"></i>
+                        <h4>Pharmacy Network</h4>
+                        <p>Access to partner pharmacies for prescription fulfillment and medication delivery.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="fas fa-user-shield"></i>
+                User Responsibilities
+            </h2>
+            <div class="section-content">
+                <h3>Account Registration</h3>
+                <ul>
+                    <li>Provide accurate and complete information during registration</li>
+                    <li>Keep your account credentials secure and confidential</li>
+                    <li>Update your information promptly when changes occur</li>
+                    <li>You are responsible for all activities under your account</li>
+                </ul>
+
+                <h3>Appropriate Use</h3>
+                <ul>
+                    <li>Use the platform only for legitimate healthcare purposes</li>
+                    <li>Respect the rights and privacy of other users</li>
+                    <li>Do not misuse or attempt to hack the platform</li>
+                    <li>Follow all applicable laws and regulations</li>
+                    <li>Respect healthcare providers' time and expertise</li>
+                </ul>
+
+                <h3>Medical Information</h3>
+                <ul>
+                    <li>Provide accurate and complete health information</li>
+                    <li>Do not share false or misleading medical history</li>
+                    <li>Keep your health records up to date</li>
+                    <li>Inform providers of any changes in your condition</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="fas fa-exclamation-triangle"></i>
+                Medical Disclaimers
+            </h2>
+            <div class="section-content">
+                <div class="warning-box">
+                    <h3>
+                        <i class="fas fa-stethoscope"></i>
+                        Professional Medical Advice
+                    </h3>
+                    <p><strong>MediCare+ does not provide medical advice, diagnosis, or treatment. Our platform facilitates communication with licensed healthcare professionals who provide medical services independently.</strong></p>
+                </div>
+
+                <h3>AI Assistant Limitations</h3>
+                <ul>
+                    <li>AI recommendations are for informational purposes only</li>
+                    <li>AI cannot replace professional medical judgment</li>
+                    <li>Always consult healthcare providers for medical decisions</li>
+                    <li>Do not rely solely on AI for medical advice</li>
+                </ul>
+
+                <h3>Emergency Situations</h3>
+                <ul>
+                    <li>Do not use the platform for medical emergencies</li>
+                    <li>Contact emergency services (119) for urgent medical needs</li>
+                    <li>The platform is not designed for time-sensitive medical issues</li>
+                    <li>Healthcare providers may not be available 24/7</li>
+                </ul>
+
+                <h3>Treatment Responsibility</h3>
+                <ul>
+                    <li>Healthcare providers are solely responsible for medical decisions</li>
+                    <li>MediCare+ does not supervise or control medical treatments</li>
+                    <li>We do not guarantee specific medical outcomes</li>
+                    <li>Follow-up care is the responsibility of you and your provider</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="fas fa-credit-card"></i>
+                Payment Terms
+            </h2>
+            <div class="section-content">
+                <h3>Service Fees</h3>
+                <ul>
+                    <li>Consultation fees are set by individual healthcare providers</li>
+                    <li>Platform fees may apply for certain services</li>
+                    <li>All fees will be clearly displayed before payment</li>
+                    <li>Prices are subject to change with notice</li>
+                </ul>
+
+                <h3>Payment Processing</h3>
+                <ul>
+                    <li>We accept major credit cards, debit cards, and mobile payments</li>
+                    <li>Payments are processed securely through certified payment providers</li>
+                    <li>Payment processing is handled by third-party providers subject to their own terms</li>
+                    <li>You authorize us to charge your selected payment method</li>
+                </ul>
+
+                <h3>Refunds and Cancellations</h3>
+                <ul>
+                    <li>Refund policies vary by service type and provider</li>
+                    <li>Cancellations must be made according to provider policies</li>
+                    <li>Some services may be non-refundable</li>
+                    <li>Dispute resolution follows our standard procedures</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="fas fa-ban"></i>
+                Prohibited Activities
+            </h2>
+            <div class="section-content">
+                <p>The following activities are strictly prohibited on our platform:</p>
+
+                <h3>Illegal Activities</h3>
+                <ul>
+                    <li>Requesting illegal substances or treatments</li>
+                    <li>Using the platform for fraudulent purposes</li>
+                    <li>Violating any applicable laws or regulations</li>
+                    <li>Attempting to obtain controlled substances improperly</li>
+                </ul>
+
+                <h3>Platform Misuse</h3>
+                <ul>
+                    <li>Creating false identities or accounts</li>
+                    <li>Sharing account credentials with others</li>
+                    <li>Attempting to hack or compromise platform security</li>
+                    <li>Using automated tools to access the platform</li>
+                </ul>
+
+                <h3>Harmful Behavior</h3>
+                <ul>
+                    <li>Harassing healthcare providers or other users</li>
+                    <li>Sharing false or misleading information</li>
+                    <li>Interfering with other users' access to services</li>
+                    <li>Violating privacy of other users</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="fas fa-shield-alt"></i>
+                Intellectual Property
+            </h2>
+            <div class="section-content">
+                <h3>Our Content</h3>
+                <ul>
+                    <li>MediCare+ platform, software, and content are protected by intellectual property laws</li>
+                    <li>You may not copy, modify, or distribute our proprietary content</li>
+                    <li>Trademarks and service marks are owned by MediCare+ or our partners</li>
+                    <li>You receive a limited license to use the platform for personal healthcare needs</li>
+                </ul>
+
+                <h3>User Content</h3>
+                <ul>
+                    <li>You retain ownership of your personal health information</li>
+                    <li>You grant us permission to use your data as described in our Privacy Policy</li>
+                    <li>You are responsible for the accuracy of information you provide</li>
+                    <li>You must not upload content that infringes on others' rights</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="fas fa-times-circle"></i>
+                Account Termination
+            </h2>
+            <div class="section-content">
+                <h3>Termination by You</h3>
+                <ul>
+                    <li>You may close your account at any time</li>
+                    <li>Contact customer support to request account closure</li>
+                    <li>Some data may be retained as required by law</li>
+                    <li>Pending appointments and payments must be resolved</li>
+                </ul>
+
+                <h3>Termination by Us</h3>
+                <p>We may suspend or terminate your account if you:</p>
+                <ul>
+                    <li>Violate these Terms of Use</li>
+                    <li>Engage in fraudulent or illegal activities</li>
+                    <li>Provide false information</li>
+                    <li>Misuse the platform or harass other users</li>
+                    <li>Fail to pay for services</li>
+                </ul>
+
+                <h3>Effect of Termination</h3>
+                <ul>
+                    <li>Access to the platform will be immediately suspended</li>
+                    <li>Outstanding payments become immediately due</li>
+                    <li>Your data will be handled according to our Privacy Policy</li>
+                    <li>Certain provisions of these terms will survive termination</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="fas fa-balance-scale"></i>
+                Limitation of Liability
+            </h2>
+            <div class="section-content">
+                <div class="warning-box">
+                    <h3>
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Important Legal Notice
+                    </h3>
+                    <p><strong>MediCare+ is a technology platform that connects users with healthcare providers. We are not liable for medical outcomes, provider decisions, or treatment results.</strong></p>
+                </div>
+
+                <h3>Platform Limitations</h3>
+                <ul>
+                    <li>We provide the platform "as is" without warranties</li>
+                    <li>We do not guarantee continuous or error-free operation</li>
+                    <li>Technical issues may occasionally affect service availability</li>
+                    <li>We are not responsible for provider availability or quality</li>
+                </ul>
+
+                <h3>Liability Exclusions</h3>
+                <ul>
+                    <li>Medical malpractice or provider negligence</li>
+                    <li>Misdiagnosis or delayed diagnosis</li>
+                    <li>Adverse reactions to medications or treatments</li>
+                    <li>Technical failures affecting medical care</li>
+                    <li>Data loss or security breaches beyond our control</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="fas fa-gavel"></i>
+                Governing Law
+            </h2>
+            <div class="section-content">
+                <p>These Terms of Use and any disputes arising from your use of MediCare+ are governed by the laws of Sri Lanka.</p>
+
+                <h3>Applicable Laws</h3>
+                <ul>
+                    <li>Medical Ordinance and amendments</li>
+                    <li>Personal Data Protection Act No. 9 of 2022</li>
+                    <li>Electronic Transactions Act No. 19 of 2006</li>
+                    <li>Consumer Affairs Authority Act</li>
+                    <li>Computer Crimes Act No. 24 of 2007</li>
+                </ul>
+
+                <h3>Dispute Resolution</h3>
+                <ul>
+                    <li>Disputes will be resolved through mediation when possible</li>
+                    <li>Legal proceedings must be filed in Sri Lankan courts</li>
+                    <li>You agree to attempt good faith resolution before litigation</li>
+                    <li>Class action lawsuits are not permitted</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="fas fa-sync-alt"></i>
+                Changes to Terms
+            </h2>
+            <div class="section-content">
+                <p>We may update these Terms of Use from time to time to reflect changes in our services, legal requirements, or business practices. When we make changes:</p>
+
+                <ul>
+                    <li>We will post the updated terms on our platform</li>
+                    <li>We will notify users via email or platform notifications</li>
+                    <li>Changes take effect 30 days after notification</li>
+                    <li>Continued use of our services after the effective date constitutes acceptance of the updated terms</li>
+                </ul>
+
+                <p>If you do not agree to changes, you must stop using the platform and close your account before the changes take effect.</p>
+            </div>
+        </div>
+
+        <div class="last-updated">
+            <h3>
+                <i class="fas fa-calendar-alt"></i>
+                Last Updated
+            </h3>
+            <p><strong>January 15, 2025</strong></p>
+            <p>These terms are effective immediately and supersede all previous versions.</p>
+        </div>
+
+        <div class="contact-section">
+            <h2>Questions About These Terms?</h2>
+            <p>Our legal team is here to help you understand your rights and obligations when using the MediCare+ platform.</p>
+            <a href="../contact.html" class="contact-btn">
+                <i class="fas fa-envelope"></i>
+                Contact Legal Team
+            </a>
+            <br><br>
+            <p><strong>Legal Department:</strong> legal@medicare.lk</p>
+            <p><strong>Phone:</strong> +94 11 234 5678</p>
+            <p><strong>Address:</strong> 123 Healthcare Avenue, Colombo 03, Sri Lanka</p>
+        </div>
+    </div>
+</body>
+</html> 

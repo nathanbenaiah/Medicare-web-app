@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant Policy - MediCare</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8fafc;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        .policy-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .policy-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 20px;
+        }
+
+        .policy-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .policy-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .policy-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            color: #007BFF;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title i {
+            font-size: 1.2rem;
+        }
+
+        .section-content h3 {
+            color: #1a1a1a;
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.5rem;
+        }
+
+        .section-content p {
+            color: #6b7280;
+            margin-bottom: 1rem;
+        }
+
+        .section-content ul {
+            color: #6b7280;
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-left: 4px solid #007BFF;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+
+        .ai-features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .ai-feature {
+            background: linear-gradient(135deg, #f8fafc, #ffffff);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .ai-feature i {
+            color: #007BFF;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .ai-feature h4 {
+            color: #1a1a1a;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .ai-feature p {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .data-flow {
+            background: linear-gradient(135deg, #f3e8ff, #fce7f3);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+        }
+
+        .data-flow h3 {
+            color: #7c3aed;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .flow-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .flow-step {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .flow-step i {
+            color: #8b5cf6;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .flow-step p {
+            font-size: 0.9rem;
+            color: #374151;
+        }
+
+        .contact-section {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .contact-btn {
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        .contact-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+        }
+
+        .back-button {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-size: 0.9rem;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .back-button i {
+            font-size: 1rem;
+        }
+    </style>
+  </head>
+<body>
+    <a href="../index.html" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Back to Home
+    </a>
+    
+    <div class="policy-container">
+        <div class="policy-header">
+            <h1 class="policy-title">
+                <i class="fas fa-robot"></i>
+                AI Assistant Policy
+            </h1>
+            <p class="policy-subtitle">How our AI assistant helps you manage your health safely and effectively</p>
+        </div>
+
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="fas fa-brain"></i>
+                AI Assistant Overview
+            </h2>
+            <div class="section-content">
+                <p>MediCare's AI Health Assistant is designed to provide personalized health insights, medication reminders, and basic health guidance. Our AI is powered by advanced machine learning algorithms and medical knowledge bases to ensure accurate and helpful responses.</p>
+                
+                <div class="highlight-box">
+                    <h3>
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Important Disclaimer
+                    </h3>
+                    <p><strong>Our AI Assistant is not a replacement for professional medical advice, diagnosis, or treatment. Always consult with qualified healthcare professionals for medical concerns.</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="fas fa-cogs"></i>
+                AI Capabilities & Features
+            </h2>
+            <div class="ai-features-grid">
+                <div class="ai-feature">
+                    <i class="fas fa-pills"></i>
+                    <h4>Medication Management</h4>
+                    <p>Smart reminders, drug interaction checks, and dosage guidance based on your prescriptions.</p>
+                </div>
+                <div class="ai-feature">
+                    <i class="fas fa-chart-line"></i>
+                    <h4>Health Insights</h4>
+                    <p>Analysis of your health patterns, trends, and personalized recommendations.</p>
+                </div>
+                <div class="ai-feature">
+                    <i class="fas fa-calendar-check"></i>
+                    <h4>Appointment Scheduling</h4>
+                    <p>Intelligent scheduling based on your health needs and doctor availability.</p>
+                </div>
+                <div class="ai-feature">
+                    <i class="fas fa-stethoscope"></i>
+                    <h4>Symptom Checking</h4>
+                    <p>Preliminary symptom analysis with recommendations for appropriate care levels.</p>
+                </div>
+                <div class="ai-feature">
+                    <i class="fas fa-heartbeat"></i>
+                    <h4>Vital Monitoring</h4>
+                    <p>Continuous tracking and analysis of vital signs with alert systems.</p>
+                </div>
+                <div class="ai-feature">
+                    <i class="fas fa-users"></i>
+                    <h4>Family Care</h4>
+                    <p>Coordinated care management for family members with shared insights.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="fas fa-shield-alt"></i>
+                Data Privacy & Security
+            </h2>
+            <div class="section-content">
+                <h3>Data Collection</h3>
+                <p>Our AI Assistant collects and processes the following types of data:</p>
+                <ul>
+                    <li>Health metrics and vital signs</li>
+                    <li>Medication adherence data</li>
+                    <li>Symptom descriptions and health queries</li>
+                    <li>Appointment and care preferences</li>
+                    <li>Device usage patterns for optimization</li>
+                </ul>
+
+                <h3>Data Processing</h3>
+                <p>All health data is processed using:</p>
+                <ul>
+                    <li>End-to-end encryption</li>
+                    <li>Anonymized analysis for pattern recognition</li>
+                    <li>Compliance with international healthcare data standards</li>
+                    <li>Regular security audits and vulnerability assessments</li>
+                </ul>
+
+                <div class="data-flow">
+                    <h3>How Your Data Flows Through Our AI System</h3>
+                    <div class="flow-steps">
+                        <div class="flow-step">
+                            <i class="fas fa-mobile-alt"></i>
+                            <p>Data Input</p>
+                        </div>
+                        <div class="flow-step">
+                            <i class="fas fa-lock"></i>
+                            <p>Encryption</p>
+                        </div>
+                        <div class="flow-step">
+                            <i class="fas fa-brain"></i>
+                            <p>AI Analysis</p>
+                        </div>
+                        <div class="flow-step">
+                            <i class="fas fa-lightbulb"></i>
+                            <p>Insights</p>
+                        </div>
+                        <div class="flow-step">
+                            <i class="fas fa-user-md"></i>
+                            <p>Healthcare Team</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="fas fa-exclamation-circle"></i>
+                Limitations & Disclaimers
+            </h2>
+            <div class="section-content">
+                <h3>Medical Limitations</h3>
+                <ul>
+                    <li>AI cannot diagnose medical conditions</li>
+                    <li>Not suitable for emergency medical situations</li>
+                    <li>Cannot replace doctor-patient consultations</li>
+                    <li>May not account for all individual health factors</li>
+                </ul>
+
+                <h3>Technical Limitations</h3>
+                <ul>
+                    <li>Requires stable internet connection for optimal performance</li>
+                    <li>Accuracy depends on quality and completeness of input data</li>
+                    <li>May experience temporary service interruptions</li>
+                    <li>Continuous learning may result in evolving recommendations</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <h3>Emergency Situations</h3>
+                    <p>In case of medical emergencies, contact emergency services immediately. Do not rely on the AI Assistant for urgent medical care.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="fas fa-user-cog"></i>
+                Your Rights & Controls
+            </h2>
+            <div class="section-content">
+                <h3>Data Control</h3>
+                <p>You have the right to:</p>
+                <ul>
+                    <li>Access all data processed by our AI systems</li>
+                    <li>Request corrections to inaccurate information</li>
+                    <li>Delete your AI interaction history</li>
+                    <li>Opt-out of AI recommendations at any time</li>
+                    <li>Export your health insights and data</li>
+                </ul>
+
+                <h3>Customization Options</h3>
+                <ul>
+                    <li>Adjust AI sensitivity and alert frequencies</li>
+                    <li>Set preferences for types of health insights</li>
+                    <li>Choose which family members can access AI insights</li>
+                    <li>Configure emergency contact protocols</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="policy-section">
+            <h2 class="section-title">
+                <i class="fas fa-sync-alt"></i>
+                Policy Updates
+            </h2>
+            <div class="section-content">
+                <p>This AI Assistant Policy may be updated periodically to reflect:</p>
+                <ul>
+                    <li>New AI capabilities and features</li>
+                    <li>Enhanced security measures</li>
+                    <li>Regulatory compliance requirements</li>
+                    <li>User feedback and improvements</li>
+                </ul>
+                <p><strong>Last Updated:</strong> January 2025</p>
+                <p>We will notify users of significant policy changes through the platform and email.</p>
+            </div>
+        </div>
+
+        <div class="contact-section">
+            <h2>Questions About Our AI Assistant?</h2>
+            <p>Our team is here to help you understand how our AI assistant can best serve your healthcare needs.</p>
+            <a href="contact.html" class="contact-btn">
+                <i class="fas fa-envelope"></i>
+                Contact AI Support Team
+            </a>
+        </div>
+    </div>
+</body>
+</html> 

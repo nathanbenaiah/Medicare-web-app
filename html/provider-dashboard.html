@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare+ - Provider Dashboard</title>
+    
+    <!-- React and related libraries -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Supabase -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
+    <!-- Chart.js for analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            color: #1f2937;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: #ffffff;
+            border-right: 1px solid #f3f4f6;
+            padding: 24px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            position: relative;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 40px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #6366f1;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            font-size: 28px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 8px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 18px;
+            border-radius: 16px;
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 8px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            background: rgba(99, 102, 241, 0.1);
+            color: #1e293b;
+            transform: translateX(8px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+            transform: translateX(6px);
+        }
+
+        .nav-link i {
+            font-size: 18px;
+            transition: all 0.3s ease;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-link:hover i {
+            transform: scale(1.2);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            background: #f9fafb;
+        }
+
+        .header {
+            background: #ffffff;
+            border: 1px solid #f3f4f6;
+            border-radius: 16px;
+            padding: 20px 28px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .welcome-section {
+            display: none;
+        }
+
+        .dashboard-content.active .welcome-banner {
+            display: block;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .welcome-banner h3 {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .welcome-banner p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .provider-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .provider-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .notification-bell {
+            position: relative;
+            background: rgba(99, 102, 241, 0.1);
+            padding: 12px;
+            border-radius: 50%;
+            color: #6366f1;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .notification-bell:hover {
+            background: rgba(99, 102, 241, 0.2);
+            transform: scale(1.05);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Dashboard Content */
+        .dashboard-content {
+            display: none;
+        }
+
+        .dashboard-content.active {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid #f3f4f6;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            font-size: 20px;
+            color: white;
+        }
+
+        .stat-icon.patients { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+        .stat-icon.appointments { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+        .stat-icon.revenue { background: linear-gradient(135deg, #10b981, #059669); }
+        .stat-icon.satisfaction { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .stat-change {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .stat-change.positive {
+            color: #10b981;
+        }
+
+        .stat-change.negative {
+            color: #ef4444;
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #f3f4f6;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #6366f1;
+            color: #6366f1;
+        }
+
+        .btn-outline:hover {
+            background: #6366f1;
+            color: white;
+        }
+
+        /* Patient Row Layout */
+        .patients-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .patient-row {
+            background: #ffffff;
+            border: 1px solid #f3f4f6;
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .patient-row:hover {
+            border-color: #e5e7eb;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .patient-main-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+        }
+
+        .patient-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .patient-identity {
+            flex: 1;
+        }
+
+        .patient-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 2px;
+        }
+
+        .patient-info {
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        .patient-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-badge.scheduled {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .status-badge.in-progress {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-badge.completed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .patient-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-view {
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            color: #6b7280;
+        }
+
+        .btn-view:hover {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-action {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            border: none;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Quick Actions Grid */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .action-card {
+            background: #ffffff;
+            border: 1px solid #f3f4f6;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .action-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border-color: #6366f1;
+        }
+
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            color: white;
+            font-size: 24px;
+        }
+
+        .action-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 6px;
+        }
+
+        .action-desc {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            flex-direction: column;
+            gap: 16px;
+            color: #6b7280;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 260px;
+                margin-left: -260px;
+                position: fixed;
+                height: 100vh;
+                z-index: 1000;
+            }
+
+            .sidebar.open {
+                margin-left: 0;
+            }
+
+            .main-content {
+                padding: 16px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+
+            .patient-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .patient-main-info {
+                width: 100%;
+            }
+
+            .patient-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="providerDashboard"></div>
+
+    <script type="text/babel">
+        // Supabase Configuration
+        const SUPABASE_URL = 'https://gcggnrwqilylyykppizb.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjZ2ducndxaWx5bHl5a3BwaXpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk0ODA1NjAsImV4cCI6MjA2NTA1NjU2MH0.9ayDDoyjUiYA3Hmir_A92U2i7QNkIuER-94kDNVVgoE';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Main Provider Dashboard Component
+        const ProviderDashboard = () => {
+            const [activeView, setActiveView] = React.useState('overview');
+            const [provider, setProvider] = React.useState(null);
+            const [loading, setLoading] = React.useState(true);
+            const [stats, setStats] = React.useState({});
+            const [appointments, setAppointments] = React.useState([]);
+            const [patients, setPatients] = React.useState([]);
+            const [notifications, setNotifications] = React.useState([]);
+
+            // Initialize data
+            React.useEffect(() => {
+                initializeData();
+                setupRealtimeSubscriptions();
+            }, []);
+
+            const initializeData = async () => {
+                try {
+                    setLoading(true);
+                    
+                    // Get or create demo provider
+                    const currentProvider = await getCurrentProvider();
+                    setProvider(currentProvider);
+                    
+                    // Load all data
+                    await Promise.all([
+                        loadStats(currentProvider.id),
+                        loadAppointments(currentProvider.id),
+                        loadPatients(),
+                        loadNotifications(currentProvider.id)
+                    ]);
+                    
+                } catch (error) {
+                    console.error('Error initializing data:', error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            const getCurrentProvider = async () => {
+                // For demo purposes, create a demo provider
+                let demoProvider = localStorage.getItem('demo_provider');
+                if (!demoProvider) {
+                    demoProvider = {
+                        id: `demo-provider-${Date.now()}`,
+                        email: 'dr.smith@medicare.com',
+                        full_name: 'Dr. Sarah Smith',
+                        user_type: 'provider',
+                        specialization: 'Internal Medicine',
+                        profile_image_url: null
+                    };
+                    localStorage.setItem('demo_provider', JSON.stringify(demoProvider));
+                } else {
+                    demoProvider = JSON.parse(demoProvider);
+                }
+                return demoProvider;
+            };
+
+            const loadStats = async (providerId) => {
+                try {
+                    // Get appointment counts
+                    const { data: appointmentData } = await supabase
+                        .from('appointments')
+                        .select('id, status')
+                        .eq('provider_id', providerId);
+
+                    const todayAppointments = appointmentData?.filter(apt => {
+                        const today = new Date().toISOString().split('T')[0];
+                        return apt.scheduled_date === today;
+                    }).length || 0;
+
+                    const newStats = {
+                        totalPatients: 145,
+                        todayAppointments: todayAppointments,
+                        monthlyRevenue: 28500,
+                        satisfaction: 4.8
+                    };
+
+                    setStats(newStats);
+                } catch (error) {
+                    console.error('Error loading stats:', error);
+                }
+            };
+
+            const loadAppointments = async (providerId) => {
+                try {
+                    const { data, error } = await supabase
+                        .from('appointments')
+                        .select(`
+                            *,
+                            patient:user_profiles!appointments_user_id_fkey(full_name, profile_image_url)
+                        `)
+                        .eq('provider_id', providerId)
+                        .gte('scheduled_date', new Date().toISOString().split('T')[0])
+                        .order('scheduled_date', { ascending: true })
+                        .limit(10);
+
+                    if (error) throw error;
+                    setAppointments(data || []);
+                } catch (error) {
+                    console.error('Error loading appointments:', error);
+                }
+            };
+
+            const loadPatients = async () => {
+                try {
+                    const { data, error } = await supabase
+                        .from('user_profiles')
+                        .select('*')
+                        .eq('user_type', 'patient')
+                        .limit(10);
+
+                    if (error) throw error;
+                    setPatients(data || []);
+                } catch (error) {
+                    console.error('Error loading patients:', error);
+                }
+            };
+
+            const loadNotifications = async (providerId) => {
+                try {
+                    const { data, error } = await supabase
+                        .from('notifications')
+                        .select('*')
+                        .eq('user_id', providerId)
+                        .eq('status', 'pending')
+                        .order('created_at', { ascending: false })
+                        .limit(5);
+
+                    if (error) throw error;
+                    setNotifications(data || []);
+                } catch (error) {
+                    console.error('Error loading notifications:', error);
+                }
+            };
+
+            const setupRealtimeSubscriptions = () => {
+                // Subscribe to appointment changes
+                const appointmentChannel = supabase
+                    .channel('provider-appointments-channel')
+                    .on('postgres_changes', {
+                        event: '*',
+                        schema: 'public',
+                        table: 'appointments'
+                    }, (payload) => {
+                        console.log('Appointment change:', payload);
+                        loadAppointments(provider?.id);
+                        loadStats(provider?.id);
+                    })
+                    .subscribe();
+
+                return () => {
+                    supabase.removeChannel(appointmentChannel);
+                };
+            };
+
+            if (loading) {
+                return (
+                    <div className="loading">
+                        <i className="fas fa-spinner fa-spin fa-2x"></i>
+                        <span style={{marginLeft: '10px'}}>Loading dashboard...</span>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="dashboard-container">
+                    <Sidebar activeView={activeView} setActiveView={setActiveView} />
+                    <div className="main-content">
+                        <Header provider={provider} notifications={notifications} />
+                        
+                        <div className={`dashboard-content ${activeView === 'overview' ? 'active' : ''}`}>
+                            <div className="welcome-banner">
+                                <h3>Welcome back, Dr. Smith!</h3>
+                                <p>Here's your practice overview for today</p>
+                            </div>
+                            <DashboardOverview 
+                                stats={stats} 
+                                appointments={appointments}
+                                setActiveView={setActiveView}
+                            />
+                        </div>
+
+                        <div className={`dashboard-content ${activeView === 'patients' ? 'active' : ''}`}>
+                            <PatientsView patients={patients} />
+                        </div>
+
+                        <div className={`dashboard-content ${activeView === 'appointments' ? 'active' : ''}`}>
+                            <AppointmentsView appointments={appointments} />
+                        </div>
+
+                        <div className={`dashboard-content ${activeView === 'schedule' ? 'active' : ''}`}>
+                            <ScheduleView appointments={appointments} />
+                        </div>
+
+                        <div className={`dashboard-content ${activeView === 'analytics' ? 'active' : ''}`}>
+                            <AnalyticsView stats={stats} />
+                        </div>
+
+                        <div className={`dashboard-content ${activeView === 'settings' ? 'active' : ''}`}>
+                            <SettingsView />
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Sidebar Component
+        const Sidebar = ({ activeView, setActiveView }) => {
+            const navItems = [
+                { id: 'overview', icon: 'fas fa-chart-line', label: 'Overview' },
+                { id: 'patients', icon: 'fas fa-users', label: 'Patients' },
+                { id: 'appointments', icon: 'fas fa-calendar-alt', label: 'Appointments' },
+                { id: 'schedule', icon: 'fas fa-calendar', label: 'Schedule' },
+                { id: 'analytics', icon: 'fas fa-chart-bar', label: 'Analytics' },
+                { id: 'settings', icon: 'fas fa-cog', label: 'Settings' }
+            ];
+
+            return (
+                <div className="sidebar">
+                    <div className="logo">
+                        <i className="fas fa-user-md"></i>
+                        <span>MediCare+</span>
+                    </div>
+                    <nav>
+                        <ul className="nav-menu">
+                            {navItems.map(item => (
+                                <li key={item.id} className="nav-item">
+                                    <a
+                                        className={`nav-link ${activeView === item.id ? 'active' : ''}`}
+                                        onClick={() => setActiveView(item.id)}
+                                    >
+                                        <i className={item.icon}></i>
+                                        <span>{item.label}</span>
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+                </div>
+            );
+        };
+
+        // Header Component
+        const Header = ({ provider, notifications }) => {
+            return (
+                <div className="header">
+                    <div className="welcome-section">
+                        <h1>Provider Portal</h1>
+                        <p>Manage your practice efficiently</p>
+                    </div>
+                    <div className="provider-info">
+                        <div className="notification-bell">
+                            <i className="fas fa-bell"></i>
+                            {notifications.length > 0 && (
+                                <span className="notification-badge">{notifications.length}</span>
+                            )}
+                        </div>
+                        <div className="provider-avatar">
+                            {provider?.full_name?.charAt(0) || 'D'}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Dashboard Overview Component
+        const DashboardOverview = ({ stats, appointments, setActiveView }) => {
+            const quickActions = [
+                { icon: 'fas fa-user-plus', title: 'New Patient', desc: 'Add patient record', action: () => setActiveView('patients') },
+                { icon: 'fas fa-calendar-plus', title: 'Schedule', desc: 'Manage appointments', action: () => setActiveView('schedule') },
+                { icon: 'fas fa-chart-bar', title: 'Analytics', desc: 'View reports', action: () => setActiveView('analytics') },
+                { icon: 'fas fa-notes-medical', title: 'Patient Notes', desc: 'Update records', action: () => setActiveView('patients') }
+            ];
+
+            return (
+                <div>
+                    <div className="stats-grid">
+                        <div className="stat-card">
+                            <div className="stat-icon patients">
+                                <i className="fas fa-users"></i>
+                            </div>
+                            <div className="stat-value">{stats.totalPatients || 0}</div>
+                            <div className="stat-label">Total Patients</div>
+                            <div className="stat-change positive">
+                                <i className="fas fa-arrow-up"></i>
+                                <span>+12 this month</span>
+                            </div>
+                        </div>
+
+                        <div className="stat-card">
+                            <div className="stat-icon appointments">
+                                <i className="fas fa-calendar-alt"></i>
+                            </div>
+                            <div className="stat-value">{stats.todayAppointments || 0}</div>
+                            <div className="stat-label">Today's Appointments</div>
+                            <div className="stat-change positive">
+                                <i className="fas fa-clock"></i>
+                                <span>3 pending</span>
+                            </div>
+                        </div>
+
+                        <div className="stat-card">
+                            <div className="stat-icon revenue">
+                                <i className="fas fa-dollar-sign"></i>
+                            </div>
+                            <div className="stat-value">${(stats.monthlyRevenue || 0).toLocaleString()}</div>
+                            <div className="stat-label">Monthly Revenue</div>
+                            <div className="stat-change positive">
+                                <i className="fas fa-arrow-up"></i>
+                                <span>+8.5% vs last month</span>
+                            </div>
+                        </div>
+
+                        <div className="stat-card">
+                            <div className="stat-icon satisfaction">
+                                <i className="fas fa-star"></i>
+                            </div>
+                            <div className="stat-value">{stats.satisfaction || 0}</div>
+                            <div className="stat-label">Patient Satisfaction</div>
+                            <div className="stat-change positive">
+                                <i className="fas fa-arrow-up"></i>
+                                <span>+0.2 this month</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="quick-actions">
+                        {quickActions.map((action, index) => (
+                            <div key={index} className="action-card" onClick={action.action}>
+                                <div className="action-icon">
+                                    <i className={action.icon}></i>
+                                </div>
+                                <div className="action-title">{action.title}</div>
+                                <div className="action-desc">{action.desc}</div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {appointments.length > 0 && (
+                        <div className="card">
+                            <div className="card-header">
+                                <h3 className="card-title">Today's Appointments</h3>
+                                <button className="btn" onClick={() => setActiveView('appointments')}>
+                                    View All
+                                </button>
+                            </div>
+                            <div className="patients-list">
+                                {appointments.slice(0, 5).map(apt => (
+                                    <div key={apt.id} className="patient-row">
+                                        <div className="patient-main-info">
+                                            <div className="patient-avatar">
+                                                {apt.patient?.full_name?.charAt(0) || 'P'}
+                                            </div>
+                                            <div className="patient-identity">
+                                                <div className="patient-name">{apt.patient?.full_name || 'Patient'}</div>
+                                                <div className="patient-info">{apt.appointment_type} • {apt.scheduled_time}</div>
+                                            </div>
+                                        </div>
+                                        <div className="patient-status">
+                                            <span className={`status-badge ${apt.status.replace('_', '-')}`}>
+                                                {apt.status.replace('_', ' ')}
+                                            </span>
+                                        </div>
+                                        <div className="patient-actions">
+                                            <button className="btn-small btn-view">View</button>
+                                            <button className="btn-small btn-action">Start</button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        // Patients View Component
+        const PatientsView = ({ patients }) => {
+            return (
+                <div className="card">
+                    <div className="card-header">
+                        <h3 className="card-title">Patient Management</h3>
+                        <button className="btn">
+                            <i className="fas fa-plus"></i> Add Patient
+                        </button>
+                    </div>
+                    <div className="patients-list">
+                        {patients.map(patient => (
+                            <div key={patient.id} className="patient-row">
+                                <div className="patient-main-info">
+                                    <div className="patient-avatar">
+                                        {patient.full_name?.charAt(0) || 'P'}
+                                    </div>
+                                    <div className="patient-identity">
+                                        <div className="patient-name">{patient.full_name}</div>
+                                        <div className="patient-info">{patient.email}</div>
+                                    </div>
+                                </div>
+                                <div className="patient-status">
+                                    <span className="status-badge scheduled">Active</span>
+                                </div>
+                                <div className="patient-actions">
+                                    <button className="btn-small btn-view">View Records</button>
+                                    <button className="btn-small btn-action">Schedule</button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        // Appointments View Component
+        const AppointmentsView = ({ appointments }) => {
+            return (
+                <div className="card">
+                    <div className="card-header">
+                        <h3 className="card-title">Appointment Management</h3>
+                        <button className="btn">
+                            <i className="fas fa-calendar-plus"></i> New Appointment
+                        </button>
+                    </div>
+                    <div className="patients-list">
+                        {appointments.map(apt => (
+                            <div key={apt.id} className="patient-row">
+                                <div className="patient-main-info">
+                                    <div className="patient-avatar">
+                                        {apt.patient?.full_name?.charAt(0) || 'P'}
+                                    </div>
+                                    <div className="patient-identity">
+                                        <div className="patient-name">{apt.patient?.full_name || 'Patient'}</div>
+                                        <div className="patient-info">
+                                            {apt.appointment_type} • {apt.scheduled_date} at {apt.scheduled_time}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="patient-status">
+                                    <span className={`status-badge ${apt.status.replace('_', '-')}`}>
+                                        {apt.status.replace('_', ' ')}
+                                    </span>
+                                </div>
+                                <div className="patient-actions">
+                                    <button className="btn-small btn-view">Details</button>
+                                    <button className="btn-small btn-action">
+                                        {apt.status === 'scheduled' ? 'Start' : 'Update'}
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        // Schedule View Component
+        const ScheduleView = ({ appointments }) => {
+            return (
+                <div className="card">
+                    <div className="card-header">
+                        <h3 className="card-title">Schedule Management</h3>
+                        <button className="btn">
+                            <i className="fas fa-calendar"></i> View Calendar
+                        </button>
+                    </div>
+                    <div style={{textAlign: 'center', padding: '40px'}}>
+                        <i className="fas fa-calendar-alt" style={{fontSize: '64px', color: '#6366f1', marginBottom: '20px'}}></i>
+                        <h3 style={{color: '#1f2937', marginBottom: '10px'}}>Schedule Calendar</h3>
+                        <p style={{color: '#6b7280'}}>
+                            Advanced scheduling features coming soon. Manage your appointments efficiently.
+                        </p>
+                    </div>
+                </div>
+            );
+        };
+
+        // Analytics View Component
+        const AnalyticsView = ({ stats }) => {
+            return (
+                <div className="card">
+                    <div className="card-header">
+                        <h3 className="card-title">Practice Analytics</h3>
+                        <button className="btn">
+                            <i className="fas fa-download"></i> Export Report
+                        </button>
+                    </div>
+                    <div style={{textAlign: 'center', padding: '40px'}}>
+                        <i className="fas fa-chart-bar" style={{fontSize: '64px', color: '#6366f1', marginBottom: '20px'}}></i>
+                        <h3 style={{color: '#1f2937', marginBottom: '10px'}}>Analytics Dashboard</h3>
+                        <p style={{color: '#6b7280'}}>
+                            Detailed analytics and reporting tools to help you understand your practice performance.
+                        </p>
+                    </div>
+                </div>
+            );
+        };
+
+        // Settings View Component
+        const SettingsView = () => {
+            return (
+                <div className="card">
+                    <div className="card-header">
+                        <h3 className="card-title">Provider Settings</h3>
+                    </div>
+                    <div style={{textAlign: 'center', padding: '40px'}}>
+                        <i className="fas fa-cog" style={{fontSize: '64px', color: '#6366f1', marginBottom: '20px'}}></i>
+                        <h3 style={{color: '#1f2937', marginBottom: '10px'}}>Settings & Preferences</h3>
+                        <p style={{color: '#6b7280'}}>
+                            Configure your practice settings, notifications, and account preferences.
+                        </p>
+                    </div>
+                </div>
+            );
+        };
+
+        // Render the app
+        ReactDOM.render(<ProviderDashboard />, document.getElementById('providerDashboard'));
+    </script>
+</body>
+</html> 
+</body>
+</html> 

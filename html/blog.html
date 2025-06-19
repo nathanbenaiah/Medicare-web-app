@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Insights | MediCare+</title>
+    <meta name="description" content="Real-world healthcare case studies and insights from MediCare+'s AI-powered platform. Discover how technology is transforming patient care in Sri Lanka.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+    
+    <style>
+        :root {
+            --primary-blue: #007BFF;
+            --secondary-blue: #0056b3;
+            --bg-light: #f8fafc;
+            --bg-white: #ffffff;
+            --text-dark: #1e293b;
+            --text-gray: #64748b;
+            --success-green: #10b981;
+            --border-radius: 16px;
+            --box-shadow: 0 4px 15px rgba(0, 123, 255, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: #fafbfc;
+            overflow-x: hidden;
+        }
+
+        /* Enhanced Modern Navigation */
+        .navbar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10001;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 60px;
+            padding: 18px 40px;
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            max-width: 95vw;
+            min-width: 1300px;
+        }
+
+        .navbar-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3rem;
+            width: 100%;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .navbar-brand i {
+            font-size: 1.5rem;
+            color: var(--primary-blue);
+        }
+
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: nowrap;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--text-gray);
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 25px;
+            white-space: nowrap;
+            min-width: fit-content;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary-blue);
+            background: rgba(0, 123, 255, 0.1);
+        }
+
+        .navbar-auth {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .auth-sign-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+            min-width: 220px;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        .auth-sign-btn:hover {
+            background: linear-gradient(135deg, #0056b3, #003d82);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+        }
+
+        /* Navigation Dropdowns */
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-width: 220px;
+            padding: 0.5rem 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+        }
+
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 12px 16px;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(0, 123, 255, 0.1);
+            color: var(--primary-blue);
+            padding-left: 20px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 140px 2rem 80px;
+            background: linear-gradient(135deg, #fafbfc 0%, #f1f5f9 100%);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0, 123, 255, 0.1);
+            color: var(--primary-blue);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-gray);
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            line-height: 1.6;
+        }
+
+        /* Blog Grid */
+        .blog-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem;
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .blog-card {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            border: 1px solid #f1f5f9;
+            position: relative;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .blog-image {
+            width: 100%;
+            height: 240px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+
+        .blog-content {
+            padding: 2rem;
+        }
+
+        .blog-category {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0, 123, 255, 0.1);
+            color: var(--primary-blue);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .blog-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .blog-excerpt {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .blog-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .blog-author {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .author-info h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .author-info span {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+        }
+
+        .blog-date {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .blog-stats {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-gray);
+            font-size: 0.85rem;
+        }
+
+        .read-more {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .read-more:hover {
+            gap: 0.75rem;
+        }
+
+        /* Special Featured Card */
+        .featured-card {
+            grid-column: span 2;
+        }
+
+        .featured-card .blog-image {
+            height: 300px;
+        }
+
+        .featured-card .blog-title {
+            font-size: 1.8rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .navbar {
+                min-width: auto;
+                padding: 16px 30px;
+            }
+
+            .hero-title {
+                font-size: 2.8rem;
+            }
+
+            .blog-grid {
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            }
+
+            .featured-card {
+                grid-column: span 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.2rem;
+            }
+
+            .blog-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .blog-card {
+                border-radius: 16px;
+            }
+
+            .blog-content {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Modern Footer */
+        .modern-footer {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            padding: 4rem 2rem 2rem;
+            margin-top: 5rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand i {
+            color: var(--primary-blue);
+        }
+
+        .footer-description {
+            color: #94a3b8;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .footer-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-blue);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #334155;
+            padding-top: 2rem;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 768px) {
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        /* Mobile Toggle Button */
+        .mobile-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .mobile-toggle span {
+            width: 25px;
+            height: 3px;
+            background: var(--primary-blue);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        /* Enhanced Mobile Menu - Side Slide Design */
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .mobile-menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-menu-content {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 320px;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.95));
+            backdrop-filter: blur(20px);
+            padding: 2rem 1.5rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+            border-left: 1px solid rgba(59, 130, 246, 0.1);
+            display: flex;
+            flex-direction: column;
+            z-index: 10000;
+        }
+
+        .mobile-menu-overlay.active .mobile-menu-content {
+            right: 0;
+        }
+
+        .mobile-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .mobile-close:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: #007BFF;
+            transform: rotate(90deg);
+        }
+
+        .mobile-menu-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        .mobile-menu-brand i {
+            font-size: 2rem;
+            color: #007BFF;
+        }
+
+        .mobile-menu-brand span {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .mobile-menu-links {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .mobile-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 500;
+            font-size: 1rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .mobile-nav-link:hover,
+        .mobile-nav-link.active {
+            background: rgba(59, 130, 246, 0.1);
+            color: #007BFF;
+            border-color: rgba(59, 130, 246, 0.2);
+            transform: translateX(8px);
+        }
+
+        .mobile-nav-link i {
+            font-size: 1.2rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .mobile-auth-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            text-decoration: none;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-top: 1rem;
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-auth-btn:hover {
+            background: linear-gradient(135deg, #0056b3, #003d82);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(0, 123, 255, 0.4);
+        }
+
+        .mobile-auth-btn i {
+            font-size: 1.1rem;
+        }
+
+        /* Enhanced Mobile Responsive */
+        @media (max-width: 1024px) {
+            .navbar {
+                padding: 12px 20px;
+                min-width: auto;
+                max-width: 95vw;
+            }
+            
+            .auth-sign-btn {
+                min-width: 160px;
+                padding: 12px 24px;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                top: 10px;
+                padding: 12px 20px;
+                border-radius: 20px;
+            }
+            
+            .navbar-nav {
+                display: none;
+            }
+            
+            .navbar-auth {
+                display: none;
+            }
+            
+            .mobile-toggle {
+                display: flex;
+            }
+
+            .hero-section {
+                padding: 100px 0 60px;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .blog-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                padding: 1rem;
+            }
+
+            .blog-card {
+                border-radius: 16px;
+            }
+
+            .blog-content {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .blog-container {
+                padding: 0 1rem 4rem;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .blog-content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <a href="../index.html" class="navbar-brand">
+                <i class="bx bx-health"></i>
+                <span>MediCare<span style="color: var(--primary-blue);">+</span></span>
+            </a>
+
+            <div class="navbar-nav">
+                <a href="../index.html" class="nav-link">
+                    <i class="bx bx-home-alt"></i>
+                    <span>Home</span>
+                </a>
+                
+                <a href="features.html" class="nav-link">
+                    <i class="bx bx-grid-alt"></i>
+                    <span>Features</span>
+                </a>
+                
+                <a href="ai-features.html" class="nav-link">
+                    <i class="bx bx-brain"></i>
+                    <span>AI Features</span>
+                </a>
+                
+                <a href="about.html" class="nav-link">
+                    <i class="bx bx-info-circle"></i>
+                    <span>About</span>
+                </a>
+                <a href="blog.html" class="nav-link active">
+                    <i class="bx bx-book-open"></i>
+                    <span>Blog</span>
+                </a>
+                
+                <!-- Provider Dropdown -->
+                <div class="nav-dropdown">
+                    <a href="#" class="nav-link" onclick="toggleProvider(event)">
+                        <i class="bx bx-user-plus"></i>
+                        <span>Provider</span>
+                        <i class="bx bx-chevron-down dropdown-arrow"></i>
+                    </a>
+                    <div class="dropdown-menu" id="providerDropdown">
+                        <a href="provider-registration.html" class="dropdown-item">
+                            <i class="bx bx-user-plus"></i>
+                            <span>Join as Provider</span>
+                        </a>
+                        <a href="provider-policy.html" class="dropdown-item">
+                            <i class="bx bx-file-blank"></i>
+                            <span>Provider Policy</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navbar-auth">
+                <a href="authnew.html" class="auth-sign-btn">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Sign In / Sign Up</span>
+                </a>
+            </div>
+
+            <button class="mobile-toggle" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-container">
+            <div class="hero-badge">
+                <i class="fas fa-chart-line"></i>
+                <span>Healthcare Innovation Stories</span>
+            </div>
+            
+            <h1 class="hero-title">Real Healthcare Transformation</h1>
+            <p class="hero-subtitle">
+                Discover how MediCare+'s AI-powered platform is revolutionizing patient care across Sri Lanka. 
+                Real case studies, measurable outcomes, and the future of intelligent healthcare.
+            </p>
+        </div>
+    </section>
+
+    <!-- Blog Content -->
+    <div class="blog-container">
+        <div class="blog-grid">
+            <!-- AI Health Assistant Case Study -->
+            <article class="blog-card featured-card">
+                <div class="blog-image">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="blog-content">
+                    <div class="blog-category">
+                        <i class="fas fa-brain"></i>
+                        AI Health Assistant
+                    </div>
+                    <h2 class="blog-title">How AI Reduced Emergency Room Visits by 40% in Colombo</h2>
+                    <p class="blog-excerpt">
+                        A comprehensive 6-month study at Colombo General Hospital shows how MediCare+'s AI Health Assistant 
+                        successfully triaged 15,000+ patients, providing accurate preliminary diagnoses and reducing unnecessary ER visits. 
+                        The AI's 95% accuracy rate in symptom analysis helped patients make informed decisions about their care urgency.
+                    </p>
+                    <div class="blog-meta">
+                        <div class="blog-author">
+                            <div class="author-avatar">RM</div>
+                            <div class="author-info">
+                                <h4>Dr. Rajesh Mendis</h4>
+                                <span>Chief Medical Officer</span>
+                            </div>
+                        </div>
+                        <div class="blog-date">
+                            <i class="fas fa-calendar"></i>
+                            Dec 15, 2024
+                        </div>
+                    </div>
+                    <div class="blog-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-eye"></i>
+                            <span>2.1k views</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-clock"></i>
+                            <span>8 min read</span>
+                        </div>
+                        <a href="case-study-ai-health-assistant.html" class="read-more">
+                            Read Full Study <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Smart Medication Management Case Study -->
+            <article class="blog-card">
+                <div class="blog-image" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                    <i class="fas fa-pills"></i>
+                </div>
+                <div class="blog-content">
+                    <div class="blog-category">
+                        <i class="fas fa-pills"></i>
+                        Smart Medication
+                    </div>
+                    <h2 class="blog-title">89% Improvement in Medication Adherence Among Diabetic Patients</h2>
+                    <p class="blog-excerpt">
+                        National Diabetes Center partnered with MediCare+ to track medication adherence among 500 diabetic patients. 
+                        Smart reminders and family coordination features led to remarkable improvements in treatment compliance.
+                    </p>
+                    <div class="blog-meta">
+                        <div class="blog-author">
+                            <div class="author-avatar">CS</div>
+                            <div class="author-info">
+                                <h4>Dr. Chamila Silva</h4>
+                                <span>Endocrinologist</span>
+                            </div>
+                        </div>
+                        <div class="blog-date">
+                            <i class="fas fa-calendar"></i>
+                            Dec 12, 2024
+                        </div>
+                    </div>
+                    <div class="blog-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-eye"></i>
+                            <span>1.8k views</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-clock"></i>
+                            <span>6 min read</span>
+                        </div>
+                        <a href="case-study-medication-management.html" class="read-more">
+                            Read Case Study <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Intelligent Appointment Scheduling Case Study -->
+            <article class="blog-card">
+                <div class="blog-image" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="blog-content">
+                    <div class="blog-category">
+                        <i class="fas fa-calendar-alt"></i>
+                        Smart Scheduling
+                    </div>
+                    <h2 class="blog-title">Reducing Patient Wait Times from 3 Hours to 15 Minutes</h2>
+                    <p class="blog-excerpt">
+                        How Asiri Hospital Group implemented MediCare+'s intelligent appointment scheduling system, optimizing 
+                        doctor availability and reducing patient wait times by 95% across 12 hospital locations.
+                    </p>
+                    <div class="blog-meta">
+                        <div class="blog-author">
+                            <div class="author-avatar">NP</div>
+                            <div class="author-info">
+                                <h4>Dr. Nilanthi Perera</h4>
+                                <span>Operations Director</span>
+                            </div>
+                        </div>
+                        <div class="blog-date">
+                            <i class="fas fa-calendar"></i>
+                            Dec 11, 2024
+                        </div>
+                    </div>
+                    <div class="blog-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-eye"></i>
+                            <span>1.5k views</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-clock"></i>
+                            <span>9 min read</span>
+                        </div>
+                        <a href="case-study-appointment-scheduling.html" class="read-more">
+                            View Results <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Predictive Health Analytics Case Study -->
+            <article class="blog-card">
+                <div class="blog-image" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="blog-content">
+                    <div class="blog-category">
+                        <i class="fas fa-analytics"></i>
+                        Predictive Analytics
+                    </div>
+                    <h2 class="blog-title">Early Detection: Preventing 200+ Heart Attacks Through AI Predictions</h2>
+                    <p class="blog-excerpt">
+                        A groundbreaking study with the Cardiac Center of Excellence demonstrates how MediCare+'s predictive analytics 
+                        identified high-risk patients 6 months before cardiac events, enabling preventive interventions.
+                    </p>
+                    <div class="blog-meta">
+                        <div class="blog-author">
+                            <div class="author-avatar">KS</div>
+                            <div class="author-info">
+                                <h4>Dr. Kumari Silva</h4>
+                                <span>Cardiologist</span>
+                            </div>
+                        </div>
+                        <div class="blog-date">
+                            <i class="fas fa-calendar"></i>
+                            Dec 10, 2024
+                        </div>
+                    </div>
+                    <div class="blog-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-eye"></i>
+                            <span>3.2k views</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-clock"></i>
+                            <span>12 min read</span>
+                        </div>
+                        <a href="case-study-predictive-analytics.html" class="read-more">
+                            Read Research <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Telemedicine Platform Case Study -->
+            <article class="blog-card">
+                <div class="blog-image" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
+                    <i class="fas fa-video"></i>
+                </div>
+                <div class="blog-content">
+                    <div class="blog-category">
+                        <i class="fas fa-laptop-medical"></i>
+                        Telemedicine
+                    </div>
+                    <h2 class="blog-title">Bringing Specialist Care to Rural Sri Lanka: 5,000+ Remote Consultations</h2>
+                    <p class="blog-excerpt">
+                        How MediCare+'s telemedicine platform connected rural patients in Anuradhapura and Polonnaruwa with 
+                        specialist doctors in Colombo, providing quality healthcare access to previously underserved communities.
+                    </p>
+                    <div class="blog-meta">
+                        <div class="blog-author">
+                            <div class="author-avatar">AW</div>
+                            <div class="author-info">
+                                <h4>Dr. Anoma Wijesinghe</h4>
+                                <span>Rural Health Specialist</span>
+                            </div>
+                        </div>
+                        <div class="blog-date">
+                            <i class="fas fa-calendar"></i>
+                            Dec 9, 2024
+                        </div>
+                    </div>
+                    <div class="blog-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-eye"></i>
+                            <span>2.7k views</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-clock"></i>
+                            <span>7 min read</span>
+                        </div>
+                        <a href="case-study-telemedicine.html" class="read-more">
+                            Explore Impact <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Family Care Coordination Case Study -->
+            <article class="blog-card">
+                <div class="blog-image" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="blog-content">
+                    <div class="blog-category">
+                        <i class="fas fa-heart"></i>
+                        Family Care
+                    </div>
+                    <h2 class="blog-title">Managing Multi-Generation Health: The Perera Family Success Story</h2>
+                    <p class="blog-excerpt">
+                        A detailed case study following the Perera family's journey using MediCare+ to coordinate healthcare 
+                        for four generations - from newborn care to elderly chronic disease management, all through one platform.
+                    </p>
+                    <div class="blog-meta">
+                        <div class="blog-author">
+                            <div class="author-avatar">PN</div>
+                            <div class="author-info">
+                                <h4>Dr. Priya Nanayakkara</h4>
+                                <span>Family Medicine</span>
+                            </div>
+                        </div>
+                        <div class="blog-date">
+                            <i class="fas fa-calendar"></i>
+                            Dec 8, 2024
+                        </div>
+                    </div>
+                    <div class="blog-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-eye"></i>
+                            <span>1.9k views</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-clock"></i>
+                            <span>5 min read</span>
+                        </div>
+                        <a href="case-study-family-care.html" class="read-more">
+                            Read Story <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </div>
+
+    <!-- Enhanced Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+        <div class="mobile-menu-content">
+            <button class="mobile-close" onclick="toggleMobileMenu()">
+                <i class="bx bx-x"></i>
+            </button>
+            
+            <div class="mobile-menu-brand">
+                <i class="bx bxs-shield-alt-2"></i>
+                <span>MediCare<span style="color: #007BFF;">+</span></span>
+            </div>
+            
+            <div class="mobile-menu-links">
+                <a href="../index.html" class="mobile-nav-link">
+                    <i class="bx bx-home-alt"></i>
+                    <span>Home</span>
+                </a>
+                <a href="features.html" class="mobile-nav-link">
+                    <i class="bx bx-check-shield"></i>
+                    <span>Features</span>
+                </a>
+                <a href="ai-features.html" class="mobile-nav-link">
+                    <i class="bx bx-brain"></i>
+                    <span>AI Features</span>
+                </a>
+                <a href="about.html" class="mobile-nav-link">
+                    <i class="bx bx-info-circle"></i>
+                    <span>About</span>
+                </a>
+                <a href="blog.html" class="mobile-nav-link active">
+                    <i class="bx bx-book-open"></i>
+                    <span>Blog</span>
+                </a>
+                <a href="provider-registration.html" class="mobile-nav-link">
+                    <i class="bx bx-user-plus"></i>
+                    <span>Join as Provider</span>
+                </a>
+                <a href="provider-policy.html" class="mobile-nav-link">
+                    <i class="bx bx-shield-check"></i>
+                    <span>Provider Policy</span>
+                </a>
+            </div>
+            
+            <a href="authnew.html" class="mobile-auth-btn">
+                <i class="bx bx-user-circle"></i>
+                <span>Sign In / Sign Up</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Modern Footer -->
+    <footer class="modern-footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <div class="footer-brand">
+                        <i class="bx bx-health"></i>
+                        <span>MediCare<span style="color: var(--primary-blue);">+</span></span>
+                    </div>
+                    <p class="footer-description">
+                        Transforming healthcare accessibility across Sri Lanka through AI-powered technology, 
+                        connecting families with quality medical care anytime, anywhere.
+                    </p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Company</h3>
+                    <ul class="footer-links">
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Solutions</h3>
+                    <ul class="footer-links">
+                        <li><a href="features.html">Platform Features</a></li>
+                        <li><a href="ai-features.html">AI Health Assistant</a></li>
+                        <li><a href="#">Telemedicine</a></li>
+                        <li><a href="#">Health Analytics</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="blog.html">Healthcare Blog</a></li>
+                        <li><a href="help-center.html">Help Center</a></li>
+                        <li><a href="#">API Documentation</a></li>
+                        <li><a href="#">System Status</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Providers</h3>
+                    <ul class="footer-links">
+                        <li><a href="provider-registration.html">Join as Provider</a></li>
+                        <li><a href="provider-policy.html">Provider Policy</a></li>
+                        <li><a href="#">Provider Portal</a></li>
+                        <li><a href="#">Training Resources</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 MediCare+. All rights reserved. Transforming healthcare for Sri Lankan families.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Provider dropdown functionality
+        function toggleProvider(event) {
+            event.preventDefault();
+            const dropdown = document.getElementById('providerDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('providerDropdown');
+            const providerLink = event.target.closest('.nav-dropdown');
+            
+            if (!providerLink && dropdown.classList.contains('show')) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Mobile menu toggle functionality
+        function toggleMobileMenu() {
+            const overlay = document.getElementById('mobileMenuOverlay');
+            const toggle = document.querySelector('.mobile-toggle');
+            
+            overlay.classList.toggle('active');
+            toggle.classList.toggle('active');
+        }
+
+        // Close mobile menu when clicking overlay
+        document.getElementById('mobileMenuOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                toggleMobileMenu();
+            }
+        });
+
+        // Add scroll effect to navbar
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+                navbar.style.boxShadow = '0 8px 32px rgba(59, 130, 246, 0.15)';
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+                navbar.style.boxShadow = '0 8px 32px rgba(59, 130, 246, 0.1)';
+            }
+        });
+    </script>
+</body>
+</html>

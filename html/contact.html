@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - MediCare</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        .contact-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .contact-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            padding: 4rem 2rem;
+            border-radius: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            animation: float 20s linear infinite;
+        }
+
+        .contact-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .contact-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 2;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .contact-info {
+            background: white;
+            padding: 3rem;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+        }
+
+        .contact-form {
+            background: white;
+            padding: 3rem;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .info-title {
+            color: #007BFF;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, #f8fafc, #ffffff);
+            border-radius: 15px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .info-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.1);
+        }
+
+        .info-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .info-content h4 {
+            color: #1a1a1a;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-content p {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+
+        .form-title {
+            color: #1a1a1a;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #374151;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #007BFF;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            border: none;
+            padding: 1.2rem 2rem;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 123, 255, 0.3);
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .emergency-section {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .emergency-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        }
+
+        .emergency-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .emergency-text {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .emergency-number {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: inline-block;
+            position: relative;
+            z-index: 2;
+        }
+
+        .office-hours {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3rem;
+        }
+
+        .hours-title {
+            color: #007BFF;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .hours-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .hours-card {
+            background: linear-gradient(135deg, #f8fafc, #ffffff);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .hours-card h4 {
+            color: #1a1a1a;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .hours-card p {
+            color: #6b7280;
+        }
+
+        .social-links {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .social-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .social-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .social-btn {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 10px 25px rgba(0, 123, 255, 0.3);
+        }
+
+        .social-btn.facebook { background: linear-gradient(135deg, #3b5998, #2d4373); }
+        .social-btn.twitter { background: linear-gradient(135deg, #1da1f2, #0d95e8); }
+        .social-btn.instagram { background: linear-gradient(135deg, #e4405f, #c13584); }
+        .social-btn.linkedin { background: linear-gradient(135deg, #0077b5, #005885); }
+
+        @keyframes float {
+            from { transform: translateX(0px); }
+            to { transform: translateX(-60px); }
+        }
+
+        @media (max-width: 768px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .contact-title {
+                font-size: 2.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .hours-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    
+        /* Enhanced Modern Navigation */
+        .navbar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10001;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 60px;
+            padding: 18px 40px;
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            max-width: 95vw;
+            min-width: 1300px;
+        }
+
+        .navbar-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3rem;
+            width: 100%;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .navbar-brand i {
+            font-size: 1.5rem;
+            color: var(--primary-blue);
+        }
+
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: nowrap;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--text-gray);
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 25px;
+            white-space: nowrap;
+            min-width: fit-content;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary-blue);
+            background: rgba(0, 123, 255, 0.1);
+        }
+
+        .nav-link span {
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .navbar-auth {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .auth-sign-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+            min-width: 220px;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        .auth-sign-btn:hover {
+            background: linear-gradient(135deg, #0056b3, #003d82);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+        }
+
+        /* Navigation Dropdowns */
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-width: 220px;
+            padding: 0.5rem 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+        }
+
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 12px 16px;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(0, 123, 255, 0.1);
+            color: var(--primary-blue);
+            padding-left: 20px;
+        }
+
+        .dropdown-arrow {
+            transition: transform 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .nav-dropdown.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .mobile-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .mobile-toggle span {
+            width: 20px;
+            height: 2px;
+            background: var(--primary-blue);
+            border-radius: 2px;
+            transition: var(--transition);
+        }
+</style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <a href="../index.html" class="navbar-brand">
+                <i class="bx bx-health"></i>
+                <span>MediCare<span style="color: var(--primary-blue);">+</span></span>
+            </a>
+
+            <div class="navbar-nav">
+                <a href="../index.html" class="nav-link">
+                    <i class="bx bx-home-alt"></i>
+                    <span>Home</span>
+                </a>
+                
+                <a href="features.html" class="nav-link">
+                    <i class="bx bx-grid-alt"></i>
+                    <span>Features</span>
+                </a>
+                
+                <a href="ai-features.html" class="nav-link">
+                    <i class="bx bx-brain"></i>
+                    <span>AI Features</span>
+                </a>
+                
+                <a href="about.html" class="nav-link">
+                    <i class="bx bx-info-circle"></i>
+                    <span>About</span>
+                </a>
+                <a href="blog.html" class="nav-link">
+                    <i class="bx bx-book-open"></i>
+                    <span>Blog</span>
+                </a>
+                
+                <!-- Provider Dropdown -->
+                <div class="nav-dropdown">
+                    <a href="#" class="nav-link" onclick="toggleProvider(event)">
+                        <i class="bx bx-user-plus"></i>
+                        <span>Provider</span>
+                        <i class="bx bx-chevron-down dropdown-arrow"></i>
+                    </a>
+                    <div class="dropdown-menu" id="providerDropdown">
+                        <a href="provider-registration.html" class="dropdown-item">
+                            <i class="bx bx-user-plus"></i>
+                            <span>Join as Provider</span>
+                        </a>
+                        <a href="provider-policy.html" class="dropdown-item">
+                            <i class="bx bx-file-blank"></i>
+                            <span>Provider Policy</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navbar-auth">
+                <a href="authnew.html" class="auth-sign-btn">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Sign In / Sign Up</span>
+                </a>
+            </div>
+
+            <button class="mobile-toggle" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Enhanced Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+        <div class="mobile-menu-content">
+            <button class="mobile-close" onclick="toggleMobileMenu()">
+                <i class="bx bx-x"></i>
+            </button>
+            
+            <div class="mobile-menu-brand">
+                <i class="bx bxs-shield-alt-2"></i>
+                <span>MediCare<span style="color: #007BFF;">+</span></span>
+            </div>
+            
+            <div class="mobile-menu-links">
+                <a href="../index.html" class="mobile-nav-link">
+                    <i class="bx bx-home-alt"></i>
+                    <span>Home</span>
+                </a>
+                <a href="features.html" class="mobile-nav-link">
+                    <i class="bx bx-check-shield"></i>
+                    <span>Features</span>
+                </a>
+                <a href="ai-features.html" class="mobile-nav-link">
+                    <i class="bx bx-brain"></i>
+                    <span>AI Features</span>
+                </a>
+                <a href="about.html" class="mobile-nav-link">
+                    <i class="bx bx-info-circle"></i>
+                    <span>About</span>
+                </a>
+                <a href="blog.html" class="mobile-nav-link">
+                    <i class="bx bx-book-open"></i>
+                    <span>Blog</span>
+                </a>
+                <a href="provider-registration.html" class="mobile-nav-link">
+                    <i class="bx bx-user-plus"></i>
+                    <span>Join as Provider</span>
+                </a>
+                <a href="provider-policy.html" class="mobile-nav-link">
+                    <i class="bx bx-shield-check"></i>
+                    <span>Provider Policy</span>
+                </a>
+                <a href="contact.html" class="mobile-nav-link active">
+                    <i class="bx bx-phone"></i>
+                    <span>Contact</span>
+                </a>
+            </div>
+            
+            <a href="authnew.html" class="mobile-auth-btn">
+                <i class="bx bx-user-circle"></i>
+                <span>Sign In / Sign Up</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="contact-container" style="padding-top: 120px;">
+        <div class="contact-header">
+            <h1 class="contact-title">
+                <i class="fas fa-comments"></i>
+                Get In Touch
+            </h1>
+            <p class="contact-subtitle">We're here to help with all your healthcare needs. Reach out to us anytime!</p>
+        </div>
+
+        <div class="emergency-section">
+            <h2 class="emergency-title">
+                <i class="fas fa-phone-alt"></i>
+                Medical Emergency?
+            </h2>
+            <p class="emergency-text">For immediate medical assistance, call our 24/7 emergency hotline</p>
+            <div class="emergency-number">1990 - Emergency</div>
+        </div>
+
+        <div class="contact-grid">
+            <div class="contact-info">
+                <div class="info-section">
+                    <h3 class="info-title">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Visit Our Office
+                    </h3>
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>Main Office</h4>
+                            <p>123 Healthcare Avenue<br>Colombo 03, Sri Lanka</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3 class="info-title">
+                        <i class="fas fa-phone"></i>
+                        Call Us
+                    </h3>
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>Customer Support</h4>
+                            <p>+94 11 234 5678<br>Mon-Fri: 8:00 AM - 8:00 PM</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>Medical Consultations</h4>
+                            <p>+94 11 234 5679<br>24/7 Available</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3 class="info-title">
+                        <i class="fas fa-envelope"></i>
+                        Email Us
+                    </h3>
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-inbox"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>General Inquiries</h4>
+                            <p>info@medicare.lk<br>We respond within 24 hours</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>Privacy & Security</h4>
+                            <p>privacy@medicare.lk<br>Data protection inquiries</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-form">
+                <h2 class="form-title">Send Us a Message</h2>
+                <form id="contactForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text" id="firstName" name="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input type="text" id="lastName" name="lastName" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <select id="subject" name="subject" required>
+                            <option value="">Select a subject</option>
+                            <option value="general">General Inquiry</option>
+                            <option value="medical">Medical Consultation</option>
+                            <option value="technical">Technical Support</option>
+                            <option value="billing">Billing Question</option>
+                            <option value="partnership">Partnership</option>
+                            <option value="feedback">Feedback</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" placeholder="Tell us how we can help you..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i>
+                        Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="office-hours">
+            <h3 class="hours-title">
+                <i class="fas fa-clock"></i>
+                Office Hours
+            </h3>
+            <div class="hours-grid">
+                <div class="hours-card">
+                    <h4>Customer Support</h4>
+                    <p>Monday - Friday<br>8:00 AM - 8:00 PM</p>
+                </div>
+                <div class="hours-card">
+                    <h4>Medical Consultations</h4>
+                    <p>24/7 Available<br>Including Holidays</p>
+                </div>
+                <div class="hours-card">
+                    <h4>Technical Support</h4>
+                    <p>Monday - Saturday<br>9:00 AM - 6:00 PM</p>
+                </div>
+                <div class="hours-card">
+                    <h4>Billing Department</h4>
+                    <p>Monday - Friday<br>9:00 AM - 5:00 PM</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="social-links">
+            <h3 class="social-title">Connect With Us</h3>
+            <div class="social-buttons">
+                <a href="#" class="social-btn facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" class="social-btn twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#" class="social-btn instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="social-btn linkedin">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modern Footer -->
+    <footer class="modern-footer">
+        <div class="footer-container">
+            <!-- Main Footer Content -->
+            <div class="footer-main">
+                <!-- Company Section -->
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <div class="footer-links">
+                        <a href="../index.html">Home</a>
+                        <a href="about.html">About Us</a>
+                        <a href="contact.html">Contact</a>
+                        <a href="help-center.html">Help Center</a>
+                    </div>
+                </div>
+
+                <!-- Solutions Section -->
+                <div class="footer-section">
+                    <h4>Solutions</h4>
+                    <div class="footer-links">
+                        <a href="blog.html#ai-health-assistant">AI Health Assistant</a>
+                        <a href="blog.html#medication-management">Smart Medication Management</a>
+                        <a href="blog.html#appointment-scheduling">Intelligent Appointment Scheduling</a>
+                        <a href="blog.html#health-analytics">Predictive Health Analytics</a>
+                        <a href="blog.html#telemedicine">Telemedicine Platform</a>
+                        <a href="blog.html#family-care">Family Care Coordination</a>
+                    </div>
+                </div>
+
+                <!-- Resources Section -->
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <div class="footer-links">
+                        <a href="blog.html">Blog & Insights</a>
+                        <a href="ai-assistant-policy.html">AI Assistant Policy</a>
+                        <a href="privacy-policy.html">Privacy Policy</a>
+                        <a href="terms-of-use.html">Terms of Service</a>
+                        <a href="data-protection-policy.html">Data Protection</a>
+                    </div>
+                </div>
+
+                <!-- Providers Section -->
+                <div class="footer-section">
+                    <h4>Providers</h4>
+                    <div class="footer-links">
+                        <a href="provider-registration.html">Provider Registration</a>
+                        <a href="provider-policy.html">Provider Policy</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <div class="footer-brand">
+                    <span class="medicare-logo-icon">✱</span>
+                    <span>MediCare<span class="brand-accent">+</span></span>
+                </div>
+                <div class="footer-copyright">
+                    <p>© 2025. All rights reserved. Developed by Benaiah Nicholas Nimal.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            // Simulate form submission
+            const submitBtn = this.querySelector('.submit-btn');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                alert('Thank you for your message! We will get back to you within 24 hours.');
+                this.reset();
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 2000);
+        });
+    </script>
+
+<script>
+// Navigation dropdown functions
+function toggleFeatures(event) {
+    event.preventDefault();
+    const dropdown = document.getElementById('featuresDropdown');
+    const parent = event.target.closest('.nav-dropdown');
+    
+    // Close other dropdowns
+    document.querySelectorAll('.dropdown-menu').forEach(menu => {
+        if (menu !== dropdown) {
+            menu.classList.remove('show');
+            menu.closest('.nav-dropdown').classList.remove('active');
+        }
+    });
+    
+    dropdown.classList.toggle('show');
+    parent.classList.toggle('active');
+}
+
+function toggleProvider(event) {
+    event.preventDefault();
+    const dropdown = document.getElementById('providerDropdown');
+    const parent = event.target.closest('.nav-dropdown');
+    
+    // Close other dropdowns
+    document.querySelectorAll('.dropdown-menu').forEach(menu => {
+        if (menu !== dropdown) {
+            menu.classList.remove('show');
+            menu.closest('.nav-dropdown').classList.remove('active');
+        }
+    });
+    
+    dropdown.classList.toggle('show');
+    parent.classList.toggle('active');
+}
+
+function toggleMobileMenu() {
+    // Mobile menu functionality
+    console.log('Mobile menu toggle');
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', function(event) {
+    if (!event.target.closest('.nav-dropdown')) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.classList.remove('show');
+            menu.closest('.nav-dropdown').classList.remove('active');
+        });
+    }
+});
+</script>
+</body>
+</html>
