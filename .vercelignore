@@ -1,0 +1,14 @@
+node_modules
+src/
+scripts/
+database/backups/
+*.log
+.env
+server.js
+package-lock.json
+setup-database-schema.js
+test-*.js
+*.bat
+ml-test-report.json
+uploads/
+.git 

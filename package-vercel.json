@@ -1,0 +1,15 @@
+{
+  "name": "medicare-webapp",
+  "version": "2.0.0",
+  "description": "MediCare+ Static Healthcare Web Application",
+  "scripts": {
+    "build": "echo 'Static site - no build needed'"
+  },
+  "keywords": [
+    "healthcare",
+    "medicare",
+    "static-site"
+  ],
+  "author": "MediCare+ Team",
+  "license": "MIT"
+} 
