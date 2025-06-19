@@ -1061,7 +1061,7 @@
                 const { data, error } = await supabase.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
-                        redirectTo: `${window.location.origin}/html/user-dashboard.html`,
+                        redirectTo: `https://medicare-web-app-git-main-nathanbenaiah.vercel.app/html/user-dashboard.html`,
                         queryParams: {
                             access_type: 'offline',
                             prompt: 'consent'
@@ -1114,7 +1114,7 @@
                 const { data, error } = await supabase.auth.signInWithOtp({
                     email: email,
                     options: {
-                        emailRedirectTo: `${window.location.origin}/html/user-dashboard.html`
+                        emailRedirectTo: `https://medicare-web-app-git-main-nathanbenaiah.vercel.app/html/user-dashboard.html`
                     }
                 });
 
@@ -1139,7 +1139,7 @@
                 showLoading('reset-submit');
 
                 const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-                    redirectTo: `${window.location.origin}/html/auth.html?type=recovery`
+                    redirectTo: `https://medicare-web-app-git-main-nathanbenaiah.vercel.app/html/auth.html?type=recovery`
                 });
 
                 if (error) throw error;
@@ -1178,7 +1178,7 @@
                     email: email,
                     password: password,
                     options: {
-                        emailRedirectTo: `${window.location.origin}/html/user-dashboard.html`
+                        emailRedirectTo: `https://medicare-web-app-git-main-nathanbenaiah.vercel.app/html/user-dashboard.html`
                     }
                 });
 

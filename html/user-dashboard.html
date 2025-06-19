@@ -697,6 +697,17 @@
             font-size: 16px;
         }
 
+        /* Success Message Animations */
+        @keyframes slideInRight {
+            0% { transform: translateX(100%); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOutRight {
+            0% { transform: translateX(0); opacity: 1; }
+            100% { transform: translateX(100%); opacity: 0; }
+        }
+
         .notification-badge {
             position: absolute;
             top: -4px;
@@ -7514,8 +7525,45 @@
             window.location.href = '/html/auth.html';
         }
 
+        // Handle URL hash tokens from authentication redirects
+        function handleAuthTokens() {
+            const hash = window.location.hash;
+            
+            if (hash && hash.includes('access_token')) {
+                console.log('🔐 Processing authentication tokens from URL');
+                
+                // Clear the hash from URL for security
+                setTimeout(() => {
+                    window.history.replaceState(null, null, window.location.pathname);
+                }, 1000);
+                
+                // Show success message
+                const successMessage = document.createElement('div');
+                successMessage.innerHTML = `
+                    <div style="position: fixed; top: 20px; right: 20px; background: #10b981; color: white; 
+                         padding: 15px 20px; border-radius: 8px; font-weight: 500; z-index: 10000; 
+                         box-shadow: 0 4px 12px rgba(0,0,0,0.15); animation: slideInRight 0.3s ease-out;">
+                        ✅ Welcome to MediCare+! You're successfully signed in.
+                    </div>
+                `;
+                document.body.appendChild(successMessage);
+                
+                setTimeout(() => {
+                    successMessage.style.animation = 'slideOutRight 0.3s ease-out';
+                    setTimeout(() => successMessage.remove(), 300);
+                }, 4000);
+                
+                return true; // Tokens processed
+            }
+            
+            return false; // No tokens to process
+        }
+
         // Load initial data
         document.addEventListener('DOMContentLoaded', async function() {
+            // Handle authentication tokens from redirect first
+            const hasTokens = handleAuthTokens();
+            
             // Check authentication first
             const isAuthenticated = await checkAuthentication();
             
