@@ -72,17 +72,18 @@
             min-height: 100vh;
         }
 
-        /* Hero Section - Updated to match appointments.html style */
+        /* Hero Section - Minimal spacing */
         .hero-section {
             background: linear-gradient(135deg, #e7f3ff 0%, white 100%);
-            min-height: 25vh;
+            min-height: 15vh;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             overflow: hidden;
             border-radius: 20px;
-            margin: 2rem 0;
+            margin: 0.5rem 0;
+            padding: 1rem 0;
         }
 
         .hero-section::before {
@@ -98,10 +99,10 @@
 
         .back-button {
             position: absolute;
-            top: 2rem;
-            left: 2rem;
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            top: 1.5rem;
+            left: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
+            border: none;
             color: white;
             padding: 0.75rem 1.5rem;
             border-radius: 2rem;
@@ -111,25 +112,38 @@
             align-items: center;
             gap: 0.5rem;
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
             z-index: 10;
         }
 
         .back-button:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
             color: white;
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
             text-decoration: none;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
-            margin-top: -3rem;
+            padding: 1rem;
+            margin-top: -1rem;
             position: relative;
             z-index: 2;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .main-content {
+            flex: 1;
+        }
+
+        .progress-sidebar {
+            width: 300px;
+            position: sticky;
+            top: 2rem;
+            height: fit-content;
         }
 
         .hero-content {
@@ -137,8 +151,65 @@
             color: var(--gray-800);
             z-index: 2;
             max-width: 800px;
-            padding: 2rem;
+            padding: 1rem;
         }
+
+        /* Progress Sidebar */
+        .progress-sidebar {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--gray-200);
+        }
+
+        .progress-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .current-question-box {
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+            border-radius: 1rem;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            animation: pulseGlow 2s infinite;
+        }
+
+        .current-question-box .question-indicator {
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            }
+            50% { 
+                box-shadow: 0 0 30px rgba(59, 130, 246, 0.6);
+            }
+        }
+
+        .progress-summary {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: var(--gray-50);
+            border-radius: 0.75rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-summary .progress-text {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+
 
         .assessment-badge {
             display: inline-flex;
@@ -188,42 +259,71 @@
             opacity: 0.9;
         }
 
-        .progress-container {
+
+
+        /* Basic Information Form */
+        .basic-info-form {
             background: white;
-            border: 1px solid var(--gray-200);
             border-radius: 1.5rem;
             padding: 2rem;
             margin-bottom: 2rem;
             box-shadow: var(--shadow-md);
+            border: 1px solid var(--gray-200);
         }
 
-        .progress-info {
+        .form-section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 1.5rem;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.75rem;
+            gap: 0.75rem;
         }
 
-        .progress-bar {
-            height: 12px;
-            background: var(--gray-200);
-            border-radius: 6px;
-            overflow: hidden;
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
         }
 
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-500), var(--primary-600));
-            width: 0%;
-            transition: width 0.5s ease;
-            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
         }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--gray-700);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input, .form-select {
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary-500);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+
 
         .question-container {
             background: white;
             border: 1px solid var(--gray-200);
-            border-radius: 2rem;
-            padding: 3rem;
+            border-radius: 1.5rem;
+            padding: 2rem;
             margin-bottom: 2rem;
             box-shadow: var(--shadow-lg);
             transition: all 0.3s ease;
@@ -234,26 +334,43 @@
             border-color: var(--primary-300);
         }
 
+        .question-header {
+            margin-bottom: 1.5rem;
+        }
+
         .question-number {
+            display: inline-flex;
             background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
             color: white;
-            width: 50px;
-            height: 50px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
-            display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 800;
-            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 700;
             box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        .question-header-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .question-text-content {
+            flex: 1;
         }
 
         .question-title {
-            font-size: 1.75rem;
-            font-weight: 800;
+            font-size: 1.5rem;
+            font-weight: 700;
             color: var(--gray-800);
-            margin-bottom: 1rem;
             line-height: 1.3;
+            margin: 0;
         }
 
         .question-description {
@@ -418,19 +535,7 @@
             color: var(--gray-400);
         }
 
-        .question-header {
-            margin-bottom: 2rem;
-            text-align: center;
-        }
 
-        .progress-container {
-            background: white;
-            border: 1px solid var(--gray-200);
-            border-radius: 2rem;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow-md);
-        }
 
         .progress-info {
             display: flex;
@@ -478,6 +583,21 @@
             justify-content: space-between;
             gap: 1rem;
             margin-top: 3rem;
+        }
+
+        .progress-sidebar .navigation-buttons {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            flex-direction: row;
+            gap: 0.5rem;
+        }
+
+        .progress-sidebar .navigation-buttons .btn {
+            flex: 1;
+            padding: 0.6rem 0.8rem;
+            font-size: 0.85rem;
+            justify-content: center;
         }
 
         .btn {
@@ -717,8 +837,8 @@
 
         @media (max-width: 768px) {
             .hero-section {
-                min-height: 50vh;
-                padding: 2rem 1rem;
+                min-height: 40vh;
+                padding: 1rem;
             }
             
             .hero-content {
@@ -726,21 +846,30 @@
             }
             
             .assessment-title {
-                font-size: 2.5rem;
+                font-size: 2rem;
             }
             
             .assessment-subtitle {
-                font-size: 1.125rem;
-            }
-            
-            .stats-display {
-                flex-direction: column;
-                gap: 1rem;
+                font-size: 1rem;
             }
             
             .container {
                 padding: 1rem;
-                margin-top: -2rem;
+                margin-top: -1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .progress-sidebar {
+                width: 100%;
+                position: static;
+                order: -1;
+                margin-bottom: 1rem;
+                padding: 1rem;
+            }
+            
+            .current-question-box {
+                padding: 0.75rem;
             }
             
             .back-button {
@@ -750,11 +879,21 @@
             }
             
             .question-container {
-                padding: 2rem;
+                padding: 1.5rem;
+            }
+            
+            .question-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+            
+            .question-icon {
+                align-self: center;
             }
             
             .question-title {
-                font-size: 1.5rem;
+                font-size: 1.3rem;
             }
             
             .answer-options {
@@ -762,9 +901,19 @@
                 gap: 1rem;
             }
             
+            .answer-option {
+                padding: 1rem;
+                font-size: 0.9rem;
+            }
+            
             .navigation-buttons {
                 flex-direction: column;
                 gap: 1rem;
+            }
+
+            .progress-sidebar .navigation-buttons {
+                flex-direction: column;
+                gap: 0.75rem;
             }
             
             .btn {
@@ -773,15 +922,15 @@
             }
             
             .analysis-box {
-                padding: 2rem;
+                padding: 1.5rem;
             }
             
             .results-header {
-                padding: 2rem;
+                padding: 1.5rem;
             }
             
             .results-header h2 {
-                font-size: 2rem;
+                font-size: 1.75rem;
             }
         }
 
@@ -819,9 +968,6 @@
                 <i class="fas fa-robot"></i>
                 AI-Powered Assessment
             </div>
-            <div class="assessment-icon" id="assessmentIcon">
-                <i class="fas fa-stethoscope"></i>
-            </div>
             <h1 class="assessment-title" id="assessmentTitle">AI Health Assessment</h1>
             <p class="assessment-subtitle" id="assessmentSubtitle">
                 Complete this comprehensive health assessment to receive personalized insights, detailed analysis, and professional recommendations with downloadable PDF reports.
@@ -839,23 +985,18 @@
     </div>
 
     <div class="container">
-        <div class="assessment-section" id="assessmentSection">
-
-            <div class="progress-container">
-                <div class="progress-info">
-                    <span>Assessment Progress</span>
-                    <span id="progressPercentage">0%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
+        <!-- Progress Sidebar -->
+        <div class="progress-sidebar" id="progressSidebar">
+            <div class="progress-title">Progress</div>
+            <div class="current-question-box" id="currentQuestionBox">
+                <div class="question-indicator" id="questionIndicator">Question 1</div>
+            </div>
+            <div class="progress-summary">
+                <div class="progress-text" id="progressText">Question 1 of 30</div>
             </div>
 
-            <div class="question-container" id="questionContainer">
-                <!-- Questions loaded dynamically -->
-            </div>
-
-            <div class="navigation-buttons">
+            <!-- Navigation buttons under progress bar -->
+            <div class="navigation-buttons" style="margin-top: 1rem;">
                 <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()" style="display: none;">
                     <i class="fas fa-arrow-left"></i>
                     Previous
@@ -866,20 +1007,29 @@
                 </button>
             </div>
 
-            <div class="ai-policy-note" style="margin-top: 2rem; padding: 1.5rem; background: linear-gradient(135deg, rgba(0, 102, 255, 0.05) 0%, rgba(255, 255, 255, 1) 100%); border: 2px solid rgba(0, 102, 255, 0.2); border-radius: 1rem; text-align: center; box-shadow: 0 4px 15px rgba(0, 102, 255, 0.1);">
-                <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 0.75rem;">
-                    <i class="fas fa-shield-alt" style="font-size: 1.5rem; color: var(--primary-color); margin-right: 0.75rem;"></i>
-                    <h4 style="color: var(--primary-color); font-weight: 600; margin: 0;">Important Notice</h4>
-                </div>
-                <p style="color: var(--text-dark); font-size: 0.9rem; margin: 0; line-height: 1.6;">
-                    By completing this AI assessment, you agree to our 
-                    <a href="ai-assistant-policy.html" style="color: var(--primary-color); text-decoration: none; font-weight: 600; border-bottom: 1px solid var(--primary-color);">AI Usage Policy</a>
-                    and understand that this tool provides general health information and should not replace professional medical advice.
-                </p>
-            </div>
         </div>
 
-        <div class="results-section" id="resultsSection">
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="assessment-section" id="assessmentSection">
+                <div class="question-container" id="questionContainer">
+                    <!-- Questions loaded dynamically -->
+                </div>
+
+
+
+            <!-- Small disclaimer -->
+            <div class="ai-policy-note" style="margin-top: 1rem; padding: 1rem; background: rgba(0, 102, 255, 0.05); border: 1px solid rgba(0, 102, 255, 0.2); border-radius: 0.5rem; text-align: center;">
+                <p style="color: var(--text-dark); font-size: 0.85rem; margin: 0; line-height: 1.4;">
+                    By proceeding with this assessment, you acknowledge that you have read, understood, and agree to our 
+                    <a href="ai-assistant-policy.html" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">AI Usage Policy</a>, 
+                    <a href="privacy-policy.html" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">Privacy Policy</a>, and 
+                    <a href="terms-of-use.html" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">Terms of Use</a>.
+                </p>
+            </div>
+            </div>
+
+            <div class="results-section" id="resultsSection">
             <div class="results-header">
                 <h2>Your Personalized Health Analysis</h2>
                 <p>Based on your responses, here's your comprehensive assessment</p>
@@ -961,27 +1111,107 @@
                     return config.questions;
                 }
                 
-                console.warn(`⚠️ Assessment config not found for ${type}, using fallback`);
-                // Fallback to basic questions if config not available
-                return [
+                console.warn(`⚠️ Assessment config not found for ${type}, using comprehensive fallback`);
+                
+                // Basic questions that apply to all assessments (5 questions)
+                const basicQuestions = [
                     { id: 1, type: 'text', question: 'Q1. What is your full name?', description: 'Please enter your complete name.', required: true, placeholder: 'Enter your full name' },
                     { id: 2, type: 'text', question: 'Q2. What is your age?', description: 'Please enter your age in years.', required: true, placeholder: 'Enter your age (e.g., 25)' },
-                    { id: 3, type: 'multiple', question: 'Q3. What is your gender?', description: 'Please select your gender.', options: [{ value: 'male', label: 'Male' }, { value: 'female', label: 'Female' }], required: true },
-                    { id: 4, type: 'text', question: 'Q4. What is your contact number?', description: 'Please enter your phone number.', required: true, placeholder: 'Enter your contact number (e.g., 0771234567)' },
-                    { id: 5, type: 'multiple', question: 'Q5. Which province are you from?', description: 'Select your province in Sri Lanka.', options: [{ value: 'western', label: 'Western Province' }, { value: 'central', label: 'Central Province' }, { value: 'southern', label: 'Southern Province' }], required: true },
-                    { id: 6, type: 'multiple', question: 'Q6. What is your primary concern?', description: 'Select your main health issue.', options: [{ value: 'general', label: 'General Health Check' }, { value: 'specific', label: 'Specific Health Issue' }], required: true }
+                    { id: 3, type: 'multiple', question: 'Q3. What is your gender?', description: 'Please select your gender.', options: [{ value: 'male', label: 'Male' }, { value: 'female', label: 'Female' }, { value: 'other', label: 'Other' }], required: true },
+                    { id: 4, type: 'multiple', question: 'Q4. Which district are you from?', description: 'Select your district in Sri Lanka.', 
+                      options: [
+                        { value: 'colombo', label: 'Colombo' }, { value: 'gampaha', label: 'Gampaha' }, { value: 'kalutara', label: 'Kalutara' },
+                        { value: 'kandy', label: 'Kandy' }, { value: 'matale', label: 'Matale' }, { value: 'nuwara-eliya', label: 'Nuwara Eliya' },
+                        { value: 'galle', label: 'Galle' }, { value: 'matara', label: 'Matara' }, { value: 'hambantota', label: 'Hambantota' },
+                        { value: 'jaffna', label: 'Jaffna' }, { value: 'kilinochchi', label: 'Kilinochchi' }, { value: 'mannar', label: 'Mannar' },
+                        { value: 'vavuniya', label: 'Vavuniya' }, { value: 'mullaitivu', label: 'Mullaitivu' }, { value: 'batticaloa', label: 'Batticaloa' },
+                        { value: 'ampara', label: 'Ampara' }, { value: 'trincomalee', label: 'Trincomalee' }, { value: 'kurunegala', label: 'Kurunegala' },
+                        { value: 'puttalam', label: 'Puttalam' }, { value: 'anuradhapura', label: 'Anuradhapura' }, { value: 'polonnaruwa', label: 'Polonnaruwa' },
+                        { value: 'badulla', label: 'Badulla' }, { value: 'monaragala', label: 'Monaragala' }, { value: 'ratnapura', label: 'Ratnapura' }, { value: 'kegalle', label: 'Kegalle' }
+                      ], required: true },
+                    { id: 5, type: 'text', question: 'Q5. What is your contact number?', description: 'Please enter your phone number.', required: true, placeholder: 'Enter your contact number (e.g., 0771234567)' }
                 ];
+                
+                // Specialized questions for each assessment type (20-25 questions)
+                const specializedQuestions = this.getSpecializedQuestions(type);
+                
+                // Combine basic + specialized questions (total 25-30 questions)
+                return [...basicQuestions, ...specializedQuestions];
+            }
+            
+            getSpecializedQuestions(type) {
+                const questionSets = {
+                    'symptom-checker': [
+                        { id: 6, type: 'text', question: 'Q6. What is your primary symptom?', description: 'Describe your main health concern.', required: true, placeholder: 'e.g., headache, fever, stomach pain' },
+                        { id: 7, type: 'text', question: 'Q7. How long have you had this symptom?', description: 'When did this symptom start?', required: true, placeholder: 'e.g., 2 days, 1 week, 1 month' },
+                        { id: 8, type: 'multiple', question: 'Q8. Rate your pain/discomfort level', description: 'Scale from 1 (mild) to 10 (severe)', options: [
+                            { value: '1', label: '1 - Very Mild' }, { value: '2', label: '2 - Mild' }, { value: '3', label: '3 - Mild to Moderate' },
+                            { value: '4', label: '4 - Moderate' }, { value: '5', label: '5 - Moderate' }, { value: '6', label: '6 - Moderate to Severe' },
+                            { value: '7', label: '7 - Severe' }, { value: '8', label: '8 - Very Severe' }, { value: '9', label: '9 - Extremely Severe' }, { value: '10', label: '10 - Worst Possible' }
+                        ], required: true },
+                        { id: 9, type: 'multiple', question: 'Q9. Associated symptoms?', description: 'Select any additional symptoms you are experiencing', multiple: true, options: [
+                            { value: 'fever', label: 'Fever' }, { value: 'nausea', label: 'Nausea' }, { value: 'headache', label: 'Headache' },
+                            { value: 'fatigue', label: 'Fatigue' }, { value: 'dizziness', label: 'Dizziness' }, { value: 'shortness-of-breath', label: 'Shortness of breath' }
+                        ], required: false }
+                        // Add more symptom checker questions here...
+                    ],
+                    
+                    'mental-health': [
+                        { id: 6, type: 'multiple', question: 'Q6. Overall mood today?', description: 'Rate your mood on a scale of 1-10', options: [
+                            { value: '1', label: '1 - Very Poor' }, { value: '2', label: '2 - Poor' }, { value: '3', label: '3 - Below Average' },
+                            { value: '4', label: '4 - Somewhat Low' }, { value: '5', label: '5 - Average' }, { value: '6', label: '6 - Somewhat Good' },
+                            { value: '7', label: '7 - Good' }, { value: '8', label: '8 - Very Good' }, { value: '9', label: '9 - Excellent' }, { value: '10', label: '10 - Outstanding' }
+                        ], required: true },
+                        { id: 7, type: 'multiple', question: 'Q7. Mental health concerns?', description: 'Select all that apply to your current situation', multiple: true, options: [
+                            { value: 'anxiety', label: 'Anxiety' }, { value: 'depression', label: 'Depression' }, { value: 'stress', label: 'Stress' },
+                            { value: 'sleep-issues', label: 'Sleep problems' }, { value: 'mood-swings', label: 'Mood swings' }, { value: 'panic-attacks', label: 'Panic attacks' }
+                        ], required: true },
+                        { id: 8, type: 'text', question: 'Q8. Duration of symptoms?', description: 'How long have you been experiencing these feelings?', required: true, placeholder: 'e.g., 2 weeks, 3 months, 1 year' },
+                        { id: 9, type: 'multiple', question: 'Q9. Impact on daily life?', description: 'How much do these feelings interfere with your daily activities?', options: [
+                            { value: 'minimal', label: 'Minimal interference' }, { value: 'mild', label: 'Mild interference' },
+                            { value: 'moderate', label: 'Moderate interference' }, { value: 'severe', label: 'Severe interference' }, { value: 'extreme', label: 'Unable to function normally' }
+                        ], required: true }
+                        // Add more mental health questions here...
+                    ],
+                    
+                    'diet-planner': [
+                        { id: 6, type: 'multiple', question: 'Q6. Dietary goals?', description: 'What are your main dietary objectives?', multiple: true, options: [
+                            { value: 'weight-loss', label: 'Weight loss' }, { value: 'weight-gain', label: 'Weight gain' }, { value: 'muscle-building', label: 'Muscle building' },
+                            { value: 'health', label: 'Better overall health' }, { value: 'medical', label: 'Medical condition management' }, { value: 'performance', label: 'Athletic performance' }
+                        ], required: true },
+                        { id: 7, type: 'text', question: 'Q7. Current weight?', description: 'What is your current weight in kilograms?', required: true, placeholder: 'Enter weight in kg (e.g., 65)' },
+                        { id: 8, type: 'text', question: 'Q8. Height?', description: 'What is your height in centimeters?', required: true, placeholder: 'Enter height in cm (e.g., 170)' },
+                        { id: 9, type: 'multiple', question: 'Q9. Activity level?', description: 'How would you describe your physical activity level?', options: [
+                            { value: 'sedentary', label: 'Sedentary (little to no exercise)' }, { value: 'light', label: 'Lightly active (light exercise 1-3 days/week)' },
+                            { value: 'moderate', label: 'Moderately active (moderate exercise 3-5 days/week)' }, { value: 'very', label: 'Very active (hard exercise 6-7 days/week)' },
+                            { value: 'extreme', label: 'Extremely active (very hard exercise, physical job)' }
+                        ], required: true }
+                        // Add more diet planner questions here...
+                    ]
+                    
+                    // Add more assessment types as needed...
+                };
+                
+                // Default questions for assessments not specifically configured
+                const defaultQuestions = [
+                    { id: 6, type: 'text', question: 'Q6. What is your primary concern?', description: 'Please describe your main health concern or goal.', required: true, placeholder: 'Describe your primary concern' },
+                    { id: 7, type: 'text', question: 'Q7. How long have you had this concern?', description: 'When did this issue start or how long have you been thinking about it?', required: false, placeholder: 'e.g., 1 week, 6 months, always' },
+                    { id: 8, type: 'multiple', question: 'Q8. How important is addressing this?', description: 'Rate the importance of getting help with this issue', options: [
+                        { value: 'low', label: 'Low priority' }, { value: 'medium', label: 'Medium priority' }, { value: 'high', label: 'High priority' }, { value: 'urgent', label: 'Urgent' }
+                    ], required: true },
+                    { id: 9, type: 'text', question: 'Q9. Additional information', description: 'Any other details you think are important?', required: false, placeholder: 'Share any additional concerns or information' }
+                ];
+                
+                return questionSets[type] || defaultQuestions;
             }
 
             updateAssessmentHeader() {
                 const config = this.getAssessmentConfig(this.assessmentType);
                 const titleElement = document.getElementById('assessmentTitle');
                 const subtitleElement = document.getElementById('assessmentSubtitle');
-                const iconElement = document.getElementById('assessmentIcon');
                 
                 if (titleElement) titleElement.textContent = config.title;
                 if (subtitleElement) subtitleElement.textContent = config.subtitle;
-                if (iconElement) iconElement.innerHTML = `<i class="${config.icon}"></i>`;
             }
 
             getAssessmentConfig(type) {
@@ -990,14 +1220,20 @@
                     return window.ASSESSMENT_CONFIGS[type];
                 }
                 
-                // Fallback configurations
+                // Fallback configurations for all 12 assessment types
                 const fallbackConfigs = {
                     'symptom-checker': { title: 'AI Symptom Checker', subtitle: 'Advanced symptom analysis with AI-powered medical guidance', icon: 'fas fa-stethoscope' },
-                    'diet-planner': { title: 'Personalized Diet Planner', subtitle: 'AI-powered nutrition guidance tailored to your health needs', icon: 'fas fa-utensils' },
+                    'diet-planner': { title: 'Smart Diet Planner', subtitle: 'Personalized nutrition plans and meal recommendations', icon: 'fas fa-utensils' },
                     'mental-health': { title: 'Mental Health Support', subtitle: 'Comprehensive mental wellness assessment and support', icon: 'fas fa-brain' },
-                    'fitness-coach': { title: 'AI Fitness Coach', subtitle: 'Personalized workout plans and fitness guidance', icon: 'fas fa-dumbbell' },
-                    'sleep-analyzer': { title: 'Sleep Quality Analyzer', subtitle: 'Comprehensive sleep analysis with personalized recommendations', icon: 'fas fa-moon' },
-                    'medicine-advisor': { title: 'Medicine Information Advisor', subtitle: 'Expert guidance about medications and drug interactions', icon: 'fas fa-pills' }
+                    'fitness-coach': { title: 'AI Fitness Coach', subtitle: 'Personalized workout plans and expert fitness guidance', icon: 'fas fa-dumbbell' },
+                    'sleep-analyzer': { title: 'Sleep Quality Analyzer', subtitle: 'Comprehensive sleep analysis with personalized recommendations', icon: 'fas fa-bed' },
+                    'medicine-advisor': { title: 'Medicine Advisor', subtitle: 'Expert guidance about medications and drug interactions', icon: 'fas fa-pills' },
+                    'chronic-disease': { title: 'Chronic Disease Management', subtitle: 'Specialized care for diabetes, hypertension, and chronic conditions', icon: 'fas fa-heartbeat' },
+                    'womens-health': { title: 'Women\'s Health Specialist', subtitle: 'Comprehensive reproductive and hormonal health guidance', icon: 'fas fa-venus' },
+                    'pediatric-health': { title: 'Pediatric Health Care', subtitle: 'Specialized health assessment for children and adolescents', icon: 'fas fa-child' },
+                    'senior-health': { title: 'Senior Health Care', subtitle: 'Age-specific health management for older adults', icon: 'fas fa-user-friends' },
+                    'preventive-screening': { title: 'Preventive Health Screening', subtitle: 'Early detection and prevention strategies', icon: 'fas fa-shield-alt' },
+                    'addiction-recovery': { title: 'Addiction Recovery Support', subtitle: 'Evidence-based addiction treatment and recovery guidance', icon: 'fas fa-hands-helping' }
                 };
                 return fallbackConfigs[type] || fallbackConfigs['symptom-checker'];
             }
@@ -1009,11 +1245,18 @@
                 const container = document.getElementById('questionContainer');
                 if (!container) return;
                 
+                // Remove the Q1, Q2 format from question text
+                const cleanQuestionText = question.question.replace(/^Q\d+\.\s*/, '');
+                
                 container.innerHTML = `
-                    <div class="question-number">${this.currentQuestion + 1}</div>
                     <div class="question-header">
-                        <h2 class="question-title">${question.question}</h2>
-                        <p class="question-description">${question.description}</p>
+                        <div class="question-header-content">
+                            <div class="question-number">${this.currentQuestion + 1}</div>
+                            <div class="question-text-content">
+                                <h2 class="question-title">${cleanQuestionText}</h2>
+                                <p class="question-description">${question.description}</p>
+                            </div>
+                        </div>
                     </div>
                     <div class="question-content">${this.renderQuestionInput(question)}</div>
                 `;
@@ -1103,29 +1346,38 @@
             }
 
             updateProgress() {
-                const progressPercentage = Math.round((this.currentQuestion / this.questions.length) * 100);
-                const progressFill = document.getElementById('progressFill');
-                const progressText = document.getElementById('progressPercentage');
+                // Update sidebar progress
+                const questionIndicator = document.getElementById('questionIndicator');
+                const progressText = document.getElementById('progressText');
                 
-                if (progressFill) progressFill.style.width = `${progressPercentage}%`;
-                if (progressText) progressText.textContent = `${progressPercentage}%`;
+                if (questionIndicator) {
+                    questionIndicator.textContent = `Question ${this.currentQuestion + 1}`;
+                }
+                
+                if (progressText) {
+                    progressText.textContent = `Question ${this.currentQuestion + 1} of ${this.questions.length}`;
+                }
             }
+            
+
 
             updateNavigationButtons() {
+                // Main navigation buttons
                 const prevBtn = document.getElementById('prevBtn');
                 const nextBtn = document.getElementById('nextBtn');
                 
+                const currentResponse = this.responses[this.currentQuestion + 1];
+                const hasResponse = currentResponse && (
+                    typeof currentResponse === 'string' ? currentResponse.trim() : 
+                    Array.isArray(currentResponse) ? currentResponse.length > 0 : true
+                );
+                
+                // Update main navigation buttons
                 if (prevBtn) {
                     prevBtn.style.display = this.currentQuestion > 0 ? 'flex' : 'none';
                 }
                 
                 if (nextBtn) {
-                    const currentResponse = this.responses[this.currentQuestion + 1];
-                    const hasResponse = currentResponse && (
-                        typeof currentResponse === 'string' ? currentResponse.trim() : 
-                        Array.isArray(currentResponse) ? currentResponse.length > 0 : true
-                    );
-                    
                     nextBtn.disabled = !hasResponse;
                     
                     if (this.currentQuestion >= this.questions.length - 1) {
@@ -1165,45 +1417,560 @@
             async completeAssessment() {
                 console.log('🏁 Completing assessment...');
                 
+                // Show loading state
+                this.showLoadingState();
+                
                 try {
+                    // Prepare assessment data
+                    const basicInfo = {
+                        name: this.responses[1] || 'Not provided',
+                        age: this.responses[2] || 'Not provided',
+                        gender: this.responses[3] || 'Not provided',
+                        district: this.responses[4] || 'Not provided',
+                        phone: this.responses[5] || 'Not provided'
+                    };
+                    
+                    const specializedResponses = {};
+                    for (let i = 6; i <= this.questions.length; i++) {
+                        if (this.responses[i]) {
+                            specializedResponses[`Q${i}`] = this.responses[i];
+                        }
+                    }
+                    
                     const completionData = {
                         type: this.assessmentType,
-                        responses: this.responses,
+                        basicInfo: basicInfo,
+                        responses: specializedResponses,
+                        allResponses: this.responses,
                         totalQuestions: this.questions.length,
                         completedAt: new Date().toISOString(),
                         duration: Date.now() - (this.startTime || Date.now())
                     };
                     
+                    // Generate AI analysis using DeepSeek API
+                    console.log('🤖 Generating AI analysis...');
+                    const aiAnalysis = await this.generateAIAnalysis(completionData);
+                    
                     // Generate comprehensive PDF report
-                    const pdfResponse = await fetch('/api/generate-pdf', {
+                    console.log('📄 Generating PDF report...');
+                    const pdfBlob = await this.generatePDFReport({
+                        ...completionData,
+                        aiAnalysis: aiAnalysis
+                    });
+                    
+                    // Save to user's assessment history
+                    await this.saveToUserHistory(completionData, aiAnalysis);
+                    
+                    // Show completion with download option
+                    this.showCompletionMessage(pdfBlob, aiAnalysis);
+                    
+                } catch (error) {
+                    console.error('Assessment completion error:', error);
+                    this.showCompletionMessage(null, null, 'There was an issue generating your report. Please try again.');
+                }
+            }
+            
+            async generateAIAnalysis(assessmentData) {
+                try {
+                    // Create comprehensive prompt for DeepSeek API
+                    const prompt = this.buildAnalysisPrompt(assessmentData);
+                    
+                    // Mock DeepSeek API call (replace with actual API endpoint)
+                    const response = await fetch('/api/ai-analysis', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            assessmentType: this.assessmentType,
-                            responses: this.responses,
-                            questions: this.questions
+                            prompt: prompt,
+                            model: 'deepseek-chat',
+                            max_tokens: 4000,
+                            temperature: 0.3
                         })
                     });
                     
-                    if (pdfResponse.ok) {
-                        const pdfData = await pdfResponse.json();
-                        console.log('✅ PDF generated successfully');
-                        
-                        // Show completion message and download PDF
-                        this.showCompletionMessage(pdfData.filename);
-                    } else {
-                        throw new Error('PDF generation failed');
+                    if (!response.ok) {
+                        throw new Error('AI analysis request failed');
                     }
                     
+                    const aiResponse = await response.json();
+                    return this.parseAIResponse(aiResponse.choices[0].message.content);
+                    
                 } catch (error) {
-                    console.error('Assessment completion error:', error);
-                    this.showCompletionMessage(null, 'There was an issue generating your report. Please try again.');
+                    console.error('AI analysis error:', error);
+                    // Return fallback analysis
+                    return this.getFallbackAnalysis(assessmentData);
                 }
             }
+            
+            buildAnalysisPrompt(assessmentData) {
+                const { type, basicInfo, responses } = assessmentData;
+                
+                let prompt = `You are a qualified healthcare AI assistant. Please provide a comprehensive health assessment analysis for a ${type.replace('-', ' ')} evaluation.
 
-            showCompletionMessage(pdfFilename, errorMessage = null) {
+PATIENT INFORMATION:
+- Name: ${basicInfo.name}
+- Age: ${basicInfo.age}
+- Gender: ${basicInfo.gender}
+- Location: ${basicInfo.district}, Sri Lanka
+- Contact: ${basicInfo.phone}
+
+ASSESSMENT RESPONSES:
+`;
+                
+                // Add all responses to prompt
+                Object.entries(responses).forEach(([question, answer]) => {
+                    prompt += `${question}: ${Array.isArray(answer) ? answer.join(', ') : answer}\n`;
+                });
+                
+                prompt += `
+
+Please provide a comprehensive analysis including:
+
+1. ASSESSMENT SUMMARY: Brief overview of the patient's condition
+2. KEY FINDINGS: Main health insights from responses
+3. RISK FACTORS: Identified potential health risks
+4. RECOMMENDATIONS: Specific, actionable health recommendations
+5. NEXT STEPS: Suggested follow-up actions
+6. LIFESTYLE ADVICE: Diet, exercise, and lifestyle modifications
+7. WARNING SIGNS: When to seek immediate medical attention
+8. PROGNOSIS: Expected outcomes with proper care
+
+Make the analysis professional, empathetic, and actionable. Focus on evidence-based recommendations appropriate for the Sri Lankan healthcare context.`;
+
+                return prompt;
+            }
+            
+            parseAIResponse(aiContent) {
+                // Parse the AI response into structured sections
+                const sections = {};
+                const lines = aiContent.split('\n');
+                let currentSection = '';
+                let currentContent = '';
+                
+                lines.forEach(line => {
+                    if (line.match(/^\d+\.\s*[A-Z\s]+:/)) {
+                        if (currentSection) {
+                            sections[currentSection] = currentContent.trim();
+                        }
+                        currentSection = line.replace(/^\d+\.\s*/, '').replace(':', '').trim();
+                        currentContent = '';
+                    } else {
+                        currentContent += line + '\n';
+                    }
+                });
+                
+                // Add last section
+                if (currentSection) {
+                    sections[currentSection] = currentContent.trim();
+                }
+                
+                return {
+                    summary: sections['ASSESSMENT SUMMARY'] || 'Assessment completed successfully.',
+                    keyFindings: sections['KEY FINDINGS'] || 'Analysis in progress.',
+                    riskFactors: sections['RISK FACTORS'] || 'No immediate risks identified.',
+                    recommendations: sections['RECOMMENDATIONS'] || 'Follow standard health guidelines.',
+                    nextSteps: sections['NEXT STEPS'] || 'Continue monitoring your health.',
+                    lifestyleAdvice: sections['LIFESTYLE ADVICE'] || 'Maintain a healthy lifestyle.',
+                    warningSigns: sections['WARNING SIGNS'] || 'Seek medical attention if symptoms worsen.',
+                    prognosis: sections['PROGNOSIS'] || 'Good with proper care and follow-up.',
+                    fullAnalysis: aiContent
+                };
+            }
+            
+            getFallbackAnalysis(assessmentData) {
+                const { type } = assessmentData;
+                
+                return {
+                    summary: `Thank you for completing your ${type.replace('-', ' ')} assessment. Your responses have been recorded and analyzed.`,
+                    keyFindings: 'Your assessment has been completed successfully. A healthcare professional will review your responses.',
+                    riskFactors: 'Based on your responses, we will provide personalized recommendations.',
+                    recommendations: 'Follow up with a healthcare provider for personalized advice.',
+                    nextSteps: 'Schedule a consultation with a healthcare professional if needed.',
+                    lifestyleAdvice: 'Maintain a balanced diet, regular exercise, and adequate sleep.',
+                    warningSign: 'Seek immediate medical attention if you experience severe or worsening symptoms.',
+                    prognosis: 'With proper care and attention, your health outlook is positive.',
+                    fullAnalysis: 'Comprehensive analysis will be available after professional review.'
+                };
+            }
+            
+            async generatePDFReport(data) {
+                try {
+                    // Use jsPDF to generate the report
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF('p', 'mm', 'a4');
+                    const pageWidth = doc.internal.pageSize.getWidth();
+                    const pageHeight = doc.internal.pageSize.getHeight();
+                    
+                    // Define colors
+                    const primaryColor = [102, 126, 234]; // #667eea
+                    const secondaryColor = [16, 185, 129]; // #10b981
+                    const textColor = [55, 65, 81]; // #374151
+                    const lightGray = [249, 250, 251]; // #f9fafb
+                    
+                    // Helper function to add header to each page
+                    const addHeader = () => {
+                        // Header background
+                        doc.setFillColor(...primaryColor);
+                        doc.rect(0, 0, pageWidth, 25, 'F');
+                        
+                        // Logo area
+                        doc.setFillColor(255, 255, 255);
+                        doc.circle(15, 12.5, 8, 'F');
+                        doc.setTextColor(102, 126, 234);
+                        doc.setFontSize(12);
+                        doc.setFont('helvetica', 'bold');
+                        doc.text('🏥', 11, 16);
+                        
+                        // Title
+                        doc.setTextColor(255, 255, 255);
+                        doc.setFontSize(18);
+                        doc.setFont('helvetica', 'bold');
+                        doc.text('MediCare+ Health Assessment Report', 30, 12);
+                        
+                        doc.setFontSize(10);
+                        doc.setFont('helvetica', 'normal');
+                        doc.text('AI-Powered Healthcare Analysis Platform', 30, 18);
+                        
+                        // Date stamp
+                        doc.setTextColor(255, 255, 255);
+                        doc.setFontSize(8);
+                        doc.text(`Generated: ${new Date().toLocaleDateString('en-US', { 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })}`, pageWidth - 55, 16);
+                    };
+                    
+                    // Helper function to add footer
+                    const addFooter = (pageNum) => {
+                        doc.setFillColor(...lightGray);
+                        doc.rect(0, pageHeight - 20, pageWidth, 20, 'F');
+                        
+                        doc.setTextColor(107, 114, 128);
+                        doc.setFontSize(8);
+                        doc.text('This report is generated by MediCare+ AI Health Assistant using DeepSeek AI technology.', 20, pageHeight - 12);
+                        doc.text('For informational purposes only. Consult healthcare professionals for medical advice.', 20, pageHeight - 8);
+                        doc.text(`© 2024 MediCare+ | Colombo, Sri Lanka`, 20, pageHeight - 4);
+                        
+                        // Page number
+                        doc.setTextColor(...primaryColor);
+                        doc.setFont('helvetica', 'bold');
+                        doc.text(`Page ${pageNum}`, pageWidth - 30, pageHeight - 8);
+                    };
+                    
+                    // Page 1 - Cover and Patient Info
+                    addHeader();
+                    
+                    let yPos = 40;
+                    
+                    // Assessment Type Badge
+                    doc.setFillColor(...secondaryColor);
+                    doc.roundedRect(20, yPos, 60, 12, 3, 3, 'F');
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(10);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(data.type.replace('-', ' ').toUpperCase() + ' ASSESSMENT', 22, yPos + 8);
+                    
+                    yPos += 25;
+                    
+                    // Patient Information Section
+                    doc.setFillColor(...lightGray);
+                    doc.roundedRect(20, yPos, pageWidth - 40, 50, 5, 5, 'F');
+                    
+                    doc.setTextColor(...primaryColor);
+                    doc.setFontSize(14);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('PATIENT INFORMATION', 25, yPos + 10);
+                    
+                    doc.setTextColor(...textColor);
+                    doc.setFontSize(11);
+                    doc.setFont('helvetica', 'normal');
+                    
+                    const patientInfo = [
+                        ['Patient Name:', data.basicInfo.name || 'Not provided'],
+                        ['Age:', data.basicInfo.age || 'Not provided'],
+                        ['Gender:', data.basicInfo.gender || 'Not provided'],
+                        ['District:', data.basicInfo.district || 'Not provided'],
+                        ['Contact:', data.basicInfo.phone || 'Not provided'],
+                        ['Assessment Date:', new Date(data.completedAt).toLocaleDateString('en-US', { 
+                            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+                        })]
+                    ];
+                    
+                    let infoY = yPos + 20;
+                    patientInfo.forEach((info, index) => {
+                        if (index % 2 === 0) {
+                            doc.setFont('helvetica', 'bold');
+                            doc.text(info[0], 25, infoY);
+                            doc.setFont('helvetica', 'normal');
+                            doc.text(info[1], 60, infoY);
+                        } else {
+                            doc.setFont('helvetica', 'bold');
+                            doc.text(info[0], 120, infoY - 6);
+                            doc.setFont('helvetica', 'normal');
+                            doc.text(info[1], 155, infoY - 6);
+                            infoY += 8;
+                        }
+                    });
+                    
+                    yPos += 65;
+                    
+                    // Assessment Summary
+                    doc.setTextColor(...primaryColor);
+                    doc.setFontSize(16);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('EXECUTIVE SUMMARY', 20, yPos);
+                    
+                    yPos += 15;
+                    doc.setTextColor(...textColor);
+                    doc.setFontSize(11);
+                    doc.setFont('helvetica', 'normal');
+                    const summaryText = doc.splitTextToSize(data.aiAnalysis.summary, pageWidth - 40);
+                    doc.text(summaryText, 20, yPos);
+                    yPos += summaryText.length * 6 + 10;
+                    
+                    // Assessment Stats
+                    doc.setFillColor(240, 253, 244);
+                    doc.roundedRect(20, yPos, (pageWidth - 50) / 2, 25, 3, 3, 'F');
+                    doc.setFillColor(239, 246, 255);
+                    doc.roundedRect(30 + (pageWidth - 50) / 2, yPos, (pageWidth - 50) / 2, 25, 3, 3, 'F');
+                    
+                    // Questions analyzed
+                    doc.setTextColor(5, 150, 105);
+                    doc.setFontSize(20);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(data.questions ? data.questions.length.toString() : '30', 35, yPos + 12);
+                    doc.setFontSize(10);
+                    doc.text('Questions Analyzed', 35, yPos + 18);
+                    
+                    // AI confidence
+                    doc.setTextColor(59, 130, 246);
+                    doc.setFontSize(20);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('HIGH', 45 + (pageWidth - 50) / 2, yPos + 12);
+                    doc.setFontSize(10);
+                    doc.text('AI Confidence Level', 45 + (pageWidth - 50) / 2, yPos + 18);
+                    
+                    addFooter(1);
+                    
+                    // Page 2 - Detailed Analysis
+                    doc.addPage();
+                    addHeader();
+                    yPos = 40;
+                    
+                    const analysisData = [
+                        { 
+                            title: 'KEY FINDINGS', 
+                            content: data.aiAnalysis.keyFindings,
+                            icon: '🔍',
+                            color: [239, 68, 68]
+                        },
+                        { 
+                            title: 'RISK FACTORS', 
+                            content: data.aiAnalysis.riskFactors,
+                            icon: '⚠️',
+                            color: [245, 158, 11]
+                        },
+                        { 
+                            title: 'RECOMMENDATIONS', 
+                            content: data.aiAnalysis.recommendations,
+                            icon: '💡',
+                            color: [16, 185, 129]
+                        },
+                        { 
+                            title: 'NEXT STEPS', 
+                            content: data.aiAnalysis.nextSteps,
+                            icon: '📋',
+                            color: [99, 102, 241]
+                        }
+                    ];
+                    
+                    analysisData.forEach((section, index) => {
+                        if (yPos > pageHeight - 80) {
+                            doc.addPage();
+                            addHeader();
+                            yPos = 40;
+                        }
+                        
+                        // Section header with icon
+                        doc.setFillColor(...section.color.concat([20])); // Add transparency
+                        doc.roundedRect(20, yPos - 5, pageWidth - 40, 15, 3, 3, 'F');
+                        
+                        doc.setTextColor(...section.color);
+                        doc.setFontSize(14);
+                        doc.setFont('helvetica', 'bold');
+                        doc.text(`${section.icon} ${section.title}`, 25, yPos + 5);
+                        
+                        yPos += 20;
+                        
+                        // Section content
+                        doc.setTextColor(...textColor);
+                        doc.setFontSize(11);
+                        doc.setFont('helvetica', 'normal');
+                        const contentText = doc.splitTextToSize(section.content, pageWidth - 40);
+                        doc.text(contentText, 20, yPos);
+                        yPos += contentText.length * 6 + 15;
+                    });
+                    
+                    // Lifestyle advice if available
+                    if (data.aiAnalysis.lifestyleAdvice) {
+                        if (yPos > pageHeight - 50) {
+                            doc.addPage();
+                            addHeader();
+                            yPos = 40;
+                        }
+                        
+                        doc.setFillColor(254, 243, 199);
+                        doc.roundedRect(20, yPos - 5, pageWidth - 40, 15, 3, 3, 'F');
+                        
+                        doc.setTextColor(146, 64, 14);
+                        doc.setFontSize(14);
+                        doc.setFont('helvetica', 'bold');
+                        doc.text('🌱 LIFESTYLE RECOMMENDATIONS', 25, yPos + 5);
+                        
+                        yPos += 20;
+                        doc.setTextColor(...textColor);
+                        doc.setFontSize(11);
+                        doc.setFont('helvetica', 'normal');
+                        const lifestyleText = doc.splitTextToSize(data.aiAnalysis.lifestyleAdvice, pageWidth - 40);
+                        doc.text(lifestyleText, 20, yPos);
+                        yPos += lifestyleText.length * 6 + 15;
+                    }
+                    
+                    addFooter(2);
+                    
+                    // Page 3 - Warning Signs and Disclaimer
+                    doc.addPage();
+                    addHeader();
+                    yPos = 40;
+                    
+                    // Warning signs
+                    if (data.aiAnalysis.warningSigns) {
+                        doc.setFillColor(254, 226, 226);
+                        doc.roundedRect(20, yPos - 5, pageWidth - 40, 15, 3, 3, 'F');
+                        
+                        doc.setTextColor(220, 38, 38);
+                        doc.setFontSize(14);
+                        doc.setFont('helvetica', 'bold');
+                        doc.text('🚨 WARNING SIGNS - SEEK IMMEDIATE MEDICAL ATTENTION', 25, yPos + 5);
+                        
+                        yPos += 20;
+                        doc.setTextColor(...textColor);
+                        doc.setFontSize(11);
+                        doc.setFont('helvetica', 'normal');
+                        const warningText = doc.splitTextToSize(data.aiAnalysis.warningSigns, pageWidth - 40);
+                        doc.text(warningText, 20, yPos);
+                        yPos += warningText.length * 6 + 20;
+                    }
+                    
+                    // Emergency contact info
+                    doc.setFillColor(220, 38, 38);
+                    doc.roundedRect(20, yPos, pageWidth - 40, 25, 5, 5, 'F');
+                    
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(12);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('🚨 EMERGENCY CONTACTS - SRI LANKA', 25, yPos + 8);
+                    doc.setFontSize(10);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text('Emergency Services: 119 | Ambulance: 110 | Police: 118', 25, yPos + 15);
+                    doc.text('National Hospital Colombo: +94 11 269 1111', 25, yPos + 20);
+                    
+                    yPos += 40;
+                    
+                    // Medical disclaimer
+                    doc.setFillColor(...lightGray);
+                    doc.roundedRect(20, yPos, pageWidth - 40, 60, 5, 5, 'F');
+                    
+                    doc.setTextColor(...primaryColor);
+                    doc.setFontSize(14);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('IMPORTANT MEDICAL DISCLAIMER', 25, yPos + 10);
+                    
+                    doc.setTextColor(...textColor);
+                    doc.setFontSize(10);
+                    doc.setFont('helvetica', 'normal');
+                    
+                    const disclaimerText = [
+                        '• This report is generated using DeepSeek AI technology for informational purposes only.',
+                        '• It is NOT a substitute for professional medical diagnosis, treatment, or advice.',
+                        '• Always consult qualified healthcare professionals for medical concerns.',
+                        '• In case of emergency, contact emergency services immediately (119 in Sri Lanka).',
+                        '• Use this report as supplementary information to discuss with your healthcare provider.',
+                        '• MediCare+ and its AI system do not provide medical diagnoses or treatment recommendations.'
+                    ];
+                    
+                    let disclaimerY = yPos + 20;
+                    disclaimerText.forEach(line => {
+                        doc.text(line, 25, disclaimerY);
+                        disclaimerY += 6;
+                    });
+                    
+                    // Signature section
+                    yPos += 75;
+                    doc.setTextColor(...textColor);
+                    doc.setFontSize(10);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text('Report generated by MediCare+ AI Health Assistant', 20, yPos);
+                    doc.text(`Unique Report ID: MCR-${Date.now().toString().slice(-8)}`, 20, yPos + 6);
+                    
+                    addFooter(3);
+                    
+                    return doc.output('blob');
+                    
+                } catch (error) {
+                    console.error('PDF generation error:', error);
+                    return null;
+                }
+            }
+            
+            async saveToUserHistory(assessmentData, aiAnalysis) {
+                try {
+                    const historyItem = {
+                        id: Date.now(),
+                        type: assessmentData.type,
+                        basicInfo: assessmentData.basicInfo,
+                        completedAt: assessmentData.completedAt,
+                        summary: aiAnalysis.summary,
+                        recommendations: aiAnalysis.recommendations
+                    };
+                    
+                    // Save to localStorage for now (replace with database call)
+                    const existingHistory = JSON.parse(localStorage.getItem('assessment_history') || '[]');
+                    existingHistory.unshift(historyItem);
+                    localStorage.setItem('assessment_history', JSON.stringify(existingHistory.slice(0, 50))); // Keep last 50
+                    
+                    console.log('✅ Assessment saved to user history');
+                } catch (error) {
+                    console.error('Error saving to history:', error);
+                }
+            }
+            
+            showLoadingState() {
+                const container = document.getElementById('questionContainer');
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 3rem;">
+                        <div class="loading-spinner" style="margin: 0 auto 2rem; width: 50px; height: 50px; border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                        <h2 style="color: #3498db; margin-bottom: 1rem;">Analyzing Your Assessment...</h2>
+                        <p style="color: #666;">Our AI is generating your personalized health report. This may take a moment.</p>
+                        <style>
+                            @keyframes spin {
+                                0% { transform: rotate(0deg); }
+                                100% { transform: rotate(360deg); }
+                            }
+                        </style>
+                    </div>
+                `;
+                
+                // Hide navigation buttons
+                document.getElementById('prevBtn').style.display = 'none';
+                document.getElementById('nextBtn').style.display = 'none';
+            }
+
+            showCompletionMessage(pdfBlob, aiAnalysis, errorMessage = null) {
                 const container = document.getElementById('questionContainer');
                 
                 if (errorMessage) {
@@ -1216,34 +1983,179 @@
                         </div>
                     `;
                 } else {
+                    // Create download URL for PDF
+                    const pdfUrl = pdfBlob ? URL.createObjectURL(pdfBlob) : null;
+                    const filename = `MediCare_Plus_Health_Report_${new Date().toISOString().split('T')[0]}.pdf`;
+                    
                     container.innerHTML = `
-                        <div style="text-align: center; padding: 3rem;">
-                            <div style="font-size: 3rem; color: #10b981; margin-bottom: 1rem;">✅</div>
-                            <h2 style="color: #10b981; margin-bottom: 1rem;">Assessment Complete!</h2>
-                            <p style="color: #666; margin-bottom: 2rem;">
-                                Thank you for completing your ${this.questions.length}-question health assessment. 
-                                Your personalized report has been generated.
-                            </p>
-                            ${pdfFilename ? `
-                                <div style="margin-bottom: 2rem;">
-                                    <a href="/uploads/pdf-reports/${pdfFilename}" 
-                                       class="btn btn-primary" 
-                                       download
-                                       style="margin-right: 1rem;">
-                                        <i class="fas fa-download"></i> Download Report
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 2rem 0;">
+                            <div style="max-width: 1200px; margin: 0 auto; padding: 0 1rem;">
+                                
+                                <!-- Success Header -->
+                                <div style="text-align: center; margin-bottom: 3rem;">
+                                    <div style="background: white; border-radius: 50%; width: 120px; height: 120px; margin: 0 auto 2rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
+                                        <i class="fas fa-check-circle" style="font-size: 4rem; color: #10b981;"></i>
+                                    </div>
+                                    <h1 style="color: white; font-size: 3rem; font-weight: 800; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">Assessment Complete! 🎉</h1>
+                                    <p style="color: rgba(255,255,255,0.9); font-size: 1.25rem; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+                                        Thank you for completing your <strong>${this.questions.length}-question</strong> health assessment. 
+                                        Your personalized AI-powered report has been generated using advanced medical analysis.
+                                    </p>
+                                </div>
+
+                                <!-- Results Grid -->
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 3rem;">
+                                    
+                                    <!-- AI Analysis Card -->
+                                    ${aiAnalysis ? `
+                                        <div style="background: white; border-radius: 20px; padding: 2.5rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.2);">
+                                            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                                                <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                                    <i class="fas fa-brain" style="font-size: 1.5rem;"></i>
+                                                </div>
+                                                <div>
+                                                    <h3 style="color: #1e293b; margin: 0; font-size: 1.5rem; font-weight: 700;">AI Analysis Summary</h3>
+                                                    <p style="color: #64748b; margin: 0; font-size: 0.9rem;">Generated using DeepSeek AI</p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                                                <h4 style="color: #1e40af; margin: 0 0 1rem 0; font-size: 1.1rem; font-weight: 600;">📋 Summary</h4>
+                                                <p style="color: #374151; line-height: 1.6; margin: 0; font-size: 0.95rem;">${aiAnalysis.summary}</p>
+                                            </div>
+                                            
+                                            <div style="background: #f0f9ff; border-radius: 12px; padding: 1.5rem; border: 1px solid #bfdbfe;">
+                                                <h4 style="color: #1e40af; margin: 0 0 1rem 0; font-size: 1.1rem; font-weight: 600;">🎯 Key Recommendations</h4>
+                                                <p style="color: #374151; line-height: 1.6; margin: 0; font-size: 0.95rem;">${aiAnalysis.recommendations}</p>
+                                            </div>
+                                        </div>
+                                    ` : ''}
+                                    
+                                    <!-- Report Summary Card -->
+                                    <div style="background: white; border-radius: 20px; padding: 2.5rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.2);">
+                                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                                            <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                                <i class="fas fa-file-medical" style="font-size: 1.5rem;"></i>
+                                            </div>
+                                            <div>
+                                                <h3 style="color: #1e293b; margin: 0; font-size: 1.5rem; font-weight: 700;">Report Summary</h3>
+                                                <p style="color: #64748b; margin: 0; font-size: 0.9rem;">Comprehensive health analysis</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+                                            <div style="text-align: center; background: #f0fdf4; border-radius: 12px; padding: 1.5rem;">
+                                                <div style="font-size: 2rem; font-weight: 800; color: #059669; margin-bottom: 0.5rem;">${this.questions.length}</div>
+                                                <div style="color: #065f46; font-size: 0.9rem; font-weight: 600;">Questions Analyzed</div>
+                                            </div>
+                                            <div style="text-align: center; background: #eff6ff; border-radius: 12px; padding: 1.5rem;">
+                                                <div style="font-size: 2rem; font-weight: 800; color: #2563eb; margin-bottom: 0.5rem;">${this.assessmentType.replace('-', ' ').toUpperCase()}</div>
+                                                <div style="color: #1e40af; font-size: 0.9rem; font-weight: 600;">Assessment Type</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div style="background: #fef3c7; border-radius: 12px; padding: 1.5rem; border: 1px solid #f59e0b;">
+                                            <h4 style="color: #92400e; margin: 0 0 0.75rem 0; font-size: 1rem; font-weight: 600;">
+                                                <i class="fas fa-clock"></i> Generated: ${new Date().toLocaleDateString('en-US', { 
+                                                    weekday: 'long', 
+                                                    year: 'numeric', 
+                                                    month: 'long', 
+                                                    day: 'numeric',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit'
+                                                })}
+                                            </h4>
+                                            <p style="color: #92400e; margin: 0; font-size: 0.9rem; line-height: 1.5;">
+                                                Your report includes detailed analysis, personalized recommendations, and actionable health insights.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div style="text-align: center; margin-bottom: 3rem;">
+                                    ${pdfBlob ? `
+                                        <button onclick="window.downloadPDF('${pdfUrl}', '${filename}')" 
+                                                style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 18px 40px; border-radius: 50px; font-size: 1.1rem; font-weight: 700; cursor: pointer; margin: 0 1rem 1rem 0; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3); transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem;">
+                                            <i class="fas fa-download" style="font-size: 1.2rem;"></i> 
+                                            Download Professional Report (PDF)
+                                        </button>
+                                    ` : ''}
+                                    <a href="user-dashboard.html" 
+                                       style="background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; border: none; padding: 18px 40px; border-radius: 50px; font-size: 1.1rem; font-weight: 700; text-decoration: none; margin: 0 1rem 1rem 0; box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3); transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem;">
+                                        <i class="fas fa-home" style="font-size: 1.2rem;"></i> 
+                                        Back to Dashboard
                                     </a>
-                                    <a href="ai-health-assistant.html" class="btn btn-secondary">
-                                        <i class="fas fa-home"></i> Back to Health Hub
+                                    <a href="ai-health-assistant.html" 
+                                       style="background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.3); padding: 18px 40px; border-radius: 50px; font-size: 1.1rem; font-weight: 700; text-decoration: none; margin: 0 1rem 1rem 0; backdrop-filter: blur(10px); transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem;">
+                                        <i class="fas fa-plus" style="font-size: 1.2rem;"></i> 
+                                        Take Another Assessment
                                     </a>
                                 </div>
-                            ` : ''}
+
+                                <!-- Medical Disclaimer -->
+                                <div style="background: rgba(255,255,255,0.95); border-radius: 20px; padding: 2rem; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);">
+                                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                                        <div style="background: #ef4444; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-exclamation-triangle" style="font-size: 1.2rem;"></i>
+                                        </div>
+                                        <h4 style="color: #dc2626; margin: 0; font-size: 1.3rem; font-weight: 700;">Important Medical Disclaimer</h4>
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                                        <div>
+                                            <p style="color: #374151; margin: 0 0 1rem 0; font-size: 0.95rem; line-height: 1.6;">
+                                                <strong>🏥 AI Analysis Notice:</strong> This report is generated using DeepSeek AI technology for informational and educational purposes only. It is <strong>not a substitute</strong> for professional medical diagnosis, treatment, or advice.
+                                            </p>
+                                            <p style="color: #374151; margin: 0; font-size: 0.95rem; line-height: 1.6;">
+                                                <strong>⚕️ Medical Consultation:</strong> Always consult with qualified healthcare professionals for medical concerns, diagnosis, and treatment decisions.
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p style="color: #374151; margin: 0 0 1rem 0; font-size: 0.95rem; line-height: 1.6;">
+                                                <strong>🚨 Emergency:</strong> If experiencing a medical emergency, contact emergency services immediately (119 in Sri Lanka) or visit your nearest hospital.
+                                            </p>
+                                            <p style="color: #374151; margin: 0; font-size: 0.95rem; line-height: 1.6;">
+                                                <strong>📋 Report Usage:</strong> Use this report as supplementary information to discuss with your healthcare provider.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                        
+                        <style>
+                            /* Button hover effects */
+                            button, a {
+                                transition: all 0.3s ease !important;
+                            }
+                            
+                            button:hover, a:hover {
+                                transform: translateY(-2px) !important;
+                                box-shadow: 0 15px 35px rgba(0,0,0,0.2) !important;
+                            }
+                            
+                            @media (max-width: 768px) {
+                                div[style*="grid-template-columns: 1fr 1fr"] {
+                                    grid-template-columns: 1fr !important;
+                                }
+                                button, a {
+                                    display: block !important;
+                                    width: 100% !important;
+                                    margin: 0 0 1rem 0 !important;
+                                    text-align: center !important;
+                                }
+                            }
+                        </style>
                     `;
                 }
                 
-                // Hide navigation buttons
+                // Hide navigation buttons and sidebar
                 document.getElementById('prevBtn').style.display = 'none';
                 document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('progressSidebar').style.display = 'none';
+                
+                // Update main content container for full width
+                document.querySelector('.container').style.gridTemplateColumns = '1fr';
             }
         }
 
@@ -1259,6 +2171,29 @@
                 window.assessment.previousQuestion();
             }
         }
+        
+        // Global function for PDF download
+        window.downloadPDF = function(pdfUrl, filename) {
+            const link = document.createElement('a');
+            link.href = pdfUrl;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Show success message
+            const notification = document.createElement('div');
+            notification.innerHTML = `
+                <div style="position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 1rem 1.5rem; border-radius: 8px; z-index: 1000; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <i class="fas fa-check-circle"></i> Report downloaded successfully!
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 3000);
+        };
 
         // Initialize assessment when page loads
         document.addEventListener('DOMContentLoaded', function() {

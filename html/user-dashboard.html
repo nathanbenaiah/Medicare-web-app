@@ -3,178 +3,582 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediCare+ - Enhanced User Dashboard</title>
+    <title>MediCare+ - Modern Healthcare Dashboard</title>
     
-    <!-- Fonts -->
+    <!-- Modern Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js">
+    <!-- Enhanced Icon Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tabler-icons@latest/icons-sprite.svg">
     
-    <!-- Chart.js for health metrics -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Advanced Charting and Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.44.0/dist/apexcharts.min.js"></script>
     
-    <!-- Supabase for authentication and data -->
+    <!-- Backend Integration -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
+    <!-- Modern Animations -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Dashboard Database Connector -->
+    <script src="../js/dashboard-db-connector.js"></script>
     
     <style>
         :root {
-            --primary-blue: #3B82F6;
-            --light-blue: #93C5FD;
-            --ash-gray: #F1F5F9;
-            --soft-gray: #E2E8F0;
-            --text-primary: #1E293B;
-            --text-secondary: #64748B;
-            --white: #FFFFFF;
-            --success: #10B981;
-            --warning: #F59E0B;
-            --danger: #EF4444;
-            --border-radius: 12px;
-            --shadow-soft: 0 2px 8px rgba(59, 130, 246, 0.08);
-            --shadow-medium: 0 4px 16px rgba(59, 130, 246, 0.12);
-            --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.15);
+            /* Modern Color Palette */
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --purple: #8b5cf6;
+            --pink: #ec4899;
+            
+            /* Neutral Colors */
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            
+            /* Semantic Colors */
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --info: #3b82f6;
+            
+            /* Background & Surface */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --bg-tertiary: #f3f4f6;
+            --surface: #ffffff;
+            --surface-hover: #f8fafc;
+            
+            /* Text Colors */
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --text-tertiary: #9ca3af;
+            --text-inverse: #ffffff;
+            
+            /* Borders & Dividers */
+            --border: #e5e7eb;
+            --border-light: #f3f4f6;
+            --divider: #e5e7eb;
+            
+            /* Shadows */
+            --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            --shadow-glow: 0 0 0 1px rgba(59, 130, 246, 0.1), 0 4px 16px rgba(59, 130, 246, 0.12);
+            
+            /* Border Radius */
+            --radius-xs: 4px;
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-2xl: 20px;
+            --radius-full: 9999px;
+            
+            /* Spacing */
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-5: 1.25rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            --space-10: 2.5rem;
+            --space-12: 3rem;
+            --space-16: 4rem;
+            --space-20: 5rem;
+            
+            /* Typography */
+            --font-primary: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-secondary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            
+            /* Transitions */
+            --transition-fast: 150ms ease;
+            --transition-normal: 200ms ease;
+            --transition-slow: 300ms ease;
+            
+            /* Z-index */
+            --z-dropdown: 1000;
+            --z-sticky: 1020;
+            --z-fixed: 1030;
+            --z-modal-backdrop: 1040;
+            --z-modal: 1050;
+            --z-popover: 1060;
+            --z-tooltip: 1070;
+            --z-toast: 1080;
         }
 
+        /* Dark Theme */
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --surface: #1e293b;
+            --surface-hover: #334155;
+            
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-tertiary: #94a3b8;
+            
+            --border: #334155;
+            --border-light: #475569;
+            --divider: #334155;
+            
+            --gray-50: #0f172a;
+            --gray-100: #1e293b;
+            --gray-200: #334155;
+            --gray-300: #475569;
+        }
+
+        /* Reset & Base Styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+            height: 100%;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background: var(--white);
+            font-family: var(--font-primary);
+            background: var(--bg-primary);
             min-height: 100vh;
             color: var(--text-primary);
             font-size: 14px;
-            line-height: 1.5;
+            line-height: 1.6;
+            transition: background-color var(--transition-normal), color var(--transition-normal);
+            overflow-x: hidden;
         }
 
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--gray-100);
+            border-radius: var(--radius-full);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gray-300);
+            border-radius: var(--radius-full);
+            transition: background-color var(--transition-normal);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gray-400);
+        }
+
+        /* Focus Styles */
+        *:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* Selection */
+        ::selection {
+            background: var(--primary);
+            color: var(--text-inverse);
+        }
+
+        /* Modern Dashboard Layout */
         .dashboard-container {
             min-height: 100vh;
-            width: 100%;
+            display: flex;
+            background: var(--bg-secondary);
+        }
+
+        /* Modern Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-        }
-
-        /* Top Navigation Bar */
-        .top-navigation {
-            background: var(--white);
-            border-bottom: 1px solid var(--soft-gray);
-            padding: 12px 24px;
-            box-shadow: var(--shadow-soft);
-            position: sticky;
+            position: fixed;
+            left: 0;
             top: 0;
-            z-index: 100;
+            height: 100vh;
+            z-index: var(--z-fixed);
+            transition: transform var(--transition-normal);
+            box-shadow: var(--shadow-lg);
         }
 
-        .nav-content {
+        .sidebar.collapsed {
+            width: 72px;
+        }
+
+        .sidebar-header {
+            padding: var(--space-6);
+            border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            max-width: 1400px;
-            margin: 0 auto;
+            min-height: 80px;
         }
 
         .logo {
             display: flex;
             align-items: center;
+            gap: var(--space-3);
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+            transition: all var(--transition-normal);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-inverse);
+            font-size: 20px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .logo-text {
             font-size: 18px;
             font-weight: 700;
-            color: var(--primary-blue);
+            background: linear-gradient(135deg, var(--primary), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .logo i {
-            margin-right: 8px;
-            font-size: 20px;
-        }
-
-        .nav-menu {
+        .sidebar-toggle {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--gray-100);
+            border-radius: var(--radius-md);
             display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all var(--transition-normal);
+        }
+
+        .sidebar-toggle:hover {
+            background: var(--gray-200);
+            color: var(--text-primary);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar-nav {
+            flex: 1;
+            padding: var(--space-4);
+            overflow-y: auto;
+        }
+
+        .nav-section {
+            margin-bottom: var(--space-6);
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-tertiary);
+            margin-bottom: var(--space-3);
+            padding: 0 var(--space-3);
+        }
+
+        .nav-list {
             list-style: none;
-            padding: 0;
             margin: 0;
-            gap: 4px;
+            padding: 0;
         }
 
         .nav-item {
-            position: relative;
+            margin-bottom: var(--space-1);
         }
 
         .nav-link {
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 8px 12px;
-            border-radius: 8px;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-3);
+            border-radius: var(--radius-lg);
             text-decoration: none;
             color: var(--text-secondary);
-            font-size: 12px;
+            font-size: 14px;
             font-weight: 500;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            white-space: nowrap;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            opacity: 0;
+            transition: opacity var(--transition-normal);
+            border-radius: var(--radius-lg);
         }
 
         .nav-link:hover {
-            background: var(--ash-gray);
-            color: var(--primary-blue);
-            box-shadow: var(--shadow-soft);
-            transform: translateY(-1px);
+            color: var(--text-primary);
+            background: var(--surface-hover);
+            transform: translateX(4px);
         }
 
         .nav-link.active {
-            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
-            color: var(--white);
+            color: var(--text-inverse);
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
             box-shadow: var(--shadow-glow);
         }
 
-        .nav-link i {
-            font-size: 14px;
+        .nav-link.active::before {
+            opacity: 1;
         }
 
-        /* Quick Actions in Top Nav */
-        .quick-nav-actions {
+        .nav-icon {
+            width: 20px;
+            height: 20px;
             display: flex;
-            gap: 8px;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .nav-text {
+            position: relative;
+            z-index: 1;
+            white-space: nowrap;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: var(--error);
+            color: var(--text-inverse);
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: var(--radius-full);
+            min-width: 18px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .nav-badge.success {
+            background: var(--success);
+        }
+
+        .nav-badge.warning {
+            background: var(--warning);
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            transition: margin-left var(--transition-normal);
+        }
+
+        .main-content.sidebar-collapsed {
+            margin-left: 72px;
+        }
+
+        /* Top Header */
+        .dashboard-header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: var(--space-4) var(--space-6);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 80px;
+            position: sticky;
+            top: 0;
+            z-index: var(--z-sticky);
+            backdrop-filter: blur(8px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .header-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: var(--space-2);
             align-items: center;
         }
 
         .quick-action-btn {
-            padding: 8px 12px;
-            background: var(--ash-gray);
-            border: 1px solid var(--soft-gray);
-            border-radius: 8px;
-            color: var(--text-primary);
-            text-decoration: none;
-            font-size: 12px;
-            transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-4);
+            background: var(--gray-100);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all var(--transition-normal);
             cursor: pointer;
             white-space: nowrap;
         }
 
         .quick-action-btn:hover {
-            background: var(--primary-blue);
-            color: var(--white);
-            box-shadow: var(--shadow-soft);
+            background: var(--primary);
+            color: var(--text-inverse);
+            border-color: var(--primary);
             transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
         }
 
-        .quick-action-btn.ai-btn {
-            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
-            color: var(--white);
-            animation: aiPulse 2s infinite;
+        .quick-action-btn.primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: var(--text-inverse);
+            border-color: var(--primary);
+            animation: pulseGlow 2s infinite;
         }
 
-        @keyframes aiPulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
-            50% { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); }
+        @keyframes pulseGlow {
+            0%, 100% { 
+                box-shadow: var(--shadow-md);
+            }
+            50% { 
+                box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2), var(--shadow-lg);
+            }
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: var(--gray-100);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .theme-toggle:hover {
+            background: var(--gray-200);
+            color: var(--text-primary);
+            transform: scale(1.05);
+        }
+
+        /* User Profile */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-2);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .user-profile:hover {
+            background: var(--surface-hover);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--primary), var(--purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-inverse);
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin: 0;
         }
 
         /* Enhanced Modal System */
@@ -615,6 +1019,91 @@
             
             .date-time-info {
                 text-align: center;
+            }
+        }
+
+        /* Mobile Phone Optimization (480px and below) */
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 12px;
+            }
+
+            .welcome-header {
+                padding: 16px;
+                margin-bottom: 16px;
+            }
+
+            .welcome-content h2 {
+                font-size: 18px;
+            }
+
+            .welcome-content p {
+                font-size: 13px;
+            }
+
+            .current-date {
+                font-size: 14px;
+            }
+
+            .current-time {
+                font-size: 12px;
+                padding: 2px 8px;
+            }
+
+            .user-profile {
+                padding: 6px 8px;
+                gap: 8px;
+            }
+
+            .user-avatar {
+                width: 32px;
+                height: 32px;
+                font-size: 12px;
+            }
+
+            .nav-link {
+                font-size: 10px;
+                padding: 4px 6px;
+            }
+
+            .quick-action-btn {
+                padding: 4px 6px;
+                font-size: 10px;
+                min-height: 32px;
+            }
+
+            .notification-bell {
+                width: 36px;
+                height: 36px;
+            }
+
+            .notification-bell i {
+                font-size: 14px;
+            }
+        }
+
+        /* Touch-friendly improvements for mobile devices */
+        @media (hover: none) and (pointer: coarse) {
+            .nav-link,
+            .quick-action-btn,
+            .user-profile,
+            .notification-bell {
+                min-height: 44px;
+                min-width: 44px;
+            }
+
+            .nav-link:active,
+            .quick-action-btn:active {
+                background: var(--primary-hover);
+                transform: scale(0.98);
+            }
+
+            .user-profile:active {
+                transform: scale(0.98);
+            }
+
+            .notification-bell:active {
+                transform: scale(0.95);
             }
         }
 
@@ -1197,6 +1686,289 @@
 
         .legend-dot.health-goals {
             background: var(--danger);
+        }
+
+        /* Analytics Section */
+        .analytics-section {
+            margin: var(--space-8) 0;
+        }
+
+        .analytics-controls {
+            display: flex;
+            gap: var(--space-3);
+            align-items: center;
+        }
+
+        .analytics-select {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-2) var(--space-4);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .analytics-select:focus {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--space-6);
+            margin-top: var(--space-6);
+        }
+
+        .chart-widget {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-normal);
+        }
+
+        .chart-widget:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: var(--space-2);
+        }
+
+        .chart-btn {
+            background: var(--gray-100);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-2) var(--space-4);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .chart-btn:hover {
+            background: var(--gray-200);
+            color: var(--text-primary);
+        }
+
+        .chart-btn.active {
+            background: var(--primary);
+            color: var(--text-inverse);
+            border-color: var(--primary);
+        }
+
+        .chart-container {
+            height: 300px;
+            margin-top: var(--space-4);
+            position: relative;
+        }
+
+        .insights-widget {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-normal);
+        }
+
+        .insights-widget:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .insights-container {
+            margin-top: var(--space-4);
+        }
+
+        .insight-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-3);
+            padding: var(--space-4);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-3);
+            border-left: 4px solid var(--info);
+            transition: all var(--transition-normal);
+        }
+
+        .insight-item:hover {
+            background: var(--surface-hover);
+            transform: translateX(4px);
+        }
+
+        .insight-item.critical {
+            border-left-color: var(--error);
+        }
+
+        .insight-item.warning {
+            border-left-color: var(--warning);
+        }
+
+        .insight-item.positive {
+            border-left-color: var(--success);
+        }
+
+        .insight-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary);
+            color: var(--text-inverse);
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .insight-icon.critical {
+            background: var(--error);
+        }
+
+        .insight-icon.warning {
+            background: var(--warning);
+        }
+
+        .insight-icon.positive {
+            background: var(--success);
+        }
+
+        .insight-content {
+            flex: 1;
+        }
+
+        .insight-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+
+        .insight-message {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: var(--space-2);
+        }
+
+        .insight-action {
+            background: var(--primary);
+            color: var(--text-inverse);
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-md);
+            font-size: 12px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            transition: all var(--transition-normal);
+        }
+
+        .insight-action:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        /* Health Score Breakdown */
+        .health-score-section {
+            margin: var(--space-8) 0;
+        }
+
+        .score-breakdown-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: var(--space-4);
+            margin-top: var(--space-6);
+        }
+
+        .score-category {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: var(--space-5);
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            transition: all var(--transition-normal);
+            cursor: pointer;
+        }
+
+        .score-category:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .category-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-xl);
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-inverse);
+            font-size: 24px;
+            flex-shrink: 0;
+            box-shadow: var(--shadow-md);
+        }
+
+        .category-info {
+            flex: 1;
+        }
+
+        .category-info h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+        }
+
+        .score-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--gray-200);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            margin-bottom: var(--space-2);
+        }
+
+        .score-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), var(--primary));
+            border-radius: var(--radius-full);
+            transition: width 1s ease;
+            position: relative;
+        }
+
+        .score-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .score-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
         }
 
         .legend-dot.exercise {
@@ -4220,6 +4992,311 @@
             }
         }
 
+        /* Dynamic Dashboard Styles */
+        .dynamic-content {
+            min-height: 200px;
+            padding: 16px;
+        }
+
+        .loading-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: #64748b;
+            font-size: 14px;
+            height: 100px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 32px 16px;
+            color: #64748b;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            margin: 16px 0;
+            font-size: 16px;
+        }
+
+        /* Appointment Cards */
+        .appointment-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border-left: 4px solid #007BFF;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .appointment-card:hover {
+            background: #e2e8f0;
+            transform: translateY(-2px);
+        }
+
+        .appointment-card.today {
+            background: linear-gradient(135deg, #007BFF20, #007BFF10);
+            border-left-color: #10b981;
+        }
+
+        .appointment-type {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #007BFF;
+            color: white;
+        }
+
+        .appointment-details h4 {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+            color: #1e293b;
+        }
+
+        .appointment-details p {
+            margin: 2px 0;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .appointment-time, .appointment-location {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        .appointment-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 6px;
+            background: #e2e8f0;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn:hover {
+            background: #cbd5e1;
+            color: #1e293b;
+        }
+
+        .action-btn.edit:hover {
+            background: #fbbf24;
+            color: white;
+        }
+
+        /* Medication Cards */
+        .medication-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: #f0fdf4;
+            border-radius: 12px;
+            border-left: 4px solid #10b981;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .medication-card:hover {
+            background: #dcfce7;
+            transform: translateY(-2px);
+        }
+
+        .med-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #10b981;
+            color: white;
+            font-size: 16px;
+        }
+
+        .med-details h4 {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+            color: #1e293b;
+        }
+
+        .med-details p {
+            margin: 2px 0;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .med-schedule {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #059669;
+            margin-top: 4px;
+        }
+
+        .med-actions {
+            margin-left: auto;
+        }
+
+        /* Assessment Cards */
+        .assessment-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: #fef3c7;
+            border-radius: 12px;
+            border-left: 4px solid #f59e0b;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .assessment-card:hover {
+            background: #fef3c7;
+            transform: translateY(-2px);
+        }
+
+        .assessment-type {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f59e0b;
+            color: white;
+            font-size: 16px;
+        }
+
+        .assessment-details h4 {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+            color: #1e293b;
+        }
+
+        .assessment-details p {
+            margin: 2px 0;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .assessment-score span {
+            background: #f59e0b;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Chat Cards */
+        .chat-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: #f0f9ff;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .chat-card:hover {
+            background: #dbeafe;
+            transform: translateY(-2px);
+        }
+
+        .chat-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #3b82f6;
+            color: white;
+            font-size: 16px;
+        }
+
+        .chat-details h4 {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+            color: #1e293b;
+        }
+
+        .chat-details p {
+            margin: 2px 0;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .chat-time {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #3b82f6;
+            margin-top: 4px;
+        }
+
+        .chat-actions {
+            margin-left: auto;
+        }
+
+        .view-all-link {
+            color: #007BFF;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .view-all-link:hover {
+            color: #0056b3;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr !important;
+            }
+            
+            .appointment-card,
+            .medication-card,
+            .assessment-card,
+            .chat-card {
+                padding: 12px;
+            }
+        }
+
         </style>
 </head>
 <body>
@@ -4349,7 +5426,7 @@
                             </div>
                         </div>
 
-                        <div class="stat-card" onclick="openMedications()" title="Click to view medications">
+                        <div class="stat-card" data-action="medication-reminder" title="Click to view medications">
                             <div class="stat-header">
                                 <div class="stat-icon medications">
                                     <i class="fas fa-pills"></i>
@@ -4377,7 +5454,7 @@
                             </div>
                         </div>
 
-                        <div class="stat-card" onclick="openHealthReports()" title="Click to view health reports">
+                        <div class="stat-card" data-action="view-reports" title="Click to view health reports">
                             <div class="stat-header">
                                 <div class="stat-icon reports">
                                     <i class="fas fa-file-medical"></i>
@@ -4392,6 +5469,212 @@
                         </div>
                     </div>
 
+                    <!-- Dynamic Dashboard Sections -->
+                    <div class="dynamic-dashboard-sections" style="margin: 24px 0;">
+                        <div class="main-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                            <!-- Upcoming Appointments -->
+                            <div class="widget">
+                                <div class="widget-header">
+                                    <h4 class="widget-title">
+                                        <i class="fas fa-calendar-check"></i>
+                                        Upcoming Appointments
+                                    </h4>
+                                    <a href="appointments.html" class="view-all-link">View All</a>
+                                </div>
+                                <div id="appointmentsContainer" class="dynamic-content">
+                                    <div class="loading-placeholder">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        Loading appointments...
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Active Medications -->
+                            <div class="widget">
+                                <div class="widget-header">
+                                    <h4 class="widget-title">
+                                        <i class="fas fa-pills"></i>
+                                        Active Medications
+                                    </h4>
+                                    <a href="reminders.html" class="view-all-link">Manage</a>
+                                </div>
+                                <div id="medicationsContainer" class="dynamic-content">
+                                    <div class="loading-placeholder">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        Loading medications...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="main-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                            <!-- Recent Health Assessments -->
+                            <div class="widget">
+                                <div class="widget-header">
+                                    <h4 class="widget-title">
+                                        <i class="fas fa-chart-line"></i>
+                                        Recent Assessments
+                                    </h4>
+                                    <a href="ai-features.html" class="view-all-link">Take New</a>
+                                </div>
+                                <div id="assessmentsContainer" class="dynamic-content">
+                                    <div class="loading-placeholder">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        Loading assessments...
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Recent AI Conversations -->
+                            <div class="widget">
+                                <div class="widget-header">
+                                    <h4 class="widget-title">
+                                        <i class="fas fa-robot"></i>
+                                        AI Health Assistant
+                                    </h4>
+                                    <a href="#" data-action="ai-chat" class="view-all-link">Start Chat</a>
+                                </div>
+                                <div id="aiChatContainer" class="dynamic-content">
+                                    <div class="loading-placeholder">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        Loading conversations...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Health Analytics Dashboard -->
+                    <div class="analytics-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <i class="fas fa-chart-line"></i>
+                                Health Analytics
+                            </h3>
+                            <div class="analytics-controls">
+                                <select id="timeRange" class="analytics-select">
+                                    <option value="7d">Last 7 days</option>
+                                    <option value="30d" selected>Last 30 days</option>
+                                    <option value="90d">Last 3 months</option>
+                                    <option value="1y">Last year</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="analytics-grid">
+                            <div class="chart-widget">
+                                <div class="widget-header">
+                                    <h4 class="widget-title">Vital Signs Trends</h4>
+                                    <div class="chart-controls">
+                                        <button class="chart-btn active" data-chart="vitals">Vitals</button>
+                                        <button class="chart-btn" data-chart="weight">Weight</button>
+                                        <button class="chart-btn" data-chart="sleep">Sleep</button>
+                                    </div>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="vitalsChart"></canvas>
+                                </div>
+                            </div>
+                            
+                            <div class="insights-widget">
+                                <div class="widget-header">
+                                    <h4 class="widget-title">
+                                        <i class="fas fa-brain"></i>
+                                        AI Health Insights
+                                    </h4>
+                                </div>
+                                <div class="insights-container" id="healthInsights">
+                                    <!-- AI insights will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Health Score Breakdown -->
+                    <div class="health-score-section">
+                        <div class="section-header">
+                            <h3 class="section-title">Health Score Breakdown</h3>
+                        </div>
+                        <div class="score-breakdown-grid">
+                            <div class="score-category">
+                                <div class="category-icon">
+                                    <i class="fas fa-heartbeat"></i>
+                                </div>
+                                <div class="category-info">
+                                    <h4>Cardiovascular</h4>
+                                    <div class="score-bar">
+                                        <div class="score-fill" style="width: 85%"></div>
+                                    </div>
+                                    <span class="score-value">85/100</span>
+                                </div>
+                            </div>
+                            
+                            <div class="score-category">
+                                <div class="category-icon">
+                                    <i class="fas fa-dumbbell"></i>
+                                </div>
+                                <div class="category-info">
+                                    <h4>Physical Activity</h4>
+                                    <div class="score-bar">
+                                        <div class="score-fill" style="width: 78%"></div>
+                                    </div>
+                                    <span class="score-value">78/100</span>
+                                </div>
+                            </div>
+                            
+                            <div class="score-category">
+                                <div class="category-icon">
+                                    <i class="fas fa-moon"></i>
+                                </div>
+                                <div class="category-info">
+                                    <h4>Sleep Quality</h4>
+                                    <div class="score-bar">
+                                        <div class="score-fill" style="width: 92%"></div>
+                                    </div>
+                                    <span class="score-value">92/100</span>
+                                </div>
+                            </div>
+                            
+                            <div class="score-category">
+                                <div class="category-icon">
+                                    <i class="fas fa-apple-alt"></i>
+                                </div>
+                                <div class="category-info">
+                                    <h4>Nutrition</h4>
+                                    <div class="score-bar">
+                                        <div class="score-fill" style="width: 68%"></div>
+                                    </div>
+                                    <span class="score-value">68/100</span>
+                                </div>
+                            </div>
+                            
+                            <div class="score-category">
+                                <div class="category-icon">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <div class="category-info">
+                                    <h4>Mental Health</h4>
+                                    <div class="score-bar">
+                                        <div class="score-fill" style="width: 82%"></div>
+                                    </div>
+                                    <span class="score-value">82/100</span>
+                                </div>
+                            </div>
+                            
+                            <div class="score-category">
+                                <div class="category-icon">
+                                    <i class="fas fa-pills"></i>
+                                </div>
+                                <div class="category-info">
+                                    <h4>Medication Adherence</h4>
+                                    <div class="score-bar">
+                                        <div class="score-fill" style="width: 95%"></div>
+                                    </div>
+                                    <span class="score-value">95/100</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Interactive Health Calendar -->
                     <div class="health-calendar-section">
                         <div class="section-header">
@@ -4400,6 +5683,10 @@
                                 <button class="btn-icon" id="prevMonth"><i class="fas fa-chevron-left"></i></button>
                                 <span id="currentMonth">January 2025</span>
                                 <button class="btn-icon" id="nextMonth"><i class="fas fa-chevron-right"></i></button>
+                                <button class="btn-primary" onclick="addHealthEvent()">
+                                    <i class="fas fa-plus"></i>
+                                    Add Event
+                                </button>
                             </div>
                         </div>
                         <div class="calendar-container">
@@ -4488,7 +5775,7 @@
                                 </div>
                             </div>
                             
-                            <div class="mini-widget" onclick="openMedications()">
+                            <div class="mini-widget" data-action="medication-reminder">
                                 <div class="mini-widget-icon medications">
                                     <i class="fas fa-pills"></i>
                                 </div>
@@ -4510,7 +5797,7 @@
                                 </div>
                             </div>
                             
-                            <div class="mini-widget" onclick="openHealthReports()">
+                            <div class="mini-widget" data-action="view-reports">
                                 <div class="mini-widget-icon reports">
                                     <i class="fas fa-file-medical"></i>
                                 </div>
@@ -4611,7 +5898,7 @@
                                 <i class="fas fa-upload"></i>
                                 Upload Health Document
                             </a>
-                            <a href="#" class="btn btn-secondary" onclick="startHealthAssessment()">
+                            <a href="#" class="btn btn-secondary" data-action="health-assessment">
                                 <i class="fas fa-clipboard-check"></i>
                                 Health Assessment
                             </a>
@@ -5011,7 +6298,7 @@
                         <label>Brief Description</label>
                         <textarea id="appointmentNotes" class="form-control" placeholder="Brief description of your concerns..."></textarea>
                     </div>
-                    <button onclick="confirmQuickBooking()" class="btn btn-primary">Book Appointment</button>
+                    <button data-action="book-appointment" class="btn btn-primary">Book Appointment</button>
                 </div>
             `);
         }
@@ -5265,6 +6552,279 @@
         // Section Loading Functions
         function showDashboardSection() {
             console.log('Loading dashboard section...');
+        }
+
+        // Initialize Charts and Analytics
+        function initializeCharts() {
+            initializeVitalsChart();
+            loadHealthInsights();
+            animateScoreBars();
+        }
+
+        function initializeVitalsChart() {
+            const ctx = document.getElementById('vitalsChart');
+            if (!ctx) return;
+
+            const vitalsData = {
+                labels: ['Jan 10', 'Jan 12', 'Jan 14', 'Jan 16', 'Jan 18', 'Jan 20', 'Jan 22'],
+                datasets: [{
+                    label: 'Blood Pressure (Systolic)',
+                    data: [120, 125, 130, 135, 128, 132, 130],
+                    borderColor: 'rgb(37, 99, 235)',
+                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'Heart Rate',
+                    data: [72, 75, 78, 80, 76, 78, 75],
+                    borderColor: 'rgb(16, 185, 129)',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            };
+
+            new Chart(ctx, {
+                type: 'line',
+                data: vitalsData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            });
+        }
+
+        function loadHealthInsights() {
+            const insights = generateHealthInsights();
+            const container = document.getElementById('healthInsights');
+            if (!container) return;
+
+            container.innerHTML = insights.map(insight => `
+                <div class="insight-item ${insight.type}">
+                    <div class="insight-icon ${insight.type}">
+                        <i class="fas ${getInsightIcon(insight.type)}"></i>
+                    </div>
+                    <div class="insight-content">
+                        <div class="insight-title">${insight.title}</div>
+                        <div class="insight-message">${insight.message}</div>
+                        <a href="#" class="insight-action" onclick="handleInsightAction('${insight.action}')">${insight.action}</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getInsightIcon(type) {
+            const icons = {
+                critical: 'fa-exclamation-triangle',
+                warning: 'fa-exclamation-circle',
+                positive: 'fa-check-circle',
+                info: 'fa-info-circle'
+            };
+            return icons[type] || 'fa-info-circle';
+        }
+
+        function handleInsightAction(action) {
+            switch(action) {
+                case 'Contact Doctor':
+                    showModal('Contact Doctor', `
+                        <div style="text-align: center; padding: 20px;">
+                            <i class="fas fa-user-md" style="font-size: 48px; color: var(--primary); margin-bottom: 16px;"></i>
+                            <h3>Dr. Smith - Cardiology</h3>
+                            <p>Phone: (555) 123-4567</p>
+                            <p>Email: dr.smith@healthcare.com</p>
+                            <div style="margin-top: 20px;">
+                                <button class="btn-primary" onclick="scheduleAppointment()">Schedule Appointment</button>
+                                <button class="btn-secondary" onclick="startTelehealth()" style="margin-left: 10px;">Start Video Call</button>
+                            </div>
+                        </div>
+                    `);
+                    break;
+                case 'Set Reminders':
+                    window.location.href = 'reminders.html';
+                    break;
+                case 'View Progress':
+                    showHealthProgress();
+                    break;
+                default:
+                    alert(`Action: ${action}`);
+            }
+        }
+
+        function animateScoreBars() {
+            const scoreFills = document.querySelectorAll('.score-fill');
+            scoreFills.forEach((fill, index) => {
+                setTimeout(() => {
+                    const width = fill.style.width;
+                    fill.style.width = '0%';
+                    setTimeout(() => {
+                        fill.style.width = width;
+                    }, 100);
+                }, index * 200);
+            });
+        }
+
+        function showHealthProgress() {
+            showModal('Health Progress', `
+                <div style="padding: 20px;">
+                    <h3>Your Health Journey</h3>
+                    <div style="margin: 20px 0;">
+                        <h4>This Week's Achievements:</h4>
+                        <ul style="margin-left: 20px;">
+                            <li>✅ Completed 6/7 daily step goals</li>
+                            <li>✅ Maintained medication schedule</li>
+                            <li>✅ Improved sleep quality by 15%</li>
+                            <li>⏰ 1 upcoming check-up appointment</li>
+                        </ul>
+                    </div>
+                    <div style="margin: 20px 0;">
+                        <h4>Areas for Improvement:</h4>
+                        <ul style="margin-left: 20px;">
+                            <li>🥗 Increase daily vegetable intake</li>
+                            <li>💧 Drink more water (target: 8 glasses/day)</li>
+                            <li>🧘 Add stress management activities</li>
+                        </ul>
+                    </div>
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="btn-primary" onclick="closeModal()">Continue Journey</button>
+                    </div>
+                </div>
+            `);
+        }
+
+        // Chart Controls
+        function switchChart(chartType) {
+            const buttons = document.querySelectorAll('.chart-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update chart data based on type
+            const ctx = document.getElementById('vitalsChart');
+            const chart = Chart.getChart(ctx);
+            
+            if (chart) {
+                switch(chartType) {
+                    case 'vitals':
+                        chart.data.datasets = [{
+                            label: 'Blood Pressure (Systolic)',
+                            data: [120, 125, 130, 135, 128, 132, 130],
+                            borderColor: 'rgb(37, 99, 235)',
+                            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }, {
+                            label: 'Heart Rate',
+                            data: [72, 75, 78, 80, 76, 78, 75],
+                            borderColor: 'rgb(16, 185, 129)',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }];
+                        break;
+                    case 'weight':
+                        chart.data.datasets = [{
+                            label: 'Weight (lbs)',
+                            data: [180, 179, 178, 179, 177, 178, 176],
+                            borderColor: 'rgb(139, 92, 246)',
+                            backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }];
+                        break;
+                    case 'sleep':
+                        chart.data.datasets = [{
+                            label: 'Sleep Hours',
+                            data: [7.5, 8, 7, 8.5, 7.8, 8.2, 8],
+                            borderColor: 'rgb(245, 158, 11)',
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }];
+                        break;
+                }
+                chart.update();
+            }
+        }
+
+        // Add event listeners for chart controls
+        document.addEventListener('DOMContentLoaded', function() {
+            const chartButtons = document.querySelectorAll('.chart-btn');
+            chartButtons.forEach(btn => {
+                btn.addEventListener('click', () => switchChart(btn.dataset.chart));
+            });
+        });
+
+        // Time range selector
+        function changeTimeRange(range) {
+            console.log('Changing time range to:', range);
+            // Update charts and data based on selected time range
+            loadHealthInsights(); // Refresh insights for new timeframe
+        }
+
+        // Add Health Event function
+        function addHealthEvent() {
+            showModal('Add Health Event', `
+                <div style="padding: 20px;">
+                    <form id="healthEventForm">
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Event Type:</label>
+                            <select name="eventType" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 8px;">
+                                <option value="appointment">Doctor Appointment</option>
+                                <option value="medication">Medication</option>
+                                <option value="test">Lab Test</option>
+                                <option value="goal">Health Goal</option>
+                            </select>
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Title:</label>
+                            <input type="text" name="title" placeholder="Enter event title" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 8px;">
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Date:</label>
+                            <input type="date" name="date" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 8px;">
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Time:</label>
+                            <input type="time" name="time" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 8px;">
+                        </div>
+                        <div style="text-align: center; margin-top: 20px;">
+                            <button type="button" class="btn-primary" onclick="saveHealthEvent()">Save Event</button>
+                            <button type="button" class="btn-secondary" onclick="closeModal()" style="margin-left: 10px;">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            `);
+        }
+
+        function saveHealthEvent() {
+            const form = document.getElementById('healthEventForm');
+            const formData = new FormData(form);
+            const eventData = Object.fromEntries(formData);
+            
+            console.log('Saving health event:', eventData);
+            
+            // In a real app, this would save to the database
+            alert('Health event saved successfully!');
+            closeModal();
+            
+            // Refresh calendar to show new event
+            generateCalendar();
         }
 
         function showAppointmentsSection() {
@@ -7452,56 +9012,527 @@
             if (!currentUser) return;
 
             try {
-                // Load appointments
-                const { data: appointments, error: appointmentsError } = await supabase
+                showLoadingStates();
+                
+                // Load appointments with full details
+                await loadAppointments();
+                
+                // Load medications/prescriptions
+                await loadMedications();
+                
+                // Load health assessments
+                await loadHealthAssessments();
+                
+                // Load vital signs
+                await loadVitalSigns();
+                
+                // Load reminders
+                await loadReminders();
+                
+                // Load AI chat history
+                await loadRecentAIChats();
+                
+                console.log('✅ All dashboard data loaded successfully');
+                hideLoadingStates();
+                
+            } catch (error) {
+                console.error('❌ Error loading dashboard data:', error);
+                hideLoadingStates();
+                showNotification('error', 'Failed to load some dashboard data. Please refresh the page.');
+            }
+        }
+
+        // Load appointments with detailed information
+        async function loadAppointments() {
+            try {
+                const { data: appointments, error } = await supabase
                     .from('appointments')
-                    .select('*')
+                    .select(`
+                        *,
+                        healthcare_providers(name, specialty, hospital_name)
+                    `)
                     .eq('user_id', currentUser.id)
-                    .order('scheduled_date', { ascending: true });
+                    .gte('scheduled_date', new Date().toISOString())
+                    .order('scheduled_date', { ascending: true })
+                    .limit(5);
 
-                if (!appointmentsError && appointments) {
-                    document.getElementById('appointmentCount').textContent = appointments.length;
-                    console.log('✅ Appointments loaded:', appointments.length);
-                }
+                if (error) throw error;
 
-                // Load prescriptions
-                const { data: prescriptions, error: prescriptionsError } = await supabase
+                // Update appointment count
+                document.getElementById('appointmentCount').textContent = appointments?.length || 0;
+                
+                // Update upcoming appointments section
+                updateUpcomingAppointments(appointments || []);
+                
+                console.log('✅ Appointments loaded:', appointments?.length || 0);
+            } catch (error) {
+                console.error('Error loading appointments:', error);
+                document.getElementById('appointmentCount').textContent = '0';
+            }
+        }
+
+        // Load medications and prescriptions
+        async function loadMedications() {
+            try {
+                const { data: medications, error } = await supabase
                     .from('prescriptions')
                     .select('*')
                     .eq('user_id', currentUser.id)
-                    .eq('status', 'active');
+                    .eq('status', 'active')
+                    .order('created_at', { ascending: false });
 
-                if (!prescriptionsError && prescriptions) {
-                    document.getElementById('medicationCount').textContent = prescriptions.length;
-                    console.log('✅ Prescriptions loaded:', prescriptions.length);
-                }
+                if (error) throw error;
 
-                // Load vital signs
-                const { data: vitals, error: vitalsError } = await supabase
+                // Update medication count
+                document.getElementById('medicationCount').textContent = medications?.length || 0;
+                
+                // Update medications list
+                updateMedicationsList(medications || []);
+                
+                console.log('✅ Medications loaded:', medications?.length || 0);
+            } catch (error) {
+                console.error('Error loading medications:', error);
+                document.getElementById('medicationCount').textContent = '0';
+            }
+        }
+
+        // Load health assessments
+        async function loadHealthAssessments() {
+            try {
+                const { data: assessments, error } = await supabase
+                    .from('assessment_responses')
+                    .select(`
+                        *,
+                        ai_results(analysis_result, recommendations)
+                    `)
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false })
+                    .limit(5);
+
+                if (error) throw error;
+
+                // Update assessments count
+                const assessmentCount = assessments?.length || 0;
+                document.getElementById('assessmentCount').textContent = assessmentCount;
+                
+                // Update recent assessments
+                updateRecentAssessments(assessments || []);
+                
+                console.log('✅ Health assessments loaded:', assessmentCount);
+            } catch (error) {
+                console.error('Error loading health assessments:', error);
+                document.getElementById('assessmentCount').textContent = '0';
+            }
+        }
+
+        // Load vital signs and health metrics
+        async function loadVitalSigns() {
+            try {
+                const { data: vitals, error } = await supabase
                     .from('vital_signs')
                     .select('*')
                     .eq('user_id', currentUser.id)
                     .order('created_at', { ascending: false })
-                    .limit(1);
+                    .limit(10);
 
-                if (!vitalsError && vitals && vitals.length > 0) {
-                    const latestVitals = vitals[0];
-                    if (latestVitals.heart_rate) {
-                        document.getElementById('avgHeartRate').textContent = latestVitals.heart_rate;
+                if (error) throw error;
+
+                if (vitals && vitals.length > 0) {
+                    const latest = vitals[0];
+                    
+                    // Update vital signs displays
+                    if (latest.heart_rate) {
+                        document.getElementById('avgHeartRate').textContent = latest.heart_rate;
                     }
-                    if (latestVitals.blood_pressure_systolic && latestVitals.blood_pressure_diastolic) {
+                    if (latest.blood_pressure_systolic && latest.blood_pressure_diastolic) {
                         document.getElementById('avgBloodPressure').textContent = 
-                            `${latestVitals.blood_pressure_systolic}/${latestVitals.blood_pressure_diastolic}`;
+                            `${latest.blood_pressure_systolic}/${latest.blood_pressure_diastolic}`;
                     }
-                    if (latestVitals.weight) {
-                        document.getElementById('currentWeight').textContent = latestVitals.weight;
+                    if (latest.weight) {
+                        document.getElementById('currentWeight').textContent = `${latest.weight} kg`;
                     }
-                    console.log('✅ Vital signs loaded');
+                    if (latest.temperature) {
+                        document.getElementById('bodyTemperature').textContent = `${latest.temperature}°C`;
+                    }
+                    
+                    // Calculate trends if we have multiple readings
+                    if (vitals.length > 1) {
+                        updateVitalTrends(vitals);
+                    }
                 }
-
+                
+                console.log('✅ Vital signs loaded:', vitals?.length || 0);
             } catch (error) {
-                console.error('Failed to load dashboard data:', error);
+                console.error('Error loading vital signs:', error);
             }
+        }
+
+        // Load reminders
+        async function loadReminders() {
+            try {
+                const { data: reminders, error } = await supabase
+                    .from('reminders')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .eq('status', 'active')
+                    .gte('reminder_time', new Date().toISOString())
+                    .order('reminder_time', { ascending: true })
+                    .limit(5);
+
+                if (error) throw error;
+
+                // Update reminders count
+                const reminderCount = reminders?.length || 0;
+                if (document.getElementById('reminderCount')) {
+                    document.getElementById('reminderCount').textContent = reminderCount;
+                }
+                
+                // Update upcoming reminders
+                updateUpcomingReminders(reminders || []);
+                
+                console.log('✅ Reminders loaded:', reminderCount);
+            } catch (error) {
+                console.error('Error loading reminders:', error);
+            }
+        }
+
+        // Load recent AI chat conversations
+        async function loadRecentAIChats() {
+            try {
+                const { data: chats, error } = await supabase
+                    .from('ai_chat_conversations')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false })
+                    .limit(3);
+
+                if (error) throw error;
+
+                // Update AI chat history
+                updateAIChatHistory(chats || []);
+                
+                console.log('✅ AI chat history loaded:', chats?.length || 0);
+            } catch (error) {
+                console.error('Error loading AI chat history:', error);
+            }
+        }
+
+        // Update upcoming appointments in the UI
+        function updateUpcomingAppointments(appointments) {
+            const container = document.getElementById('appointmentsContainer');
+            if (!container) return;
+
+            if (appointments.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-plus"></i>
+                        <p>No upcoming appointments</p>
+                        <button class="btn-primary" onclick="window.location.href='appointments.html'">
+                            Book Appointment
+                        </button>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = appointments.map(appointment => {
+                const date = new Date(appointment.scheduled_date);
+                const isToday = date.toDateString() === new Date().toDateString();
+                const timeStr = date.toLocaleTimeString('en-US', { 
+                    hour: '2-digit', 
+                    minute: '2-digit',
+                    hour12: true 
+                });
+                const dateStr = date.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
+
+                return `
+                    <div class="appointment-card ${isToday ? 'today' : ''}">
+                        <div class="appointment-type ${appointment.appointment_type}">
+                            <i class="fas ${getAppointmentIcon(appointment.appointment_type)}"></i>
+                        </div>
+                        <div class="appointment-details">
+                            <h4>${appointment.appointment_type?.charAt(0).toUpperCase() + appointment.appointment_type?.slice(1) || 'Appointment'}</h4>
+                            <p><strong>${appointment.healthcare_providers?.name || 'Healthcare Provider'}</strong></p>
+                            <p>${appointment.healthcare_providers?.specialty || ''}</p>
+                            <div class="appointment-time">
+                                <i class="fas fa-calendar"></i>
+                                <span>${dateStr} at ${timeStr}</span>
+                            </div>
+                            <div class="appointment-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>${appointment.healthcare_providers?.hospital_name || appointment.location || 'Location TBD'}</span>
+                            </div>
+                        </div>
+                        <div class="appointment-actions">
+                            <button class="action-btn" onclick="viewAppointment('${appointment.id}')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="action-btn edit" onclick="editAppointment('${appointment.id}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        // Update medications list in the UI
+        function updateMedicationsList(medications) {
+            const container = document.getElementById('medicationsContainer');
+            if (!container) return;
+
+            if (medications.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-pills"></i>
+                        <p>No active medications</p>
+                        <button class="btn-primary" onclick="window.location.href='reminders.html'">
+                            Add Medication
+                        </button>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = medications.map(med => `
+                <div class="medication-card">
+                    <div class="med-icon">
+                        <i class="fas fa-pills"></i>
+                    </div>
+                    <div class="med-details">
+                        <h4>${med.medication_name}</h4>
+                        <p>${med.dosage} - ${med.frequency}</p>
+                        <div class="med-schedule">
+                            <i class="fas fa-clock"></i>
+                            <span>Next dose: ${getNextDoseTime(med)}</span>
+                        </div>
+                    </div>
+                    <div class="med-actions">
+                        <button class="action-btn" onclick="markAsTaken('${med.id}')">
+                            <i class="fas fa-check"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update recent assessments
+        function updateRecentAssessments(assessments) {
+            const container = document.getElementById('assessmentsContainer');
+            if (!container) return;
+
+            if (assessments.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-chart-line"></i>
+                        <p>No health assessments yet</p>
+                        <button class="btn-primary" onclick="window.location.href='ai-features.html'">
+                            Start Assessment
+                        </button>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = assessments.map(assessment => {
+                const date = new Date(assessment.created_at);
+                const result = assessment.ai_results?.[0];
+                
+                return `
+                    <div class="assessment-card">
+                        <div class="assessment-type">
+                            <i class="fas ${getAssessmentIcon(assessment.feature_id)}"></i>
+                        </div>
+                        <div class="assessment-details">
+                            <h4>${getAssessmentTitle(assessment.feature_id)}</h4>
+                            <p>Completed ${date.toLocaleDateString()}</p>
+                            ${result ? `
+                                <div class="assessment-score">
+                                    <span>Risk Level: ${getRiskLevel(result.analysis_result)}</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div class="assessment-actions">
+                            <button class="action-btn" onclick="viewAssessment('${assessment.id}')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        // Update AI chat history
+        function updateAIChatHistory(chats) {
+            const container = document.getElementById('aiChatContainer');
+            if (!container) return;
+
+            if (chats.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-robot"></i>
+                        <p>No recent AI conversations</p>
+                        <button class="btn-primary" onclick="window.location.href='ai-health-assistant.html'">
+                            Start AI Chat
+                        </button>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = chats.map(chat => {
+                const date = new Date(chat.created_at);
+                const preview = chat.user_message?.substring(0, 50) + '...';
+                
+                return `
+                    <div class="chat-card">
+                        <div class="chat-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="chat-details">
+                            <h4>AI Health Assistant</h4>
+                            <p>${preview}</p>
+                            <div class="chat-time">
+                                <i class="fas fa-clock"></i>
+                                <span>${date.toLocaleDateString()} ${date.toLocaleTimeString()}</span>
+                            </div>
+                        </div>
+                        <div class="chat-actions">
+                            <button class="action-btn" onclick="continueChat('${chat.session_id}')">
+                                <i class="fas fa-comment"></i>
+                            </button>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        // Show loading states
+        function showLoadingStates() {
+            const loadingElements = [
+                'appointmentCount', 'medicationCount', 'assessmentCount',
+                'avgHeartRate', 'avgBloodPressure', 'currentWeight'
+            ];
+            
+            loadingElements.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                }
+            });
+        }
+
+        // Hide loading states
+        function hideLoadingStates() {
+            // Loading states will be replaced by actual data
+            console.log('✅ Loading states hidden');
+        }
+
+        // Helper functions
+        function getAppointmentIcon(type) {
+            const icons = {
+                'medical': 'fa-stethoscope',
+                'dental': 'fa-tooth',
+                'checkup': 'fa-heartbeat',
+                'consultation': 'fa-user-md',
+                'surgery': 'fa-procedures'
+            };
+            return icons[type] || 'fa-calendar';
+        }
+
+        function getAssessmentIcon(featureId) {
+            const icons = {
+                'symptom-checker': 'fa-diagnoses',
+                'health-assessment': 'fa-heartbeat',
+                'mental-health': 'fa-brain',
+                'nutrition': 'fa-apple-alt'
+            };
+            return icons[featureId] || 'fa-chart-line';
+        }
+
+        function getAssessmentTitle(featureId) {
+            const titles = {
+                'symptom-checker': 'Symptom Analysis',
+                'health-assessment': 'Health Assessment',
+                'mental-health': 'Mental Health Check',
+                'nutrition': 'Nutrition Analysis'
+            };
+            return titles[featureId] || 'Health Assessment';
+        }
+
+        function getRiskLevel(analysisResult) {
+            if (!analysisResult) return 'Unknown';
+            const result = JSON.parse(analysisResult);
+            return result.riskLevel || result.urgency || 'Low';
+        }
+
+        function getNextDoseTime(medication) {
+            // Calculate next dose time based on frequency
+            const now = new Date();
+            const frequency = medication.frequency?.toLowerCase();
+            
+            if (frequency?.includes('daily')) {
+                const tomorrow = new Date(now);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(9, 0, 0, 0); // 9 AM default
+                return tomorrow.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            }
+            
+            return 'Next dose in 6 hours';
+        }
+
+        // Action handlers
+        function viewAppointment(appointmentId) {
+            // Navigate to appointment details
+            window.location.href = `appointments.html?id=${appointmentId}`;
+        }
+
+        function editAppointment(appointmentId) {
+            // Navigate to appointment edit
+            window.location.href = `appointments.html?edit=${appointmentId}`;
+        }
+
+        function viewAssessment(assessmentId) {
+            // Navigate to assessment results
+            window.location.href = `ai-features.html?result=${assessmentId}`;
+        }
+
+        function continueChat(sessionId) {
+            // Navigate to AI chat with session
+            window.location.href = `ai-health-assistant.html?session=${sessionId}`;
+        }
+
+        function markAsTaken(medicationId) {
+            // Mark medication as taken
+            showNotification('success', 'Medication marked as taken');
+            // TODO: Update database
+        }
+
+        // Real-time updates
+        function setupRealTimeUpdates() {
+            // Subscribe to database changes
+            const subscription = supabase
+                .channel('dashboard-updates')
+                .on('postgres_changes', {
+                    event: '*',
+                    schema: 'public',
+                    table: 'appointments',
+                    filter: `user_id=eq.${currentUser.id}`
+                }, () => {
+                    loadAppointments();
+                })
+                .on('postgres_changes', {
+                    event: '*',
+                    schema: 'public',
+                    table: 'prescriptions',
+                    filter: `user_id=eq.${currentUser.id}`
+                }, () => {
+                    loadMedications();
+                })
+                .subscribe();
+
+            console.log('✅ Real-time updates enabled');
+            
+            // Cleanup on page unload
+            window.addEventListener('beforeunload', () => {
+                subscription.unsubscribe();
+            });
         }
 
         // Sign out function
@@ -7575,6 +9606,7 @@
             await loadRealDashboardData();
             loadDashboardData(); // Keep existing mock data for demo
             initializeCalendar();
+            initializeCharts(); // Initialize charts and analytics
             addVoiceSearchCapability();
             updateDateTime();
             
@@ -7654,6 +9686,94 @@
             console.log(`Updating chart for timeframe: ${timeframe}`);
             // Implement chart update logic
         }
+
+        // Additional missing helper functions for dynamic dashboard
+        function updateUpcomingReminders(reminders) {
+            // Update upcoming reminders in UI
+            console.log('Updating reminders:', reminders.length);
+        }
+
+        function updateVitalTrends(vitals) {
+            // Calculate and display vital sign trends
+            if (vitals.length < 2) return;
+            
+            const latest = vitals[0];
+            const previous = vitals[1];
+            
+            // Calculate heart rate trend
+            if (latest.heart_rate && previous.heart_rate) {
+                const trend = latest.heart_rate - previous.heart_rate;
+                console.log(`Heart rate trend: ${trend > 0 ? '+' : ''}${trend} bpm`);
+            }
+        }
+
+        // Show notification helper
+        function showNotification(type, message) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+                color: white;
+                padding: 12px 16px;
+                border-radius: 8px;
+                font-weight: 500;
+                z-index: 10000;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                animation: slideInRight 0.3s ease-out;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                max-width: 400px;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease-out';
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
+        }
+
+        // Add CSS animations for notifications
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            @keyframes fadeOut {
+                from { opacity: 1; }
+                to { opacity: 0; }
+            }
+        `;
+        document.head.appendChild(styleSheet);
+
+        // Initialize real-time updates when authenticated
+        async function initializeEnhancedDashboard() {
+            if (currentUser) {
+                setupRealTimeUpdates();
+                console.log('✅ Enhanced dashboard initialized with real-time updates');
+            }
+        }
     </script>
+
+    <!-- Dashboard Chat Widget -->
+    <script src="../js/dashboard-chat-widget.js"></script>
 </body>
 </html> 

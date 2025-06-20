@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Health Assessments - Medicare Web App</title>
+    <link rel="stylesheet" href="../css/assessment-modern.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="header-container white-bg">
+        <div class="header-content">
+            <h1><i class="fas fa-heartbeat"></i> Health Assessments</h1>
+            <p class="ash-text">Comprehensive 30-question assessments with detailed analysis and PDF reports</p>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <!-- Assessment Selection -->
+        <div id="assessment-selection" class="selection-container white-bg">
+            <h2>Choose Your Assessment</h2>
+            <div class="assessment-grid">
+                <div class="assessment-card ash-bg" onclick="startAssessment('symptom')">
+                    <div class="card-icon">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                    <h3>Symptom Checker</h3>
+                    <p>30-question comprehensive symptom analysis with risk assessment and medical recommendations</p>
+                    <div class="card-features">
+                        <span class="feature"><i class="fas fa-check"></i> Emergency detection</span>
+                        <span class="feature"><i class="fas fa-check"></i> Risk scoring</span>
+                        <span class="feature"><i class="fas fa-check"></i> Care recommendations</span>
+                    </div>
+                </div>
+
+                <div class="assessment-card ash-bg" onclick="startAssessment('diet')">
+                    <div class="card-icon">
+                        <i class="fas fa-apple-alt"></i>
+                    </div>
+                    <h3>Diet Planner</h3>
+                    <p>Personalized nutrition plan with 30 detailed questions covering all dietary aspects</p>
+                    <div class="card-features">
+                        <span class="feature"><i class="fas fa-check"></i> Calorie calculation</span>
+                        <span class="feature"><i class="fas fa-check"></i> Macro planning</span>
+                        <span class="feature"><i class="fas fa-check"></i> Meal schedules</span>
+                    </div>
+                </div>
+
+                <div class="assessment-card ash-bg" onclick="startAssessment('health')">
+                    <div class="card-icon">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <h3>Health Assessment</h3>
+                    <p>Complete health evaluation with lifestyle, risk factors, and personalized recommendations</p>
+                    <div class="card-features">
+                        <span class="feature"><i class="fas fa-check"></i> Health scoring</span>
+                        <span class="feature"><i class="fas fa-check"></i> Risk analysis</span>
+                        <span class="feature"><i class="fas fa-check"></i> Goal setting</span>
+                    </div>
+                </div>
+
+                <div class="assessment-card ash-bg" onclick="startAssessment('mental')">
+                    <div class="card-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>Mental Health</h3>
+                    <p>Comprehensive mental wellness evaluation with stress, mood, and cognitive assessments</p>
+                    <div class="card-features">
+                        <span class="feature"><i class="fas fa-check"></i> Mood tracking</span>
+                        <span class="feature"><i class="fas fa-check"></i> Stress analysis</span>
+                        <span class="feature"><i class="fas fa-check"></i> Coping strategies</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Container -->
+        <div id="progress-container" class="progress-container" style="display: none;">
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <div class="progress-text">0 of 30</div>
+        </div>
+
+        <!-- Assessment Container -->
+        <div id="assessment-container" class="assessment-container" style="display: none;">
+            <!-- Dynamic content will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        let currentAssessment = null;
+        let assessmentType = '';
+
+        function startAssessment(type) {
+            assessmentType = type;
+            
+            // Hide selection, show progress and assessment
+            document.getElementById('assessment-selection').style.display = 'none';
+            document.getElementById('progress-container').style.display = 'block';
+            document.getElementById('assessment-container').style.display = 'block';
+
+            // Load the appropriate assessment
+            switch(type) {
+                case 'symptom':
+                    loadScript('../js/symptom-checker-30q.js', () => {
+                        currentAssessment = new SymptomChecker30Q();
+                        currentAssessment.init();
+                    });
+                    break;
+                case 'diet':
+                    loadScript('../js/diet-planner-30q.js', () => {
+                        currentAssessment = new DietPlanner30Q();
+                        currentAssessment.init();
+                    });
+                    break;
+                case 'health':
+                    loadScript('../js/health-assessment-30q.js', () => {
+                        currentAssessment = new HealthAssessment30Q();
+                        currentAssessment.init();
+                    });
+                    break;
+                case 'mental':
+                    loadScript('../js/mental-health-30q.js', () => {
+                        currentAssessment = new MentalHealthAssessment30Q();
+                        currentAssessment.init();
+                    });
+                    break;
+            }
+        }
+
+        function loadScript(src, callback) {
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = callback;
+            script.onerror = () => {
+                console.error(`Failed to load script: ${src}`);
+                alert('Failed to load assessment. Please try again.');
+                backToSelection();
+            };
+            document.head.appendChild(script);
+        }
+
+        function backToSelection() {
+            document.getElementById('assessment-selection').style.display = 'block';
+            document.getElementById('progress-container').style.display = 'none';
+            document.getElementById('assessment-container').style.display = 'none';
+            currentAssessment = null;
+            assessmentType = '';
+        }
+
+        // Add back button functionality
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && currentAssessment) {
+                if (confirm('Are you sure you want to exit the assessment? Your progress will be lost.')) {
+                    backToSelection();
+                }
+            }
+        });
+    </script>
+
+    <style>
+        .header-container {
+            padding: 30px 0;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+
+        .header-content h1 {
+            font-size: 32px;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header-content h1 i {
+            color: var(--primary-blue);
+            margin-right: 10px;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .selection-container {
+            border-radius: var(--border-radius);
+            padding: 40px;
+            box-shadow: var(--shadow-medium);
+            margin-bottom: 30px;
+        }
+
+        .selection-container h2 {
+            text-align: center;
+            font-size: 28px;
+            color: var(--text-dark);
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .assessment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .assessment-card {
+            border-radius: var(--border-radius);
+            padding: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid var(--border-color);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .assessment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+            border-color: var(--primary-blue);
+        }
+
+        .assessment-card:hover .card-icon i {
+            transform: scale(1.1);
+            color: var(--primary-blue);
+        }
+
+        .card-icon {
+            margin-bottom: 20px;
+        }
+
+        .card-icon i {
+            font-size: 48px;
+            color: var(--ash-dark);
+            transition: var(--transition);
+        }
+
+        .assessment-card h3 {
+            font-size: 22px;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .assessment-card p {
+            color: var(--text-light);
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .card-features {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .feature {
+            font-size: 12px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .feature i {
+            color: var(--success-green);
+            font-size: 10px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-container {
+                padding: 20px 0;
+            }
+
+            .header-content h1 {
+                font-size: 24px;
+            }
+
+            .selection-container {
+                padding: 25px;
+            }
+
+            .selection-container h2 {
+                font-size: 22px;
+            }
+
+            .assessment-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .assessment-card {
+                padding: 25px;
+            }
+
+            .card-icon i {
+                font-size: 36px;
+            }
+
+            .assessment-card h3 {
+                font-size: 18px;
+            }
+
+            .main-container {
+                padding: 0 15px;
+            }
+        }
+
+        /* Loading animation */
+        .assessment-card {
+            animation: fadeInUp 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .assessment-card:nth-child(1) { animation-delay: 0.1s; }
+        .assessment-card:nth-child(2) { animation-delay: 0.2s; }
+        .assessment-card:nth-child(3) { animation-delay: 0.3s; }
+        .assessment-card:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--ash-light);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--ash-medium);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--ash-dark);
+        }
+    </style>
+</body>
+</html> 

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare+ Modern Dashboard - Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .demo-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            font-size: 32px;
+            font-weight: 800;
+            color: #2563eb;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 30px;
+            font-size: 18px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .feature-card {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: left;
+        }
+        
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .feature-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+        
+        .feature-desc {
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+        
+        .cta-button {
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+        }
+        
+        .tech-stack {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .tech-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 15px;
+        }
+        
+        .tech-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .tech-badge {
+            background: #e5e7eb;
+            color: #374151;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="logo">🏥 MediCare+</div>
+        <div class="subtitle">Modern Healthcare Dashboard - 2024 Edition</div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <div class="feature-title">Real-time Analytics</div>
+                <div class="feature-desc">Interactive charts showing vital signs, medication adherence, and health trends with Chart.js integration.</div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <div class="feature-title">AI Health Insights</div>
+                <div class="feature-desc">Smart health recommendations and predictive analytics based on your medical data and patterns.</div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <div class="feature-title">Mobile-First Design</div>
+                <div class="feature-desc">Responsive design optimized for all devices with modern UI components and smooth animations.</div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <div class="feature-title">Modern UI/UX</div>
+                <div class="feature-icon">🔄</div>
+                <div class="feature-title">Real-time Updates</div>
+                <div class="feature-desc">Live data synchronization with appointment scheduling and medication reminders.</div>
+            </div>
+        </div>
+        
+        <a href="html/user-dashboard.html" class="cta-button">
+            🚀 Open Modern Dashboard
+        </a>
+        
+        <div class="tech-stack">
+            <div class="tech-title">Built with Modern Technologies</div>
+            <div class="tech-badges">
+                <span class="tech-badge">Chart.js 4.4</span>
+                <span class="tech-badge">Modern CSS Grid</span>
+                <span class="tech-badge">CSS Variables</span>
+                <span class="tech-badge">Responsive Design</span>
+                <span class="tech-badge">Interactive Widgets</span>
+                <span class="tech-badge">Real-time Updates</span>
+                <span class="tech-badge">Voice Commands</span>
+                <span class="tech-badge">Dark Mode</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

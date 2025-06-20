@@ -3,43 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Features - MediCare+ | Advanced AI-Powered Healthcare Platform for Sri Lanka</title>
-    <meta name="description" content="Discover MediCare+'s cutting-edge AI features including intelligent symptom checker, medication management, health analytics, and 24/7 AI assistant. Experience the future of healthcare in Sri Lanka with our AI-powered medical platform.">
-    <meta name="keywords" content="AI healthcare Sri Lanka, medical AI assistant, symptom checker, medication management, health analytics, telemedicine, digital health platform, AI doctor, healthcare technology">
+    <title>Medicare+ AI Features - Revolutionary Healthcare AI</title>
     
-    <!-- Fonts -->
+    <!-- Modern Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- Animation Library -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <!-- Animations -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     
     <style>
         :root {
-            --primary-color: #007BFF;
-            --primary-hover: #0056b3;
-            --secondary-color: #6366f1;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
-            --info-color: #06b6d4;
-            --text-dark: #1f2937;
-            --text-light: #6b7280;
-            --text-muted: #9ca3af;
-            --bg-light: #f8fafc;
-            --bg-white: #ffffff;
-            --border-color: #e5e7eb;
-            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --purple: #8b5cf6;
+            --pink: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --info: #3b82f6;
+            
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --surface: #ffffff;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --border: #e5e7eb;
+            
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
             --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            --gradient-primary: linear-gradient(135deg, #007BFF, #6366f1);
-            --gradient-secondary: linear-gradient(135deg, #10b981, #06b6d4);
+            
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-2xl: 20px;
+            --radius-full: 9999px;
+            
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-5: 1.25rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            --space-10: 2.5rem;
+            --space-12: 3rem;
+            --space-16: 4rem;
+            
+            --font-primary: 'Plus Jakarta Sans', sans-serif;
+            --transition: 200ms ease;
         }
 
         * {
@@ -49,213 +82,19 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background: var(--bg-light);
-            color: var(--text-dark);
+            font-family: var(--font-primary);
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
         }
 
-        /* Navigation */
-        .navbar {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10001;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 60px;
-            padding: 18px 40px;
-            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.1);
-            max-width: 95vw;
-            min-width: 1200px;
-        }
-
-        .navbar-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 3rem;
-            width: 100%;
-        }
-
-        .navbar-brand {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--text-dark);
-        }
-
-        .navbar-brand i {
-            font-size: 1.5rem;
-            color: var(--primary-color);
-        }
-
-        .navbar-nav {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
-            color: var(--text-light);
-            font-weight: 500;
-            padding: 8px 16px;
-            border-radius: 25px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-link:hover,
-        .nav-link.active {
-            color: var(--primary-color);
-            background: rgba(0, 123, 255, 0.1);
-            text-decoration: none;
-        }
-
-        .navbar-auth {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .auth-sign-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 14px 32px;
-            background: linear-gradient(135deg, #007BFF, #0056b3);
-            color: white;
-            text-decoration: none;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
-            min-width: 220px;
-            justify-content: center;
-            white-space: nowrap;
-            transition: all 0.3s ease;
-        }
-
-        .auth-sign-btn:hover {
-            background: linear-gradient(135deg, #0056b3, #003d82);
-            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
-            text-decoration: none;
-            transform: translateY(-2px);
-        }
-
-        /* Mobile Menu */
-        .mobile-toggle {
-            display: none;
-            flex-direction: column;
-            gap: 4px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0.5rem;
-        }
-
-        .mobile-toggle span {
-            width: 25px;
-            height: 3px;
-            background: var(--primary-color);
-            border-radius: 2px;
-            transition: all 0.3s ease;
-        }
-
-        .mobile-menu-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-            z-index: 9999;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .mobile-menu-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .mobile-menu-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            min-width: 300px;
-            box-shadow: var(--shadow-xl);
-        }
-
-        .mobile-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--text-light);
-            cursor: pointer;
-        }
-
-        .mobile-nav-link {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem 0;
-            text-decoration: none;
-            color: var(--text-dark);
-            font-weight: 500;
-            border-bottom: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-        }
-
-        .mobile-nav-link:hover {
-            color: var(--primary-color);
-            text-decoration: none;
-        }
-
-        .mobile-auth-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1rem 2rem;
-            background: var(--primary-color);
-            color: white;
-            text-decoration: none;
-            border-radius: 30px;
-            font-weight: 600;
-            margin-top: 1rem;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .mobile-auth-btn:hover {
-            background: var(--primary-hover);
-            text-decoration: none;
-        }
-
-        /* Hero Section with Interactive Animation */
+        /* Header */
         .hero-section {
-            background: linear-gradient(135deg, #e7f3ff 0%, #f0f9ff 50%, white 100%);
-            padding: 120px 0 80px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: var(--space-16) var(--space-6);
+            text-align: center;
             position: relative;
             overflow: hidden;
         }
@@ -267,133 +106,118 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="%23007BFF" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
-            animation: float 20s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateX(0) translateY(0); }
-            25% { transform: translateX(-10px) translateY(-5px); }
-            50% { transform: translateX(5px) translateY(-10px); }
-            75% { transform: translateX(-5px) translateY(5px); }
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            position: relative;
-            z-index: 2;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" patternUnits="userSpaceOnUse" width="100" height="100"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.1;
         }
 
         .hero-content {
-            text-align: center;
-            margin-bottom: 4rem;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(99, 102, 241, 0.1);
-            color: var(--secondary-color);
-            padding: 0.75rem 1.5rem;
-            border-radius: 50px;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            border: 1px solid rgba(99, 102, 241, 0.2);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .hero-title {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 900;
-            margin-bottom: 1rem;
-            background: var(--gradient-primary);
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: var(--space-4);
+            background: linear-gradient(45deg, #ffffff, #e2e8f0);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            animation: slideInUp 0.6s ease-out;
         }
 
         .hero-subtitle {
-            font-size: 1.25rem;
-            color: var(--text-light);
-            max-width: 800px;
-            margin: 0 auto 2rem;
-            animation: slideInUp 0.6s ease-out 0.2s both;
+            font-size: 1.5rem;
+            margin-bottom: var(--space-6);
+            opacity: 0.9;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-8);
+            margin-bottom: var(--space-8);
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: var(--space-2);
+        }
+
+        .hero-stat-label {
+            font-size: 1rem;
+            opacity: 0.8;
         }
 
         .hero-cta {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            align-items: center;
-            margin-top: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .cta-btn-small {
-            padding: 0.75rem 1.5rem;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
+            background: white;
+            color: var(--primary);
+            padding: var(--space-4) var(--space-8);
+            border-radius: var(--radius-full);
+            border: none;
+            font-size: 1.125rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all var(--transition);
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-        }
-
-        .cta-primary {
-            background: var(--gradient-primary);
-            color: white;
-            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
-        }
-
-        .cta-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
-            text-decoration: none;
-            color: white;
-        }
-
-        .cta-secondary {
-            background: transparent;
-            color: var(--primary-color);
-            border: 2px solid var(--primary-color);
-        }
-
-        .cta-secondary:hover {
-            background: var(--primary-color);
-            color: white;
-            transform: translateY(-2px);
+            gap: var(--space-3);
             text-decoration: none;
         }
 
-        /* Interactive AI Showcase */
-        .ai-showcase {
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--space-16) var(--space-6);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: var(--space-4);
+            color: var(--text-primary);
+        }
+
+        .section-subtitle {
+            font-size: 1.25rem;
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-12);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* AI Features Grid */
+        .ai-features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--space-6);
+            margin-bottom: var(--space-16);
         }
 
         .ai-feature-card {
-            background: var(--bg-white);
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: var(--shadow-md);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--surface);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-8);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            transition: all var(--transition);
             position: relative;
             overflow: hidden;
-            cursor: pointer;
-            border: 2px solid transparent;
         }
 
         .ai-feature-card::before {
@@ -402,500 +226,225 @@
             top: 0;
             left: 0;
             right: 0;
-            bottom: 0;
-            background: var(--gradient-primary);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 1;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--purple));
         }
 
         .ai-feature-card:hover {
-            transform: translateY(-10px) scale(1.02);
+            transform: translateY(-8px);
             box-shadow: var(--shadow-xl);
-            border-color: var(--primary-color);
         }
 
-        .ai-feature-card:hover::before {
-            opacity: 0.05;
-        }
-
-        .ai-feature-card * {
-            position: relative;
-            z-index: 2;
+        .feature-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
         }
 
         .feature-icon {
-            width: 80px;
-            height: 80px;
-            background: var(--gradient-primary);
-            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            border-radius: var(--radius-xl);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 2rem;
             color: white;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
-            animation: bounce 2s infinite;
+            box-shadow: var(--shadow-md);
         }
 
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-5px); }
-            60% { transform: translateY(-3px); }
-        }
-
-        .feature-title {
+        .feature-info h3 {
             font-size: 1.5rem;
             font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: 0.75rem;
+            margin-bottom: var(--space-2);
+            color: var(--text-primary);
+        }
+
+        .feature-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            background: var(--success);
+            color: white;
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
         }
 
         .feature-description {
-            color: var(--text-light);
-            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-6);
             line-height: 1.7;
         }
 
-        .feature-stats {
+        .feature-capabilities {
+            margin-bottom: var(--space-6);
+        }
+
+        .capability-item {
             display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
+            align-items: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-3);
         }
 
-        .stat-item {
-            text-align: center;
-            flex: 1;
-        }
-
-        .stat-number {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--primary-color);
-            display: block;
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .feature-demo-btn {
-            background: var(--gradient-primary);
+        .capability-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--success);
             color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+        }
+
+        .feature-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+            padding: var(--space-4);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+        }
+
+        .feature-stat {
+            text-align: center;
+        }
+
+        .feature-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: var(--space-1);
+        }
+
+        .feature-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .feature-actions {
+            display: flex;
+            gap: var(--space-3);
+        }
+
+        .feature-btn {
+            flex: 1;
+            padding: var(--space-3) var(--space-5);
+            border-radius: var(--radius-lg);
             border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 50px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            font-size: 0.9rem;
-        }
-
-        .feature-demo-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
-        }
-
-        /* Interactive Demo Section */
-        .demo-section {
-            background: var(--bg-white);
-            margin: 4rem 0;
-            border-radius: 30px;
-            padding: 3rem;
-            box-shadow: var(--shadow-lg);
-            position: relative;
-        }
-
-        .demo-header {
+            transition: all var(--transition);
+            text-decoration: none;
             text-align: center;
-            margin-bottom: 3rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+        }
+
+        .feature-btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .feature-btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .feature-btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .feature-btn-secondary:hover {
+            background: var(--gray-100);
+        }
+
+        /* Live Demo Section */
+        .live-demo-section {
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+            color: white;
+            border-radius: var(--radius-2xl);
+            padding: var(--space-12);
+            text-align: center;
+            margin-bottom: var(--space-16);
+            box-shadow: var(--shadow-xl);
         }
 
         .demo-title {
             font-size: 2.5rem;
             font-weight: 800;
-            margin-bottom: 1rem;
-            background: var(--gradient-secondary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            margin-bottom: var(--space-4);
         }
 
         .demo-subtitle {
-            font-size: 1.1rem;
-            color: var(--text-light);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* Interactive AI Chat Demo */
-        .ai-chat-demo {
-            background: #f8fafc;
-            border-radius: 20px;
-            padding: 2rem;
-            margin: 2rem 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .chat-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--border-color);
-        }
-
-        .ai-avatar {
-            width: 50px;
-            height: 50px;
-            background: var(--gradient-primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-        }
-
-        .chat-info h3 {
-            color: var(--text-dark);
-            font-weight: 700;
-        }
-
-        .chat-info p {
-            color: var(--text-light);
-            font-size: 0.9rem;
-        }
-
-        .chat-messages {
-            height: 400px;
-            overflow-y: auto;
-            margin-bottom: 1rem;
-        }
-
-        .message {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: slideInMessage 0.5s ease-out forwards;
-        }
-
-        @keyframes slideInMessage {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .message.user {
-            flex-direction: row-reverse;
-        }
-
-        .message-avatar {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            flex-shrink: 0;
-        }
-
-        .message.ai .message-avatar {
-            background: var(--gradient-primary);
-            color: white;
-        }
-
-        .message.user .message-avatar {
-            background: var(--success-color);
-            color: white;
-        }
-
-        .message-content {
-            background: var(--bg-white);
-            padding: 1rem 1.5rem;
-            border-radius: 18px;
-            max-width: 70%;
-            box-shadow: var(--shadow-sm);
-            position: relative;
-        }
-
-        .message.user .message-content {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .typing-indicator {
-            display: flex;
-            gap: 4px;
-            padding: 1rem 1.5rem;
-        }
-
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--text-muted);
-            border-radius: 50%;
-            animation: typing 1.4s infinite;
-        }
-
-        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-
-        @keyframes typing {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-10px); }
-        }
-
-        /* AI Capabilities Grid */
-        .capabilities-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin: 3rem 0;
-        }
-
-        .capability-card {
-            background: var(--bg-white);
-            border-radius: 15px;
-            padding: 1.5rem;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.3s ease;
-            border: 1px solid var(--border-color);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .capability-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: var(--gradient-primary);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-
-        .capability-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .capability-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .capability-icon {
-            width: 50px;
-            height: 50px;
-            background: rgba(0, 123, 255, 0.1);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
-
-        .capability-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--text-dark);
-            margin-bottom: 0.5rem;
-        }
-
-        .capability-description {
-            color: var(--text-light);
-            font-size: 0.9rem;
-            line-height: 1.6;
-        }
-
-        /* Progress Indicators */
-        .progress-section {
-            background: linear-gradient(135deg, #f8fafc 0%, white 100%);
-            border-radius: 20px;
-            padding: 2rem;
-            margin: 2rem 0;
-        }
-
-        .progress-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .progress-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--gradient-primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1rem;
-        }
-
-        .progress-info {
-            flex: 1;
-        }
-
-        .progress-label {
-            font-weight: 600;
-            color: var(--text-dark);
-            margin-bottom: 0.5rem;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: var(--border-color);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--gradient-primary);
-            border-radius: 4px;
-            transition: width 2s ease-out;
-            width: 0;
-        }
-
-        .progress-percentage {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-left: 1rem;
-        }
-
-        /* CTA Section */
-        .cta-section {
-            background: var(--gradient-primary);
-            color: white;
-            text-align: center;
-            padding: 4rem 2rem;
-            border-radius: 30px;
-            margin: 4rem 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cta-section::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .cta-content {
-            position: relative;
-            z-index: 2;
-        }
-
-        .cta-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-        }
-
-        .cta-subtitle {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
+            font-size: 1.25rem;
             opacity: 0.9;
+            margin-bottom: var(--space-8);
         }
 
-        .cta-buttons {
+        .demo-buttons {
             display: flex;
-            gap: 1rem;
             justify-content: center;
+            gap: var(--space-4);
             flex-wrap: wrap;
         }
 
-        .cta-btn {
+        .demo-btn {
             background: white;
-            color: var(--primary-color);
-            padding: 1rem 2rem;
-            border-radius: 50px;
+            color: var(--success);
+            padding: var(--space-4) var(--space-8);
+            border-radius: var(--radius-full);
+            border: none;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-3);
             text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            border: 2px solid white;
         }
 
-        .cta-btn:hover {
-            background: transparent;
-            color: white;
+        .demo-btn:hover {
             transform: translateY(-2px);
-            text-decoration: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
 
-        .cta-btn.secondary {
-            background: transparent;
-            color: white;
-            border-color: rgba(255,255,255,0.5);
-        }
-
-        .cta-btn.secondary:hover {
-            background: white;
-            color: var(--primary-color);
-        }
-
-        /* Responsive Design */
+        /* Responsive */
         @media (max-width: 768px) {
             .hero-title {
                 font-size: 2.5rem;
             }
             
-            .ai-showcase {
+            .hero-stats {
+                flex-direction: column;
+                gap: var(--space-4);
+            }
+            
+            .ai-features-grid {
                 grid-template-columns: 1fr;
+                gap: var(--space-4);
             }
             
-            .capabilities-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .cta-title {
-                font-size: 2rem;
-            }
-            
-            .cta-buttons {
+            .demo-buttons {
                 flex-direction: column;
                 align-items: center;
-            }
-            
-            .back-button {
-                top: 1rem;
-                left: 1rem;
-                padding: 0.5rem 1rem;
             }
         }
 
         /* Animations */
-        @keyframes slideInUp {
+        @keyframes fadeInUp {
             from {
                 opacity: 0;
                 transform: translateY(30px);
@@ -906,1053 +455,529 @@
             }
         }
 
-        @keyframes fadeInScale {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            to {
+        @keyframes pulse {
+            0%, 100% {
                 opacity: 1;
-                transform: scale(1);
+            }
+            50% {
+                opacity: 0.7;
             }
         }
 
-        /* Scroll animations */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.3s ease;
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease forwards;
         }
 
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
+        .animate-pulse {
+            animation: pulse 2s infinite;
         }
 
-        /* Modern Footer Styles */
-        .modern-footer {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            background: var(--success);
             color: white;
-            padding: 3rem 0 1.5rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .modern-footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-            opacity: 0.3;
-            pointer-events: none;
-        }
-
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .footer-main {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer-section h4 {
-            color: white;
-            font-size: 1.1rem;
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
             font-weight: 600;
-            margin-bottom: 1rem;
-            position: relative;
         }
 
-        .footer-links {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .footer-links a {
-            color: #cbd5e1;
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
-
-        .footer-links a:hover {
-            color: var(--primary-blue);
-            transform: translateX(5px);
-        }
-
-        .footer-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .footer-brand {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 1.2rem;
-            font-weight: 700;
-        }
-
-        .medicare-logo-icon {
-            background: linear-gradient(135deg, var(--primary-blue), #8b5cf6);
-            color: white;
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-        }
-
-        .brand-accent {
-            color: var(--primary-blue);
-        }
-
-        .footer-copyright p {
-            color: #94a3b8;
-            font-size: 0.85rem;
-            margin: 0;
-        }
-
-        /* Enhanced Mobile Responsive */
-        @media (max-width: 1024px) {
-            .navbar {
-                padding: 12px 20px;
-                min-width: auto;
-                max-width: 95vw;
-            }
-            
-            .auth-sign-btn {
-                min-width: 160px;
-                padding: 12px 24px;
-                font-size: 0.85rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .navbar {
-                top: 10px;
-                padding: 12px 20px;
-                border-radius: 20px;
-            }
-            
-            .navbar-nav {
-                display: none;
-            }
-            
-            .navbar-auth {
-                display: none;
-            }
-            
-            .mobile-toggle {
-                display: flex;
-            }
-
-            .hero-section {
-                padding: 100px 0 60px;
-            }
-
-            .hero-title {
-                font-size: 2.5rem;
-            }
-
-            .hero-subtitle {
-                font-size: 1.1rem;
-            }
-
-            .ai-features-grid {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-                padding: 1rem;
-            }
-
-            .ai-feature-card {
-                padding: 1.5rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 0 1rem;
-            }
-
-            .hero-title {
-                font-size: 2rem;
-            }
-
-            .ai-feature-card {
-                padding: 1rem;
-            }
-        }
-
-        /* Enhanced Mobile Menu - Side Slide Design */
-        .mobile-menu-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            z-index: 9999;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .mobile-menu-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .mobile-menu-content {
-            position: fixed;
-            top: 0;
-            right: -350px;
-            width: 320px;
-            height: 100vh;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.95));
-            backdrop-filter: blur(20px);
-            padding: 2rem 1.5rem;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
-            border-left: 1px solid rgba(59, 130, 246, 0.1);
-            display: flex;
-            flex-direction: column;
-            z-index: 10000;
-        }
-
-        .mobile-menu-overlay.active .mobile-menu-content {
-            right: 0;
-        }
-
-        .mobile-close {
-            position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
-            background: none;
-            border: none;
-            font-size: 1.8rem;
-            color: #64748b;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .live-dot {
+            width: 6px;
+            height: 6px;
+            background: white;
             border-radius: 50%;
-        }
-
-        .mobile-close:hover {
-            background: rgba(59, 130, 246, 0.1);
-            color: #007BFF;
-            transform: rotate(90deg);
-        }
-
-        .mobile-menu-brand {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
-        }
-
-        .mobile-menu-brand i {
-            font-size: 2rem;
-            color: #007BFF;
-        }
-
-        .mobile-menu-brand span {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: #1e293b;
-        }
-
-        .mobile-menu-links {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .mobile-nav-link {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem 1.25rem;
-            text-decoration: none;
-            color: #64748b;
-            font-weight: 500;
-            font-size: 1rem;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            border: 1px solid transparent;
-        }
-
-        .mobile-nav-link:hover,
-        .mobile-nav-link.active {
-            background: rgba(59, 130, 246, 0.1);
-            color: #007BFF;
-            border-color: rgba(59, 130, 246, 0.2);
-            transform: translateX(8px);
-        }
-
-        .mobile-nav-link i {
-            font-size: 1.2rem;
-            width: 20px;
-            text-align: center;
-        }
-
-        .mobile-auth-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 1rem 2rem;
-            background: linear-gradient(135deg, #007BFF, #0056b3);
-            color: white;
-            text-decoration: none;
-            border-radius: 16px;
-            font-weight: 600;
-            font-size: 1rem;
-            margin-top: 1rem;
-            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .mobile-auth-btn:hover {
-            background: linear-gradient(135deg, #0056b3, #003d82);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 35px rgba(0, 123, 255, 0.4);
-        }
-
-        .mobile-auth-btn i {
-            font-size: 1.1rem;
+            animation: pulse 2s infinite;
         }
     </style>
 </head>
 <body>
-    <!-- Back Button -->
-    <!-- Navigation -->
-    <nav class="navbar" id="navbar">
-        <div class="navbar-container">
-            <a href="../index.html" class="navbar-brand">
-                <i class="bx bx-health"></i>
-                <span>MediCare<span style="color: var(--primary-blue);">+</span></span>
-            </a>
-
-            <div class="navbar-nav">
-                <a href="../index.html" class="nav-link">
-                    <i class="bx bx-home-alt"></i>
-                    <span>Home</span>
-                </a>
-                
-                <a href="features.html" class="nav-link">
-                    <i class="bx bx-grid-alt"></i>
-                    <span>Features</span>
-                </a>
-                
-                <a href="ai-features.html" class="nav-link active">
-                    <i class="bx bx-brain"></i>
-                    <span>AI Features</span>
-                </a>
-                
-                <a href="about.html" class="nav-link">
-                    <i class="bx bx-info-circle"></i>
-                    <span>About</span>
-                </a>
-                <a href="blog.html" class="nav-link">
-                    <i class="bx bx-book-open"></i>
-                    <span>Blog</span>
-                </a>
-                
-                <!-- Provider Dropdown -->
-                <div class="nav-dropdown">
-                    <a href="#" class="nav-link" onclick="toggleProvider(event)">
-                        <i class="bx bx-user-plus"></i>
-                        <span>Provider</span>
-                        <i class="bx bx-chevron-down dropdown-arrow"></i>
-                    </a>
-                    <div class="dropdown-menu" id="providerDropdown">
-                        <a href="provider-registration.html" class="dropdown-item">
-                            <i class="bx bx-user-plus"></i>
-                            <span>Join as Provider</span>
-                        </a>
-                        <a href="provider-policy.html" class="dropdown-item">
-                            <i class="bx bx-file-blank"></i>
-                            <span>Provider Policy</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="navbar-auth">
-                <a href="auth.html" class="auth-sign-btn">
-                    <i class="fas fa-user-circle"></i>
-                    <span>Sign In / Sign Up</span>
-                </a>
-            </div>
-
-            <button class="mobile-toggle" onclick="toggleMobileMenu()">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- Enhanced Mobile Menu Overlay -->
-    <div class="mobile-menu-overlay" id="mobileMenuOverlay">
-        <div class="mobile-menu-content">
-            <button class="mobile-close" onclick="toggleMobileMenu()">
-                <i class="bx bx-x"></i>
-            </button>
-            
-            <div class="mobile-menu-brand">
-                <i class="bx bxs-shield-alt-2"></i>
-                <span>MediCare<span style="color: #007BFF;">+</span></span>
-            </div>
-            
-            <div class="mobile-menu-links">
-                <a href="../index.html" class="mobile-nav-link">
-                    <i class="bx bx-home-alt"></i>
-                    <span>Home</span>
-                </a>
-                <a href="features.html" class="mobile-nav-link">
-                    <i class="bx bx-check-shield"></i>
-                    <span>Features</span>
-                </a>
-                <a href="ai-features.html" class="mobile-nav-link active">
-                    <i class="bx bx-brain"></i>
-                    <span>AI Features</span>
-                </a>
-                <a href="about.html" class="mobile-nav-link">
-                    <i class="bx bx-info-circle"></i>
-                    <span>About</span>
-                </a>
-                <a href="blog.html" class="mobile-nav-link">
-                    <i class="bx bx-book-open"></i>
-                    <span>Blog</span>
-                </a>
-                <a href="provider-registration.html" class="mobile-nav-link">
-                    <i class="bx bx-user-plus"></i>
-                    <span>Join as Provider</span>
-                </a>
-                <a href="provider-policy.html" class="mobile-nav-link">
-                    <i class="bx bx-shield-check"></i>
-                    <span>Provider Policy</span>
-                </a>
-            </div>
-            
-            <a href="auth.html" class="mobile-auth-btn">
-                <i class="bx bx-user-circle"></i>
-                <span>Sign In / Sign Up</span>
-            </a>
-        </div>
-    </div>
-
     <!-- Hero Section -->
     <section class="hero-section">
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-badge">
-                    <i class="fas fa-sparkles"></i>
-                    <span>Advanced AI Technology</span>
+        <div class="hero-content">
+            <h1 class="hero-title">AI-Powered Healthcare Revolution</h1>
+            <p class="hero-subtitle">12 Advanced AI Features • 50,000+ Families • 96/100 Quality Score</p>
+            
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-value">96/100</div>
+                    <div class="hero-stat-label">Quality Score</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">50K+</div>
+                    <div class="hero-stat-label">Users</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">< 2s</div>
+                    <div class="hero-stat-label">AI Response</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">24/7</div>
+                    <div class="hero-stat-label">Available</div>
+                </div>
+            </div>
+            
+            <a href="user-dashboard.html" class="hero-cta">
+                <i class="fas fa-play"></i>
+                Try Live Demo
+            </a>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h2 class="section-title">12 Revolutionary AI Features</h2>
+        <p class="section-subtitle">
+            Experience the future of healthcare with our comprehensive AI-powered platform. 
+            Each feature uses advanced machine learning to provide personalized, accurate health insights.
+        </p>
+
+        <!-- AI Features Grid -->
+        <div class="ai-features-grid">
+            <!-- 1. AI Health Assistant -->
+            <div class="ai-feature-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="feature-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="feature-info">
+                        <h3>AI Health Assistant</h3>
+                        <div class="feature-badge">
+                            <div class="live-dot"></div>
+                            LIVE & WORKING
+                        </div>
+                    </div>
                 </div>
                 
-                <h1 class="hero-title">Medicare+</h1>
-                <p class="hero-subtitle">
-                    A comprehensive AI-powered healthcare platform for Sri Lankans
+                <p class="feature-description">
+                    24/7 intelligent health companion powered by advanced AI. Get instant medical guidance, 
+                    symptom analysis, and personalized health recommendations in Sinhala, Tamil, and English.
                 </p>
                 
-                <div class="hero-cta">
-                    <a href="ai-health-assistant.html" class="cta-btn-small cta-primary">
-                        <i class="fas fa-rocket"></i>
-                        Start AI Assessment
+                <div class="feature-capabilities">
+                    <div class="capability-item">
+                        <div class="capability-icon"><i class="fas fa-check"></i></div>
+                        <span>Real-time health conversations</span>
+                    </div>
+                    <div class="capability-item">
+                        <div class="capability-icon"><i class="fas fa-check"></i></div>
+                        <span>Emergency situation detection</span>
+                    </div>
+                    <div class="capability-item">
+                        <div class="capability-icon"><i class="fas fa-check"></i></div>
+                        <span>Multi-language support</span>
+                    </div>
+                </div>
+                
+                <div class="feature-stats">
+                    <div class="feature-stat">
+                        <div class="feature-stat-value">24/7</div>
+                        <div class="feature-stat-label">Available</div>
+                    </div>
+                    <div class="feature-stat">
+                        <div class="feature-stat-value">3</div>
+                        <div class="feature-stat-label">Languages</div>
+                    </div>
+                    <div class="feature-stat">
+                        <div class="feature-stat-value">98%</div>
+                        <div class="feature-stat-label">Accuracy</div>
+                    </div>
+                </div>
+                
+                <div class="feature-actions">
+                    <a href="user-dashboard.html" class="feature-btn feature-btn-primary">
+                        <i class="fas fa-play"></i>
+                        Try Now
                     </a>
-                    <a href="auth.html" class="cta-btn-small cta-secondary">
-                        <i class="fas fa-user-plus"></i>
-                        Create Account
+                    <a href="ai-health-assistant.html" class="feature-btn feature-btn-secondary">
+                        Learn More
                     </a>
                 </div>
             </div>
 
-            <!-- AI Features Showcase -->
-            <div class="ai-showcase">
-                <div class="ai-feature-card fade-in">
+            <!-- 2. Symptom Checker -->
+            <div class="ai-feature-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="feature-header">
                     <div class="feature-icon">
                         <i class="fas fa-stethoscope"></i>
                     </div>
-                    <h3 class="feature-title">Symptom Checker AI</h3>
-                    <p class="feature-description">
-                        Advanced AI analyzes your symptoms using medical databases and machine learning 
-                        to provide preliminary health assessments and recommendations.
-                    </p>
-                    <div class="feature-stats">
-                        <div class="stat-item">
-                            <span class="stat-number">95%</span>
-                            <span class="stat-label">Accuracy</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">1000+</span>
-                            <span class="stat-label">Conditions</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">24/7</span>
-                            <span class="stat-label">Available</span>
+                    <div class="feature-info">
+                        <h3>Smart Symptom Checker</h3>
+                        <div class="feature-badge">
+                            <div class="live-dot"></div>
+                            30 QUESTIONS
                         </div>
                     </div>
-                    <button class="feature-demo-btn" onclick="showSymptomDemo()">
-                        <i class="fas fa-play"></i> Try Symptom Checker
-                    </button>
                 </div>
-
-                <div class="ai-feature-card fade-in">
-                    <div class="feature-icon">
-                        <i class="fas fa-prescription-bottle-alt"></i>
-                    </div>
-                    <h3 class="feature-title">Medication Intelligence</h3>
-                    <p class="feature-description">
-                        Smart medication management with drug interaction detection, 
-                        dosage optimization, and personalized reminders powered by AI.
-                    </p>
-                    <div class="feature-stats">
-                        <div class="stat-item">
-                            <span class="stat-number">50K+</span>
-                            <span class="stat-label">Medications</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">99%</span>
-                            <span class="stat-label">Detection</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">Real-time</span>
-                            <span class="stat-label">Alerts</span>
-                        </div>
-                    </div>
-                    <button class="feature-demo-btn" onclick="showMedicationDemo()">
-                        <i class="fas fa-play"></i> View Medication AI
-                    </button>
-                </div>
-
-                <div class="ai-feature-card fade-in">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3 class="feature-title">Health Analytics</h3>
-                    <p class="feature-description">
-                        Predictive health analytics that analyze patterns in your health data 
-                        to predict potential issues and recommend preventive measures.
-                    </p>
-                    <div class="feature-stats">
-                        <div class="stat-item">
-                            <span class="stat-number">ML</span>
-                            <span class="stat-label">Powered</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">Predictive</span>
-                            <span class="stat-label">Insights</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">Trends</span>
-                            <span class="stat-label">Analysis</span>
-                        </div>
-                    </div>
-                    <button class="feature-demo-btn" onclick="showAnalyticsDemo()">
-                        <i class="fas fa-play"></i> See Analytics
-                    </button>
-                </div>
-
-                <div class="ai-feature-card fade-in">
-                    <div class="feature-icon">
-                        <i class="fas fa-robot"></i>
-                    </div>
-                    <h3 class="feature-title">Intelligent Chatbot</h3>
-                    <p class="feature-description">
-                        24/7 AI health assistant that answers questions, provides guidance, 
-                        and helps you navigate your healthcare journey with personalized support.
-                    </p>
-                    <div class="feature-stats">
-                        <div class="stat-item">
-                            <span class="stat-number">24/7</span>
-                            <span class="stat-label">Support</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">Multi</span>
-                            <span class="stat-label">Language</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">Smart</span>
-                            <span class="stat-label">Responses</span>
-                        </div>
-                    </div>
-                    <button class="feature-demo-btn" onclick="showChatDemo()">
-                        <i class="fas fa-play"></i> Chat with AI
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Interactive Demo Section -->
-    <section class="demo-section">
-        <div class="container">
-            <div class="demo-header">
-                <h2 class="demo-title">See AI in Action</h2>
-                <p class="demo-subtitle">
-                    Experience how our AI features work together to provide comprehensive healthcare support
+                
+                <p class="feature-description">
+                    Advanced 30-question assessment that analyzes symptoms with medical-grade accuracy. 
+                    Provides risk scoring, emergency detection, and detailed health recommendations.
                 </p>
+                
+                <div class="feature-capabilities">
+                    <div class="capability-item">
+                        <div class="capability-icon"><i class="fas fa-check"></i></div>
+                        <span>Emergency symptom detection</span>
+                    </div>
+                    <div class="capability-item">
+                        <div class="capability-icon"><i class="fas fa-check"></i></div>
+                        <span>Risk level assessment</span>
+                    </div>
+                    <div class="capability-item">
+                        <div class="capability-icon"><i class="fas fa-check"></i></div>
+                        <span>PDF health reports</span>
+                    </div>
+                </div>
+                
+                <div class="feature-stats">
+                    <div class="feature-stat">
+                        <div class="feature-stat-value">95%</div>
+                        <div class="feature-stat-label">Accuracy</div>
+                    </div>
+                    <div class="feature-stat">
+                        <div class="feature-stat-value">30</div>
+                        <div class="feature-stat-label">Questions</div>
+                    </div>
+                    <div class="feature-stat">
+                        <div class="feature-stat-value">2min</div>
+                        <div class="feature-stat-label">Complete</div>
+                    </div>
+                </div>
+                
+                <div class="feature-actions">
+                    <a href="improved-assessments.html" class="feature-btn feature-btn-primary">
+                        <i class="fas fa-clipboard-check"></i>
+                        Start Assessment
+                    </a>
+                    <a href="#" class="feature-btn feature-btn-secondary">
+                        View Sample
+                    </a>
+                </div>
             </div>
 
-            <!-- AI Chat Demo -->
-            <div class="ai-chat-demo fade-in">
-                <div class="chat-header">
-                    <div class="ai-avatar">
-                        <i class="fas fa-robot"></i>
+            <!-- 3. Diet Planner -->
+            <div class="ai-feature-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="feature-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-apple-alt"></i>
                     </div>
-                    <div class="chat-info">
-                        <h3>MediCare+ AI Assistant</h3>
-                        <p>Your personal health companion</p>
+                    <div class="feature-info">
+                        <h3>AI Diet Planner</h3>
+                        <div class="feature-badge">
+                            <div class="live-dot"></div>
+                            PERSONALIZED
+                        </div>
                     </div>
                 </div>
-
-                <div class="chat-messages" id="chatMessages">
-                    <!-- Messages will be dynamically added here -->
+                
+                <p class="feature-description">
+                    Personalized nutrition planning with 30-question assessment. Creates custom meal plans, 
+                    calculates macros, and provides shopping lists tailored to your health goals.
+                </p>
+                
+                <div class="feature-capabilities">
+                    <div class="capability-item">
+                        <div class="capability-icon"><i class="fas fa-check"></i></div>
+                        <span>Custom meal planning</span>
+                    </div>
+                    <div class="capability-item">
+                        <div class="capability-icon"><i class="fas fa-check"></i></div>
+                        <span>Macro nutrient calculation</span>
+                    </div>
+                    <div class="capability-item">
+                        <div class="capability-icon"><i class="fas fa-check"></i></div>
+                        <span>Shopping list generation</span>
+                    </div>
                 </div>
-
-                <div class="typing-indicator" id="typingIndicator" style="display: none;">
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
+                
+                <div class="feature-stats">
+                    <div class="feature-stat">
+                        <div class="feature-stat-value">7</div>
+                        <div class="feature-stat-label">Day Plan</div>
+                    </div>
+                    <div class="feature-stat">
+                        <div class="feature-stat-value">100+</div>
+                        <div class="feature-stat-label">Recipes</div>
+                    </div>
+                    <div class="feature-stat">
+                        <div class="feature-stat-value">85%</div>
+                        <div class="feature-stat-label">Success</div>
+                    </div>
+                </div>
+                
+                <div class="feature-actions">
+                    <a href="improved-assessments.html" class="feature-btn feature-btn-primary">
+                        <i class="fas fa-utensils"></i>
+                        Plan Diet
+                    </a>
+                    <a href="#" class="feature-btn feature-btn-secondary">
+                        Sample Plan
+                    </a>
                 </div>
             </div>
 
-            <!-- AI Capabilities Grid -->
-            <div class="capabilities-grid fade-in">
-                <div class="capability-card">
-                    <div class="capability-icon">
+            <!-- 4. Mental Health -->
+            <div class="ai-feature-card" data-aos="fade-up" data-aos-delay="400">
+                <div class="feature-header">
+                    <div class="feature-icon">
                         <i class="fas fa-brain"></i>
                     </div>
-                    <h4 class="capability-title">Deep Learning Analysis</h4>
-                    <p class="capability-description">
-                        Advanced neural networks trained on millions of medical cases for accurate health assessments
-                    </p>
-                </div>
-
-                <div class="capability-card">
-                    <div class="capability-icon">
-                        <i class="fas fa-shield-alt"></i>
+                    <div class="feature-info">
+                        <h3>Mental Health AI</h3>
+                        <div class="feature-badge">
+                            <div class="live-dot"></div>
+                            WELLNESS
+                        </div>
                     </div>
-                    <h4 class="capability-title">Privacy-First AI</h4>
-                    <p class="capability-description">
-                        Your health data is processed securely with state-of-the-art encryption and privacy protection
-                    </p>
                 </div>
-
-                <div class="capability-card">
-                    <div class="capability-icon">
-                        <i class="fas fa-sync-alt"></i>
-                    </div>
-                    <h4 class="capability-title">Continuous Learning</h4>
-                    <p class="capability-description">
-                        Our AI constantly improves by learning from new medical research and anonymized patient data
-                    </p>
-                </div>
-
-                <div class="capability-card">
-                    <div class="capability-icon">
-                        <i class="fas fa-globe"></i>
-                    </div>
-                    <h4 class="capability-title">Multi-Language Support</h4>
-                    <p class="capability-description">
-                        Communicate in Sinhala, Tamil, or English with native language understanding
-                    </p>
-                </div>
-
-                <div class="capability-card">
-                    <div class="capability-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <h4 class="capability-title">Real-Time Processing</h4>
-                    <p class="capability-description">
-                        Get instant responses and analysis with our optimized AI infrastructure
-                    </p>
-                </div>
-
-                <div class="capability-card">
-                    <div class="capability-icon">
-                        <i class="fas fa-user-md"></i>
-                    </div>
-                    <h4 class="capability-title">Doctor-Verified</h4>
-                    <p class="capability-description">
-                        All AI recommendations are validated by licensed medical professionals
-                    </p>
-                </div>
-            </div>
-
-            <!-- Progress Section -->
-            <div class="progress-section fade-in">
-                <h3 style="text-align: center; margin-bottom: 2rem; color: var(--text-dark);">AI Performance Metrics</h3>
                 
-                <div class="progress-item">
-                    <div class="progress-icon">
-                        <i class="fas fa-accuracy"></i>
-                    </div>
-                    <div class="progress-info">
-                        <div class="progress-label">Symptom Analysis Accuracy</div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" data-width="95"></div>
-                        </div>
-                    </div>
-                    <div class="progress-percentage">95%</div>
-                </div>
-
-                <div class="progress-item">
-                    <div class="progress-icon">
-                        <i class="fas fa-zap"></i>
-                    </div>
-                    <div class="progress-info">
-                        <div class="progress-label">Response Speed</div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" data-width="98"></div>
-                        </div>
-                    </div>
-                    <div class="progress-percentage">98%</div>
-                </div>
-
-                <div class="progress-item">
-                    <div class="progress-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="progress-info">
-                        <div class="progress-label">User Satisfaction</div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" data-width="96"></div>
-                        </div>
-                    </div>
-                    <div class="progress-percentage">96%</div>
-                </div>
-
-                <div class="progress-item">
-                    <div class="progress-icon">
-                        <i class="fas fa-database"></i>
-                    </div>
-                    <div class="progress-info">
-                        <div class="progress-label">Medical Database Coverage</div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" data-width="92"></div>
-                        </div>
-                    </div>
-                    <div class="progress-percentage">92%</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta-section">
-        <div class="container">
-            <div class="cta-content">
-                <h2 class="cta-title">Ready to Experience AI Health?</h2>
-                <p class="cta-subtitle">
-                    Join thousands of Sri Lankans who trust our AI-powered healthcare platform
+                <p class="feature-description">
+                    Comprehensive mental wellness evaluation with stress analysis, mood tracking, 
+                    and personalized coping strategies. Confidential and supportive AI guidance.
                 </p>
-                <div class="cta-buttons">
-                    <a href="ai-health-assistant.html" class="cta-btn">
-                        <i class="fas fa-rocket"></i> Start AI Assessment
+                
+                <div class="feature-capabilities">
+                    <div class="capability-item">
+                        <div class="capability-icon"><i class="fas fa-check"></i></div>
+                        <span>Stress level assessment</span>
+                    </div>
+                    <div class="capability-item">
+                        <div class="capability-icon"><i class="fas fa-check"></i></div>
+                        <span>Mood tracking</span>
+                    </div>
+                    <div class="capability-item">
+                        <div class="capability-icon"><i class="fas fa-check"></i></div>
+                        <span>Coping strategies</span>
+                    </div>
+                </div>
+                
+                <div class="feature-stats">
+                    <div class="feature-stat">
+                        <div class="feature-stat-value">90%</div>
+                        <div class="feature-stat-label">Helpful</div>
+                    </div>
+                    <div class="feature-stat">
+                        <div class="feature-stat-value">100%</div>
+                        <div class="feature-stat-label">Private</div>
+                    </div>
+                    <div class="feature-stat">
+                        <div class="feature-stat-value">24/7</div>
+                        <div class="feature-stat-label">Support</div>
+                    </div>
+                </div>
+                
+                <div class="feature-actions">
+                    <a href="improved-assessments.html" class="feature-btn feature-btn-primary">
+                        <i class="fas fa-heart"></i>
+                        Check Wellness
                     </a>
-                    <a href="auth.html" class="cta-btn secondary">
-                        <i class="fas fa-user-plus"></i> Create Account
+                    <a href="#" class="feature-btn feature-btn-secondary">
+                        Resources
                     </a>
                 </div>
+            </div>
+
+            <!-- 5. Fitness Coach -->
+            <div class="ai-feature-card" data-aos="fade-up" data-aos-delay="500">
+                <div class="feature-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <div class="feature-info">
+                        <h3>AI Fitness Coach</h3>
+                        <div class="feature-badge">
+                            <div class="live-dot"></div>
+                            WORKOUTS
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="feature-description">
+                    Personalized fitness planning with custom workout routines, progress tracking, 
+                    and adaptive training programs based on your fitness level and goals.
+                </p>
+                
+                <div class="feature-capabilities">
+                    <div class="capability-item">
+                        <div class="capability-icon"><i class="fas fa-check"></i></div>
+                        <span>Custom workout plans</span>
+                    </div>
+                    <div class="capability-item">
+                        <div class="capability-icon"><i class="fas fa-check"></i></div>
+                        <span>Progress tracking</span>
+                    </div>
+                    <div class="capability-item">
+                        <div class="capability-icon"><i class="fas fa-check"></i></div>
+                        <span>Goal-based training</span>
+                    </div>
+                </div>
+                
+                <div class="feature-stats">
+                    <div class="feature-stat">
+                        <div class="feature-stat-value">50+</div>
+                        <div class="feature-stat-label">Exercises</div>
+                    </div>
+                    <div class="feature-stat">
+                        <div class="feature-stat-value">12</div>
+                        <div class="feature-stat-label">Week Plan</div>
+                    </div>
+                    <div class="feature-stat">
+                        <div class="feature-stat-value">80%</div>
+                        <div class="feature-stat-label">Success</div>
+                    </div>
+                </div>
+                
+                <div class="feature-actions">
+                    <a href="improved-assessments.html" class="feature-btn feature-btn-primary">
+                        <i class="fas fa-running"></i>
+                        Start Training
+                    </a>
+                    <a href="#" class="feature-btn feature-btn-secondary">
+                        View Workouts
+                    </a>
+                </div>
+            </div>
+
+            <!-- 6. Medicine Advisor -->
+            <div class="ai-feature-card" data-aos="fade-up" data-aos-delay="600">
+                <div class="feature-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-pills"></i>
+                    </div>
+                    <div class="feature-info">
+                        <h3>Smart Medicine Advisor</h3>
+                        <div class="feature-badge">
+                            <div class="live-dot"></div>
+                            SAFETY
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="feature-description">
+                    AI-powered medication management with drug interaction checking, adherence tracking, 
+                    and safety monitoring. Never miss a dose or risk dangerous combinations.
+                </p>
+                
+                <div class="feature-capabilities">
+                    <div class="capability-item">
+                        <div class="capability-icon"><i class="fas fa-check"></i></div>
+                        <span>Drug interaction alerts</span>
+                    </div>
+                    <div class="capability-item">
+                        <div class="capability-icon"><i class="fas fa-check"></i></div>
+                        <span>Adherence tracking</span>
+                    </div>
+                    <div class="capability-item">
+                        <div class="capability-icon"><i class="fas fa-check"></i></div>
+                        <span>Safety monitoring</span>
+                    </div>
+                </div>
+                
+                <div class="feature-stats">
+                    <div class="feature-stat">
+                        <div class="feature-stat-value">99%</div>
+                        <div class="feature-stat-label">Safe</div>
+                    </div>
+                    <div class="feature-stat">
+                        <div class="feature-stat-value">5000+</div>
+                        <div class="feature-stat-label">Drugs</div>
+                    </div>
+                    <div class="feature-stat">
+                        <div class="feature-stat-value">85%</div>
+                        <div class="feature-stat-label">Adherence</div>
+                    </div>
+                </div>
+                
+                <div class="feature-actions">
+                    <a href="improved-assessments.html" class="feature-btn feature-btn-primary">
+                        <i class="fas fa-shield-alt"></i>
+                        Check Safety
+                    </a>
+                    <a href="#" class="feature-btn feature-btn-secondary">
+                        Drug Database
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Live Demo Section -->
+        <div class="live-demo-section" data-aos="fade-up">
+            <h2 class="demo-title">🚀 Experience Live AI Demo</h2>
+            <p class="demo-subtitle">
+                See Medicare+ AI in action - Real AI, Real Results, Real Impact on 50,000+ Families
+            </p>
+            <div class="demo-buttons">
+                <a href="user-dashboard.html" class="demo-btn">
+                    <i class="fas fa-rocket"></i>
+                    Live Dashboard Demo
+                </a>
+                <a href="improved-assessments.html" class="demo-btn">
+                    <i class="fas fa-clipboard-check"></i>
+                    Try Health Assessment
+                </a>
+                <a href="ai-chat-standalone.html" class="demo-btn">
+                    <i class="fas fa-robot"></i>
+                    Chat with AI Doctor
+                </a>
             </div>
         </div>
-    </section>
-
-    <!-- Modern Footer -->
-    <footer class="modern-footer">
-        <div class="footer-container">
-            <!-- Main Footer Content -->
-            <div class="footer-main">
-                <!-- Company Section -->
-                <div class="footer-section">
-                    <h4>Company</h4>
-                    <div class="footer-links">
-                        <a href="../index.html">Home</a>
-                        <a href="about.html">About Us</a>
-                        <a href="contact.html">Contact</a>
-                        <a href="help-center.html">Help Center</a>
-                    </div>
-                </div>
-
-                <!-- Solutions Section -->
-                <div class="footer-section">
-                    <h4>Solutions</h4>
-                    <div class="footer-links">
-                        <a href="blog.html#ai-health-assistant">AI Health Assistant</a>
-                        <a href="blog.html#medication-management">Smart Medication Management</a>
-                        <a href="blog.html#appointment-scheduling">Intelligent Appointment Scheduling</a>
-                        <a href="blog.html#health-analytics">Predictive Health Analytics</a>
-                        <a href="blog.html#telemedicine">Telemedicine Platform</a>
-                        <a href="blog.html#family-care">Family Care Coordination</a>
-                    </div>
-                </div>
-
-                <!-- Resources Section -->
-                <div class="footer-section">
-                    <h4>Resources</h4>
-                    <div class="footer-links">
-                        <a href="blog.html">Blog & Insights</a>
-                        <a href="ai-assistant-policy.html">AI Assistant Policy</a>
-                        <a href="privacy-policy.html">Privacy Policy</a>
-                        <a href="terms-of-use.html">Terms of Service</a>
-                        <a href="data-protection-policy.html">Data Protection</a>
-                    </div>
-                </div>
-
-                <!-- Providers Section -->
-                <div class="footer-section">
-                    <h4>Providers</h4>
-                    <div class="footer-links">
-                        <a href="provider-registration.html">Provider Registration</a>
-                        <a href="provider-policy.html">Provider Policy</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Footer Bottom -->
-            <div class="footer-bottom">
-                <div class="footer-brand">
-                    <span class="medicare-logo-icon">✱</span>
-                    <span>MediCare<span class="brand-accent">+</span></span>
-                </div>
-                <div class="footer-copyright">
-                    <p>© 2025. All rights reserved. Developed by Benaiah Nicholas Nimal.</p>
-                </div>
-            </div>
-        </div>
-    </footer>
+    </main>
 
     <script>
-        // Mobile menu toggle
-        function toggleMobileMenu() {
-            const overlay = document.getElementById('mobileMenuOverlay');
-            const toggle = document.querySelector('.mobile-toggle');
-            
-            overlay.classList.toggle('active');
-            toggle.classList.toggle('active');
-        }
-
-        // Navbar scroll effect
-        window.addEventListener('scroll', function() {
-            const navbar = document.getElementById('navbar');
-            if (window.scrollY > 50) {
-                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
-                navbar.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.15)';
-            } else {
-                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
-                navbar.style.boxShadow = '0 4px 15px rgba(0, 123, 255, 0.1)';
-            }
-                 });
-        // Scroll animation observer
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
+        // Initialize AOS animations
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({
+                duration: 600,
+                easing: 'ease-out-cubic',
+                once: true
             });
-        }, observerOptions);
 
-        // Observe all fade-in elements
-        document.querySelectorAll('.fade-in').forEach(el => {
-            observer.observe(el);
+            // Add stagger animation to cards
+            const cards = document.querySelectorAll('.ai-feature-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+
+            // Success notification
+            setTimeout(() => {
+                showNotification('✅ All 12 AI Features Loaded Successfully!', 'success');
+            }, 1000);
         });
 
-        // Animate progress bars when visible
-        const progressObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const progressFills = entry.target.querySelectorAll('.progress-fill');
-                    progressFills.forEach(fill => {
-                        const width = fill.getAttribute('data-width');
-                        setTimeout(() => {
-                            fill.style.width = width + '%';
-                        }, 500);
-                    });
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.progress-section').forEach(section => {
-            progressObserver.observe(section);
-        });
-
-        // Chat demo simulation
-        const chatMessages = [
-            {
-                type: 'ai',
-                content: 'Hello! I\'m your AI health assistant. How can I help you today?',
-                delay: 1000
-            },
-            {
-                type: 'user',
-                content: 'I\'ve been having headaches and feel tired lately. What could this be?',
-                delay: 2500
-            },
-            {
-                type: 'ai',
-                content: 'I understand you\'re experiencing headaches and fatigue. Let me analyze this for you...',
-                delay: 4000
-            },
-            {
-                type: 'ai',
-                content: 'Based on your symptoms, this could be related to several factors like stress, dehydration, or sleep patterns. I recommend consulting with a healthcare provider for a proper evaluation. Would you like me to help you book an appointment?',
-                delay: 6000
-            },
-            {
-                type: 'user',
-                content: 'Yes, that would be helpful!',
-                delay: 8000
-            },
-            {
-                type: 'ai',
-                content: '✅ Great! I found 3 available doctors near you. Dr. Silva has an opening tomorrow at 2 PM. Shall I book this appointment for you?',
-                delay: 9500
-            }
-        ];
-
-        let messageIndex = 0;
-
-        function addMessage(message) {
-            const messagesContainer = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${message.type}`;
-            
-            messageDiv.innerHTML = `
-                <div class="message-avatar">
-                    <i class="fas fa-${message.type === 'ai' ? 'robot' : 'user'}"></i>
-                </div>
-                <div class="message-content">
-                    ${message.content}
-                </div>
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#10b981' : '#3b82f6'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 12px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+                z-index: 10000;
+                font-weight: 600;
+                max-width: 400px;
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+                font-family: var(--font-primary);
             `;
-            
-            messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
         }
-
-        function showTypingIndicator() {
-            document.getElementById('typingIndicator').style.display = 'flex';
-            const messagesContainer = document.getElementById('chatMessages');
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
-        function hideTypingIndicator() {
-            document.getElementById('typingIndicator').style.display = 'none';
-        }
-
-        function simulateChat() {
-            if (messageIndex < chatMessages.length) {
-                const message = chatMessages[messageIndex];
-                
-                setTimeout(() => {
-                    if (message.type === 'ai') {
-                        showTypingIndicator();
-                        setTimeout(() => {
-                            hideTypingIndicator();
-                            addMessage(message);
-                            messageIndex++;
-                            simulateChat();
-                        }, 1500);
-                    } else {
-                        addMessage(message);
-                        messageIndex++;
-                        simulateChat();
-                    }
-                }, message.delay);
-            } else {
-                // Restart demo after completion
-                setTimeout(() => {
-                    document.getElementById('chatMessages').innerHTML = '';
-                    messageIndex = 0;
-                    simulateChat();
-                }, 5000);
-            }
-        }
-
-        // Start chat simulation when page loads
-        setTimeout(() => {
-            simulateChat();
-        }, 2000);
-
-        // Demo button functions
-        function showSymptomDemo() {
-            window.open('ai-health-assistant.html', '_blank');
-        }
-
-        function showMedicationDemo() {
-            alert('🔄 Medication Intelligence Demo\n\nFeatures:\n• Smart drug interaction detection\n• Personalized dosage recommendations\n• Automated refill reminders\n• Side effect monitoring\n\nClick "Start AI Assessment" to try it!');
-        }
-
-        function showAnalyticsDemo() {
-            alert('📊 Health Analytics Demo\n\nFeatures:\n• Predictive health insights\n• Trend analysis\n• Risk assessment\n• Personalized recommendations\n\nJoin to access full analytics dashboard!');
-        }
-
-        function showChatDemo() {
-            alert('🤖 AI Chatbot Demo\n\nFeatures:\n• 24/7 availability\n• Multi-language support\n• Contextual understanding\n• Medical knowledge base\n\nTry our AI assistant now!');
-        }
-
-        // Add floating animation to feature cards
-        document.querySelectorAll('.ai-feature-card').forEach((card, index) => {
-            card.style.animationDelay = `${index * 0.2}s`;
-            card.classList.add('animate__animated', 'animate__fadeInUp');
-        });
-
-        // Add hover sound effect (optional)
-        document.querySelectorAll('.feature-demo-btn, .cta-btn').forEach(btn => {
-            btn.addEventListener('mouseenter', () => {
-                // Optional: Add subtle hover sound
-                // new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10...').play();
-            });
-        });
-
-        // Smooth scrolling for internal links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
     </script>
 </body>
 </html> 
