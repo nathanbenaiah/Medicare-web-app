@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare+ - Enhanced AI-Powered Dashboard</title>
+    
+    <!-- Modern Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Enhanced Icon Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Advanced Charting -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.44.0/dist/apexcharts.min.js"></script>
+    
+    <!-- Backend Integration -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
+    <style>
+        :root {
+            /* Enhanced Color Palette - Inspired by Epic MyChart and modern healthcare apps */
+            --primary: #0066cc;
+            --primary-light: #3b82f6;
+            --primary-dark: #004499;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --purple: #8b5cf6;
+            --pink: #ec4899;
+            
+            /* Healthcare-specific colors */
+            --health-excellent: #10b981;
+            --health-good: #84cc16;
+            --health-fair: #f59e0b;
+            --health-poor: #ef4444;
+            --emergency: #dc2626;
+            
+            /* Neutral Colors */
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            
+            /* Background & Surface */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --surface: #ffffff;
+            --surface-hover: #f8fafc;
+            
+            /* Text Colors */
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-tertiary: #94a3b8;
+            --text-inverse: #ffffff;
+            
+            /* Borders & Shadows */
+            --border: #e2e8f0;
+            --border-light: #f1f5f9;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            
+            /* Border Radius */
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-2xl: 24px;
+            
+            /* Spacing */
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            --space-12: 3rem;
+            
+            /* Typography */
+            --font-primary: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-secondary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            
+            /* Transitions */
+            --transition: 0.2s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Enhanced Layout */
+        .dashboard-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Modern Header */
+        .enhanced-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--text-inverse);
+            padding: var(--space-6) var(--space-8);
+            box-shadow: var(--shadow-lg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+
+        .ai-assistant-trigger {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-inverse);
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            font-weight: 500;
+        }
+
+        .ai-assistant-trigger:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            cursor: pointer;
+            padding: var(--space-2);
+            border-radius: var(--radius-lg);
+            transition: var(--transition);
+        }
+
+        .user-profile:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            padding: var(--space-8);
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Welcome Section with AI Insights */
+        .welcome-section {
+            background: var(--surface);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-8);
+            margin-bottom: var(--space-8);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, var(--primary), var(--purple));
+            opacity: 0.05;
+            border-radius: 50%;
+            transform: translate(50px, -50px);
+        }
+
+        .welcome-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-greeting {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: var(--space-2);
+            color: var(--text-primary);
+        }
+
+        .welcome-subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-6);
+        }
+
+        .ai-insights-banner {
+            background: linear-gradient(135deg, var(--purple), var(--pink));
+            color: var(--text-inverse);
+            padding: var(--space-4);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            margin-top: var(--space-6);
+        }
+
+        .ai-insights-banner i {
+            font-size: 24px;
+        }
+
+        .ai-insight-text {
+            flex: 1;
+        }
+
+        .ai-insight-title {
+            font-weight: 600;
+            margin-bottom: var(--space-1);
+        }
+
+        .ai-insight-desc {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        /* Enhanced Quick Stats */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--space-6);
+            margin-bottom: var(--space-8);
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+
+        .stat-card.health-score::before { background: var(--health-excellent); }
+        .stat-card.appointments::before { background: var(--primary); }
+        .stat-card.medications::before { background: var(--secondary); }
+        .stat-card.vitals::before { background: var(--accent); }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-4);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--text-inverse);
+        }
+
+        .stat-icon.health { background: linear-gradient(135deg, var(--health-excellent), var(--secondary)); }
+        .stat-icon.calendar { background: linear-gradient(135deg, var(--primary), var(--primary-light)); }
+        .stat-icon.pills { background: linear-gradient(135deg, var(--secondary), var(--health-excellent)); }
+        .stat-icon.heart { background: linear-gradient(135deg, var(--accent), var(--pink)); }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+        }
+
+        .stat-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-3);
+        }
+
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .trend-positive { color: var(--health-excellent); }
+        .trend-neutral { color: var(--text-secondary); }
+        .trend-negative { color: var(--health-poor); }
+
+        /* Enhanced Widget Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--space-8);
+            margin-bottom: var(--space-8);
+        }
+
+        .widget {
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .widget:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .widget-header {
+            padding: var(--space-6);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .widget-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .widget-title i {
+            color: var(--primary);
+        }
+
+        .view-all-btn {
+            background: var(--primary);
+            color: var(--text-inverse);
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .view-all-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .widget-content {
+            padding: var(--space-6);
+        }
+
+        /* AI Health Insights Widget */
+        .ai-insights-widget {
+            background: linear-gradient(135deg, var(--purple), var(--primary));
+            color: var(--text-inverse);
+        }
+
+        .ai-insights-widget .widget-header {
+            border-bottom-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .insight-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            margin-bottom: var(--space-3);
+            backdrop-filter: blur(10px);
+        }
+
+        .insight-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .insight-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-2);
+        }
+
+        .insight-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .insight-title {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .insight-description {
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        /* Appointments Timeline */
+        .appointment-item {
+            display: flex;
+            gap: var(--space-4);
+            padding: var(--space-4);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-3);
+            background: var(--bg-tertiary);
+            transition: var(--transition);
+        }
+
+        .appointment-item:hover {
+            background: var(--surface-hover);
+            transform: translateX(4px);
+        }
+
+        .appointment-time {
+            background: var(--primary);
+            color: var(--text-inverse);
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 14px;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .appointment-details {
+            flex: 1;
+        }
+
+        .appointment-title {
+            font-weight: 600;
+            margin-bottom: var(--space-1);
+        }
+
+        .appointment-doctor {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: var(--space-1);
+        }
+
+        .appointment-type {
+            background: var(--secondary);
+            color: var(--text-inverse);
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        /* Health Metrics Chart */
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        /* AI Chat Interface */
+        .ai-chat-interface {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            height: 500px;
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .ai-chat-header {
+            background: linear-gradient(135deg, var(--primary), var(--purple));
+            color: var(--text-inverse);
+            padding: var(--space-4);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ai-chat-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .ai-status {
+            width: 8px;
+            height: 8px;
+            background: var(--health-excellent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .chat-close {
+            background: none;
+            border: none;
+            color: var(--text-inverse);
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .ai-chat-messages {
+            flex: 1;
+            padding: var(--space-4);
+            overflow-y: auto;
+        }
+
+        .chat-message {
+            margin-bottom: var(--space-4);
+            display: flex;
+            gap: var(--space-3);
+        }
+
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: var(--text-inverse);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .message-content {
+            background: var(--bg-tertiary);
+            padding: var(--space-3);
+            border-radius: var(--radius-lg);
+            flex: 1;
+        }
+
+        .chat-message.user .message-content {
+            background: var(--primary);
+            color: var(--text-inverse);
+        }
+
+        .ai-chat-input {
+            padding: var(--space-4);
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: var(--space-2);
+        }
+
+        .chat-input {
+            flex: 1;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-3);
+            outline: none;
+        }
+
+        .chat-send {
+            background: var(--primary);
+            color: var(--text-inverse);
+            border: none;
+            border-radius: var(--radius-lg);
+            padding: var(--space-3);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .chat-send:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Floating AI Assistant */
+        .ai-float-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--purple), var(--primary));
+            border-radius: 50%;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-inverse);
+            font-size: 24px;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 999;
+        }
+
+        .ai-float-button:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-xl);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-content {
+                padding: var(--space-4);
+            }
+            
+            .ai-chat-interface {
+                width: 100%;
+                height: 100%;
+                bottom: 0;
+                right: 0;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Enhanced Header -->
+        <header class="enhanced-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <div class="logo-text">MediCare+</div>
+                </div>
+                
+                <div class="header-actions">
+                    <button class="ai-assistant-trigger" onclick="toggleAIChat()">
+                        <i class="fas fa-robot"></i>
+                        AI Assistant
+                    </button>
+                    
+                    <div class="user-profile">
+                        <div class="user-avatar">
+                            <span id="userInitials">JD</span>
+                        </div>
+                        <div class="user-info">
+                            <div class="user-name">John Doe</div>
+                            <div class="user-status">Patient ID: #12345</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Welcome Section with AI Insights -->
+            <section class="welcome-section">
+                <div class="welcome-content">
+                    <h1 class="welcome-greeting">Good morning, John! 👋</h1>
+                    <p class="welcome-subtitle">Here's your personalized health overview powered by AI insights</p>
+                    
+                    <div class="ai-insights-banner">
+                        <i class="fas fa-brain"></i>
+                        <div class="ai-insight-text">
+                            <div class="ai-insight-title">AI Health Insight</div>
+                            <div class="ai-insight-desc">Your blood pressure readings show improvement. Consider maintaining your current exercise routine.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Enhanced Quick Stats -->
+            <section class="quick-stats">
+                <div class="stat-card health-score" onclick="viewHealthScore()">
+                    <div class="stat-header">
+                        <div class="stat-icon health">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">85</div>
+                    <div class="stat-label">Health Score</div>
+                    <div class="stat-trend trend-positive">
+                        <i class="fas fa-arrow-up"></i>
+                        +5 this week
+                    </div>
+                </div>
+
+                <div class="stat-card appointments" onclick="viewAppointments()">
+                    <div class="stat-header">
+                        <div class="stat-icon calendar">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Upcoming Appointments</div>
+                    <div class="stat-trend trend-neutral">
+                        <i class="fas fa-clock"></i>
+                        Next: Tomorrow 2PM
+                    </div>
+                </div>
+
+                <div class="stat-card medications" onclick="viewMedications()">
+                    <div class="stat-header">
+                        <div class="stat-icon pills">
+                            <i class="fas fa-pills"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">Active Medications</div>
+                    <div class="stat-trend trend-positive">
+                        <i class="fas fa-check"></i>
+                        95% adherence
+                    </div>
+                </div>
+
+                <div class="stat-card vitals" onclick="viewVitals()">
+                    <div class="stat-header">
+                        <div class="stat-icon heart">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">Normal</div>
+                    <div class="stat-label">Latest Vitals</div>
+                    <div class="stat-trend trend-positive">
+                        <i class="fas fa-arrow-up"></i>
+                        Improving trend
+                    </div>
+                </div>
+            </section>
+
+            <!-- Enhanced Dashboard Grid -->
+            <section class="dashboard-grid">
+                <!-- Main Content Area -->
+                <div class="main-widgets">
+                    <!-- Upcoming Appointments -->
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h3 class="widget-title">
+                                <i class="fas fa-calendar-check"></i>
+                                Upcoming Appointments
+                            </h3>
+                            <a href="appointments.html" class="view-all-btn">View All</a>
+                        </div>
+                        <div class="widget-content">
+                            <div class="appointment-item">
+                                <div class="appointment-time">
+                                    <div>Jan 18</div>
+                                    <div>2:00 PM</div>
+                                </div>
+                                <div class="appointment-details">
+                                    <div class="appointment-title">Annual Physical Checkup</div>
+                                    <div class="appointment-doctor">Dr. Sarah Johnson - Internal Medicine</div>
+                                    <span class="appointment-type">In-Person</span>
+                                </div>
+                            </div>
+                            
+                            <div class="appointment-item">
+                                <div class="appointment-time">
+                                    <div>Jan 22</div>
+                                    <div>10:30 AM</div>
+                                </div>
+                                <div class="appointment-details">
+                                    <div class="appointment-title">Cardiology Follow-up</div>
+                                    <div class="appointment-doctor">Dr. Michael Chen - Cardiology</div>
+                                    <span class="appointment-type">Telehealth</span>
+                                </div>
+                            </div>
+                            
+                            <div class="appointment-item">
+                                <div class="appointment-time">
+                                    <div>Jan 25</div>
+                                    <div>3:15 PM</div>
+                                </div>
+                                <div class="appointment-details">
+                                    <div class="appointment-title">Lab Results Review</div>
+                                    <div class="appointment-doctor">Dr. Sarah Johnson - Internal Medicine</div>
+                                    <span class="appointment-type">Phone Call</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Health Metrics Chart -->
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h3 class="widget-title">
+                                <i class="fas fa-chart-area"></i>
+                                Health Metrics Trend
+                            </h3>
+                            <a href="#" class="view-all-btn">View Details</a>
+                        </div>
+                        <div class="widget-content">
+                            <div class="chart-container">
+                                <canvas id="healthMetricsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Insights Sidebar -->
+                <div class="ai-insights-widget widget">
+                    <div class="widget-header">
+                        <h3 class="widget-title">
+                            <i class="fas fa-brain"></i>
+                            AI Health Insights
+                        </h3>
+                    </div>
+                    <div class="widget-content">
+                        <div class="insight-item">
+                            <div class="insight-header">
+                                <div class="insight-icon">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <div class="insight-title">Heart Health</div>
+                            </div>
+                            <div class="insight-description">
+                                Your recent blood pressure readings show consistent improvement. Keep up your current exercise routine.
+                            </div>
+                        </div>
+                        
+                        <div class="insight-item">
+                            <div class="insight-header">
+                                <div class="insight-icon">
+                                    <i class="fas fa-pills"></i>
+                                </div>
+                                <div class="insight-title">Medication Adherence</div>
+                            </div>
+                            <div class="insight-description">
+                                Excellent medication compliance this month. Remember to take your evening dose 30 minutes before dinner.
+                            </div>
+                        </div>
+                        
+                        <div class="insight-item">
+                            <div class="insight-header">
+                                <div class="insight-icon">
+                                    <i class="fas fa-calendar-plus"></i>
+                                </div>
+                                <div class="insight-title">Preventive Care</div>
+                            </div>
+                            <div class="insight-description">
+                                It's time to schedule your annual mammogram. Would you like me to help you book an appointment?
+                            </div>
+                        </div>
+                        
+                        <div class="insight-item">
+                            <div class="insight-header">
+                                <div class="insight-icon">
+                                    <i class="fas fa-utensils"></i>
+                                </div>
+                                <div class="insight-title">Nutrition</div>
+                            </div>
+                            <div class="insight-description">
+                                Based on your glucose levels, consider reducing refined carbs and increasing fiber intake.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- AI Chat Interface -->
+        <div class="ai-chat-interface" id="aiChatInterface">
+            <div class="ai-chat-header">
+                <div class="ai-chat-title">
+                    <i class="fas fa-robot"></i>
+                    AI Health Assistant
+                    <div class="ai-status"></div>
+                </div>
+                <button class="chat-close" onclick="toggleAIChat()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="ai-chat-messages" id="chatMessages">
+                <div class="chat-message">
+                    <div class="message-avatar">AI</div>
+                    <div class="message-content">
+                        Hello John! I'm your AI Health Assistant. I can help you with medication reminders, health insights, appointment scheduling, and answer any health-related questions. How can I assist you today?
+                    </div>
+                </div>
+            </div>
+            
+            <div class="ai-chat-input">
+                <input type="text" class="chat-input" placeholder="Ask me anything about your health..." onkeypress="handleChatKeyPress(event)">
+                <button class="chat-send" onclick="sendChatMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Floating AI Assistant Button -->
+        <div class="ai-float-button" onclick="toggleAIChat()">
+            <i class="fas fa-robot"></i>
+        </div>
+    </div>
+
+    <script>
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeHealthMetricsChart();
+            updateDateTime();
+            setInterval(updateDateTime, 60000); // Update every minute
+        });
+
+        // Health Metrics Chart
+        function initializeHealthMetricsChart() {
+            const ctx = document.getElementById('healthMetricsChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan 1', 'Jan 5', 'Jan 10', 'Jan 15', 'Jan 17'],
+                    datasets: [{
+                        label: 'Blood Pressure (Systolic)',
+                        data: [140, 135, 130, 125, 120],
+                        borderColor: '#0066cc',
+                        backgroundColor: 'rgba(0, 102, 204, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'Heart Rate',
+                        data: [80, 78, 75, 72, 70],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // AI Chat Functions
+        function toggleAIChat() {
+            const chatInterface = document.getElementById('aiChatInterface');
+            const floatButton = document.querySelector('.ai-float-button');
+            
+            if (chatInterface.style.display === 'none' || chatInterface.style.display === '') {
+                chatInterface.style.display = 'flex';
+                floatButton.style.display = 'none';
+            } else {
+                chatInterface.style.display = 'none';
+                floatButton.style.display = 'flex';
+            }
+        }
+
+        function sendChatMessage() {
+            const input = document.querySelector('.chat-input');
+            const message = input.value.trim();
+            
+            if (message) {
+                addChatMessage(message, 'user');
+                input.value = '';
+                
+                // Simulate AI response
+                setTimeout(() => {
+                    const aiResponse = generateAIResponse(message);
+                    addChatMessage(aiResponse, 'ai');
+                }, 1000);
+            }
+        }
+
+        function addChatMessage(message, sender) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${sender}`;
+            
+            messageDiv.innerHTML = `
+                <div class="message-avatar">${sender === 'user' ? 'You' : 'AI'}</div>
+                <div class="message-content">${message}</div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function generateAIResponse(userMessage) {
+            const responses = {
+                'medication': 'I can help you with medication reminders and information. Your current medications are well-managed with 95% adherence rate.',
+                'appointment': 'You have 3 upcoming appointments. Your next one is tomorrow at 2:00 PM with Dr. Sarah Johnson.',
+                'health': 'Your health score is 85, which is excellent! Your blood pressure and heart rate trends are improving.',
+                'default': 'I understand your concern. Based on your health data, I recommend discussing this with your healthcare provider. Would you like me to help schedule an appointment?'
+            };
+            
+            const lowerMessage = userMessage.toLowerCase();
+            
+            if (lowerMessage.includes('medication') || lowerMessage.includes('pill')) {
+                return responses.medication;
+            } else if (lowerMessage.includes('appointment') || lowerMessage.includes('schedule')) {
+                return responses.appointment;
+            } else if (lowerMessage.includes('health') || lowerMessage.includes('score')) {
+                return responses.health;
+            } else {
+                return responses.default;
+            }
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+
+        // Navigation Functions
+        function viewHealthScore() {
+            alert('Navigating to detailed health score analysis...');
+        }
+
+        function viewAppointments() {
+            window.location.href = 'appointments.html';
+        }
+
+        function viewMedications() {
+            window.location.href = 'reminders.html';
+        }
+
+        function viewVitals() {
+            alert('Navigating to vital signs tracking...');
+        }
+
+        // Update Date and Time
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            
+            const dateStr = now.toLocaleDateString('en-US', options);
+            const timeStr = now.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit',
+                hour12: true 
+            });
+            
+            // Update if elements exist
+            const dateElement = document.getElementById('currentDate');
+            const timeElement = document.getElementById('currentTime');
+            
+            if (dateElement) dateElement.textContent = dateStr;
+            if (timeElement) timeElement.textContent = timeStr;
+        }
+
+        // Simulate real-time health data updates
+        setInterval(() => {
+            // Update health score with slight variations
+            const healthScoreElement = document.querySelector('.health-score .stat-value');
+            if (healthScoreElement) {
+                const currentScore = parseInt(healthScoreElement.textContent);
+                const variation = Math.floor(Math.random() * 3) - 1; // -1, 0, or 1
+                const newScore = Math.max(75, Math.min(100, currentScore + variation));
+                healthScoreElement.textContent = newScore;
+            }
+        }, 30000); // Update every 30 seconds
+    </script>
+</body>
+</html> 
