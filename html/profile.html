@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - MediCare+</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/modern.css">
+    <style>
+        .profile-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f8fafc 0%, #e7f3ff 100%);
+            padding-top: 120px;
+        }
+
+        .profile-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem 3rem;
+        }
+
+        .profile-header {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 123, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            position: relative;
+        }
+
+        .avatar-upload {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 40px;
+            height: 40px;
+            background: var(--success-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-info h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-info p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 123, 255, 0.1);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-title i {
+            color: var(--primary-color);
+        }
+
+        .info-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .info-value {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .health-metric {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--success-color);
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .metric-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .metric-chart {
+            height: 60px;
+            background: #e5e7eb;
+            border-radius: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .metric-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success-color), var(--primary-color));
+            border-radius: 30px;
+            transition: width 0.3s ease;
+        }
+
+        .recent-activity {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .activity-icon.appointment {
+            background: var(--primary-color);
+        }
+
+        .activity-icon.health {
+            background: var(--success-color);
+        }
+
+        .activity-icon.chat {
+            background: #8b5cf6;
+        }
+
+        .activity-content h4 {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-content p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .activity-time {
+            margin-left: auto;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .btn-edit {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .btn-edit:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-stats {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="floating-menu">
+        <div class="menu-content">
+            <div class="menu-logo">
+                <div class="brand-name">
+                    <i class="fas fa-heartbeat text-primary"></i>
+                    MediCare<span class="text-primary">+</span>
+                </div>
+            </div>
+            <div class="menu-center">
+                <a href="../index.html" class="menu-item">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="appointments.html" class="menu-item">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+                <a href="ai-health-assistant.html" class="menu-item">
+                    <i class="fas fa-robot"></i>
+                    <span>AI Health</span>
+                </a>
+                <a href="ai-chat-standalone.html" class="menu-item">
+                    <i class="fas fa-comments"></i>
+                    <span>AI Chatbot</span>
+                </a>
+                <a href="features.html" class="menu-item">
+                    <i class="fas fa-star"></i>
+                    <span>Features</span>
+                </a>
+                <a href="about.html" class="menu-item">
+                    <i class="fas fa-info-circle"></i>
+                    <span>About</span>
+                </a>
+            </div>
+            <div class="menu-right">
+                <a href="profile.html" class="menu-item active">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="settings.html" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="profile-page">
+        <div class="profile-container">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                    <div class="avatar-upload">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                </div>
+                
+                <div class="profile-info">
+                    <h1>John Doe</h1>
+                    <p>Patient ID: MC2024001 • Member since January 2024</p>
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">12</div>
+                            <div class="stat-label">Appointments</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">45</div>
+                            <div class="stat-label">AI Consultations</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">8</div>
+                            <div class="stat-label">Health Reports</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn-edit">
+                    <i class="fas fa-edit"></i>
+                    Edit Profile
+                </button>
+            </div>
+
+            <div class="profile-grid">
+                <!-- Personal Information -->
+                <div class="profile-card">
+                    <h2 class="card-title">
+                        <i class="fas fa-user"></i>
+                        Personal Information
+                    </h2>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Full Name</span>
+                            <span class="info-value">John Doe</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Email</span>
+                            <span class="info-value">john.doe@email.com</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Phone</span>
+                            <span class="info-value">+94 77 123 4567</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Date of Birth</span>
+                            <span class="info-value">January 15, 1990</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Gender</span>
+                            <span class="info-value">Male</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Blood Type</span>
+                            <span class="info-value">O+</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Emergency Contact</span>
+                            <span class="info-value">Jane Doe (+94 77 123 4568)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Health Metrics -->
+                <div class="profile-card">
+                    <h2 class="card-title">
+                        <i class="fas fa-heartbeat"></i>
+                        Health Metrics
+                    </h2>
+                    
+                    <div class="health-metric">
+                        <div class="metric-header">
+                            <span class="metric-title">Blood Pressure</span>
+                            <span class="metric-value">120/80</span>
+                        </div>
+                        <div class="metric-chart">
+                            <div class="metric-progress" style="width: 75%"></div>
+                        </div>
+                    </div>
+
+                    <div class="health-metric" style="border-left-color: #f59e0b;">
+                        <div class="metric-header">
+                            <span class="metric-title">Heart Rate</span>
+                            <span class="metric-value">72 BPM</span>
+                        </div>
+                        <div class="metric-chart">
+                            <div class="metric-progress" style="width: 60%; background: linear-gradient(90deg, #f59e0b, #d97706);"></div>
+                        </div>
+                    </div>
+
+                    <div class="health-metric" style="border-left-color: #10b981;">
+                        <div class="metric-header">
+                            <span class="metric-title">BMI</span>
+                            <span class="metric-value">23.5</span>
+                        </div>
+                        <div class="metric-chart">
+                            <div class="metric-progress" style="width: 80%; background: linear-gradient(90deg, #10b981, #059669);"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Medical History -->
+                <div class="profile-card">
+                    <h2 class="card-title">
+                        <i class="fas fa-notes-medical"></i>
+                        Medical History
+                    </h2>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Allergies</span>
+                            <span class="info-value">Penicillin, Shellfish</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Current Medications</span>
+                            <span class="info-value">Lisinopril 10mg, Metformin 500mg</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Chronic Conditions</span>
+                            <span class="info-value">Hypertension, Type 2 Diabetes</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Last Checkup</span>
+                            <span class="info-value">December 15, 2023</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Insurance Provider</span>
+                            <span class="info-value">National Insurance Trust Fund</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Policy Number</span>
+                            <span class="info-value">NITF-2024-001234</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="profile-card">
+                    <h2 class="card-title">
+                        <i class="fas fa-clock"></i>
+                        Recent Activity
+                    </h2>
+                    
+                    <div class="recent-activity">
+                        <div class="activity-item">
+                            <div class="activity-icon appointment">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="activity-content">
+                                <h4>Appointment Scheduled</h4>
+                                <p>Cardiology consultation with Dr. Perera</p>
+                            </div>
+                            <div class="activity-time">2 hours ago</div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-icon health">
+                                <i class="fas fa-heartbeat"></i>
+                            </div>
+                            <div class="activity-content">
+                                <h4>Health Assessment Completed</h4>
+                                <p>AI Cardiovascular Risk Assessment</p>
+                            </div>
+                            <div class="activity-time">1 day ago</div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-icon chat">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <div class="activity-content">
+                                <h4>AI Chat Session</h4>
+                                <p>Discussed medication side effects</p>
+                            </div>
+                            <div class="activity-time">2 days ago</div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-icon health">
+                                <i class="fas fa-pills"></i>
+                            </div>
+                            <div class="activity-content">
+                                <h4>Medication Reminder</h4>
+                                <p>Lisinopril 10mg taken</p>
+                            </div>
+                            <div class="activity-time">3 days ago</div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-icon appointment">
+                                <i class="fas fa-user-md"></i>
+                            </div>
+                            <div class="activity-content">
+                                <h4>Consultation Completed</h4>
+                                <p>General checkup with Dr. Silva</p>
+                            </div>
+                            <div class="activity-time">1 week ago</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Initialize profile
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserProfile();
+            setupEventListeners();
+        });
+
+        function loadUserProfile() {
+            // Load user data from localStorage or API
+            const userData = localStorage.getItem('userProfile');
+            if (userData) {
+                const profile = JSON.parse(userData);
+                updateProfileDisplay(profile);
+            }
+        }
+
+        function updateProfileDisplay(profile) {
+            // Update profile information
+            if (profile.name) {
+                document.querySelector('.profile-info h1').textContent = profile.name;
+            }
+            if (profile.email) {
+                document.querySelector('.info-value').textContent = profile.email;
+            }
+            // Add more profile updates as needed
+        }
+
+        function setupEventListeners() {
+            // Avatar upload
+            document.querySelector('.avatar-upload').addEventListener('click', function() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            // Update avatar preview
+                            const avatar = document.querySelector('.profile-avatar');
+                            avatar.innerHTML = `<img src="${event.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                };
+                input.click();
+            });
+
+            // Edit profile button
+            document.querySelector('.btn-edit').addEventListener('click', function() {
+                window.location.href = 'settings.html#profile';
+            });
+        }
+
+        // Health metrics animation
+        function animateMetrics() {
+            const progressBars = document.querySelectorAll('.metric-progress');
+            progressBars.forEach((bar, index) => {
+                setTimeout(() => {
+                    bar.style.width = bar.style.width;
+                }, index * 200);
+            });
+        }
+
+        // Call animation on load
+        setTimeout(animateMetrics, 500);
+    </script>
+</body>
+</html> 
